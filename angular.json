@@ -3,23 +3,23 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "minithings-angular": {
+    "ngx-minithings": {
       "projectType": "library",
-      "root": "projects/minithings-angular",
-      "sourceRoot": "projects/minithings-angular/src",
+      "root": "projects/ngx-minithings",
+      "sourceRoot": "projects/ngx-minithings/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/minithings-angular/ng-package.json"
+            "project": "projects/ngx-minithings/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/minithings-angular/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ngx-minithings/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/minithings-angular/tsconfig.lib.json"
+              "tsConfig": "projects/ngx-minithings/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,9 +27,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/minithings-angular/src/test.ts",
-            "tsConfig": "projects/minithings-angular/tsconfig.spec.json",
-            "karmaConfig": "projects/minithings-angular/karma.conf.js"
+            "main": "projects/ngx-minithings/src/test.ts",
+            "tsConfig": "projects/ngx-minithings/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-minithings/karma.conf.js"
           }
         }
       }

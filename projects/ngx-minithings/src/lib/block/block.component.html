@@ -1,0 +1,10 @@
+<div [ngClass]="html.classes">
+  <ng-container
+    [ngTemplateOutlet]="template" *ngIf="isLoaded$ | async; else loading">
+  </ng-container>
+</div>
+
+<ng-template #loading>
+  <util-loading class="h-20 w-full flex justify-center items-center">
+  </util-loading>
+</ng-template>

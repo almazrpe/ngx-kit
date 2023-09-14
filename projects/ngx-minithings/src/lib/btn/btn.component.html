@@ -1,0 +1,8 @@
+<button
+  [type]="type"
+  [ngClass]="cssClasses$ | async"
+  [disabled]="!isEnabled"
+  (click)="click($event)"
+>
+  <ng-content></ng-content>
+</button>

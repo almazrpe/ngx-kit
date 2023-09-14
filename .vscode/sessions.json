@@ -15,9 +15,9 @@
                 "icon": "home"
             },
             {
-                "name": "minithings-angular-build",
+                "name": "ngx-minithings-build",
                 "commands": [
-                    "cd projects/minithings-angular",
+                    "cd projects/ngx-minithings",
                     "clear",
                     "ng build --watch"
                 ],
@@ -26,9 +26,9 @@
                 "icon": "eye"
             },
             {
-                "name": "minithings-angular",
+                "name": "ngx-minithings",
                 "commands": [
-                    "cd projects/minithings-angular/src/lib",
+                    "cd projects/ngx-minithings/src/lib",
                     "clear"
                 ],
                 "autoExecuteCommands": true

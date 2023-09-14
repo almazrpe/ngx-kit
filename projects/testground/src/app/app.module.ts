@@ -3,11 +3,11 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { MinithingsAngularModule } from "minithings-angular";
+import { NgxMinithingsModule } from "ngx-minithings";
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, MinithingsAngularModule],
+  imports: [BrowserModule, AppRoutingModule, NgxMinithingsModule],
   providers: [],
   bootstrap: [AppComponent]
 })

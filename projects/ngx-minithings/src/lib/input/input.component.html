@@ -1,0 +1,16 @@
+<input
+  [id]="id"
+  [name]="name"
+  [type]="inputType"
+  [ngClass]="cssClasses"
+  [placeholder]="placeholder"
+  [required]="required"
+  [attr.list]="attrList"
+  [min]="min"
+  [max]="max"
+  [value]="value$ | async"
+  (input)="onInput($event)"
+  (focus)="onFocus($event)"
+  (blur)="onBlur($event)"
+  [disabled]="!(isEnabled$ | async)"
+/>

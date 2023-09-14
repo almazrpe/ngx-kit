@@ -1,0 +1,26 @@
+{
+  "name": "ngx-minithings",
+  "version": "0.0.1",
+  "watch": {
+    "tailwind-build": {
+      "patterns": [
+        "."
+      ],
+      "extensions": "js,ts,css,scss,html"
+    }
+  },
+  "scripts": {
+    "build": "make build",
+    "tailwind-build": "make tailwind.build"
+  },
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "npm-watch": "^0.11.0"
+  }
+}

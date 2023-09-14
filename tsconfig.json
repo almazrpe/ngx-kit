@@ -18,8 +18,8 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "paths": {
-      "minithings-angular": ["projects/minithings-angular/src/lib"],
-      "minithings-angular/*": ["projects/minithings-angular/src/lib/*"]
+      "ngx-minithings": ["projects/ngx-minithings/src/lib"],
+      "ngx-minithings/*": ["projects/ngx-minithings/src/lib/*"]
     },
     "target": "es2022",
     "module": "es2022",

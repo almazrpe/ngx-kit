@@ -1,0 +1,7 @@
+<div class="absolute bottom-5 right-5 flex flex-col items-end z-10"
+  *ngIf="alertQueue.length > 0">
+
+  <div class="mt-3" *ngFor="let alert of alertQueue.toArray().reverse()">
+    <util-alert [alert]="alert"></util-alert>
+  </div>
+</div>

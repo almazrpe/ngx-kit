@@ -1,0 +1,93 @@
+<div class="flex flex-col gap-2 h-full w-full">
+  <!-- Top Bar -->
+  <div class="flex flex-row w-full justify-between items-center">
+    <!-- Page Number Selector -->
+    <form
+      class="flex flex-row h-full justify-start items-center gap-1"
+      [formGroup]="form"
+    >
+      <util-input
+        class="w-1/6 h-2/3"
+        [cssClasses]="pageNumberSelectorCSSClasses"
+        [localizedName]="(pageNumberTranslation$ | async) || ''"
+        formControlName="currentPageNumber"
+        [inputType]="inputType"
+        [min]="1"
+        [max]="totalPagesNumber"
+        [isDefaultBlurValidatorsEnabled]="false"
+        (inputValue)="onInputValue($event)"
+      />
+      <p class="self-center">
+        <span i18n>из</span> {{totalPagesNumber}}
+      </p>
+
+      <!-- Page Navigation Arrows -->
+      <div
+        class="flex flex-row justify-center items-center ml-2 gap-1"
+      >
+        <util-btn
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isPageupEnabled$ | async"
+          (clickFunc)="pageup()"
+        >
+          <img
+            src="assets/arrow-up-thick.svg"
+            alt="pageup"
+            class="w-8"
+          >
+        </util-btn>
+        <util-btn
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isPagedownEnabled$ | async"
+          (clickFunc)="pagedown()"
+        >
+          <img
+            src="assets/arrow-down-thick.svg"
+            alt="pagedown"
+            class="w-8"
+          >
+        </util-btn>
+      </div>
+      <!---->
+    </form>
+    <!---->
+
+    <!-- Back Button -->
+    <util-btn
+      class="flex items-center"
+      [mode]="ButtonMode.CONTROLS"
+      (clickFunc)="backInner($event)"
+    >
+      <img
+        src="assets/arrow-left-circle.svg"
+        alt="go back"
+        class="w-8"
+      >
+    </util-btn>
+    <!---->
+  </div>
+
+  <!-- Page Image -->
+
+  <!-- (ryzhovalex) Don't know why, but overflow-hidden helps to maintain max
+    height of the image, although no content is actually discarded.
+  -->
+  <div
+    class="flex h-full w-full overflow-scroll justify-center"
+    *ngIf="(currentPage$ | async) as currentPage"
+  >
+    <img [src]="currentPage.url">
+  </div>
+  <!---->
+
+  <!-- Errors -->
+  <div
+    class="flex justify-center align-center h-full w-full"
+    *ngIf="errorMessage$ | async as errorMessageTranslation$"
+  >
+    <p>{{errorMessageTranslation$ | async}}</p>
+  </div>
+  <!---->
+</div>
