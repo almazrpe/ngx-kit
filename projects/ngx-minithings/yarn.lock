@@ -2,6 +2,18 @@
 # yarn lockfile v1
 
 
+"@slimebones/ngx-antievil@../../lib/slimebones-ngx-antievil-v0.1.0.tgz":
+  version "0.1.0"
+  resolved "../../lib/slimebones-ngx-antievil-v0.1.0.tgz#2a168806c644f084d20e7b83a73fde3e6201292c"
+  dependencies:
+    tslib "^2.3.0"
+
+"@slimebones/ngx-antievil@../../lib/slimebones-ngx-antievil-v0.1.1.tgz":
+  version "0.1.1"
+  resolved "../../lib/slimebones-ngx-antievil-v0.1.1.tgz#c86950c96174e234c6e4ef3ea612e3f1d515dc78"
+  dependencies:
+    tslib "^2.3.0"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"

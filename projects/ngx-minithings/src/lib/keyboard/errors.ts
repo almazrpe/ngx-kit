@@ -1,7 +1,6 @@
-import { ErrorCode } from "src/app/helpers/codes";
-import { BaseError } from "src/app/utils/errors";
+import {BaseError} from "@slimebones/ngx-antievil";
 
 export class NoKeyboardFocusError extends BaseError
 {
-  public override CODE = ErrorCode.NO_KEYBOARD_FOCUS;
+  public override Code = "error.no-keyboard-focus";
 }
