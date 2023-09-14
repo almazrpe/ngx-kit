@@ -1,0 +1,57 @@
+{
+    "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v7/terminal-keeper.json",
+    "theme": "default",
+    "active": "default",
+    "activateOnStartup": false,
+    "keepExistingTerminals": false,
+    "sessions": {
+        "default": [
+            {
+                "name": "root",
+                "commands": [
+                    "clear"
+                ],
+                "autoExecuteCommands": true,
+                "icon": "home"
+            },
+            {
+                "name": "minithings-angular-build",
+                "commands": [
+                    "cd projects/minithings-angular",
+                    "clear",
+                    "ng build --watch"
+                ],
+                "autoExecuteCommands": true,
+                "color": "terminal.ansiRed",
+                "icon": "eye"
+            },
+            {
+                "name": "minithings-angular",
+                "commands": [
+                    "cd projects/minithings-angular/src/lib",
+                    "clear"
+                ],
+                "autoExecuteCommands": true
+            },
+            {
+                "name": "testground-server",
+                "commands": [
+                    "cd projects/testground",
+                    "clear",
+                    "make dev"
+                ],
+                "autoExecuteCommands": true,
+                "color": "terminal.ansiRed",
+                "icon": "server"
+            },
+            {
+                "name": "testground",
+                "commands": [
+                    "cd projects/testgroun/src/app",
+                    "clear"
+                ],
+                "autoExecuteCommands": true
+            }
+        ]
+    }
+}

@@ -1,0 +1,57 @@
+root: true
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+parser: "@typescript-eslint/parser"
+parserOptions:
+  project:
+    - "**/tsconfig.json"
+plugins:
+  - "@typescript-eslint"
+  - "unused-imports"
+rules:
+  "@typescript-eslint/strict-boolean-expressions":
+    - "error"
+    -
+      allowString: false
+      allowNumber: false
+  "@typescript-eslint/no-unused-vars": "error"
+
+  # enforce only-typed declarations
+  # https://stackoverflow.com/a/75207777/14748231
+  "@typescript-eslint/no-inferrable-types": "off"
+  "@typescript-eslint/typedef": [
+      "error",
+      {
+          "variableDeclaration": true
+      }
+  ]
+  # https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/explicit-function-return-type.md
+  "@typescript-eslint/explicit-function-return-type": "error"
+  "@typescript-eslint/explicit-member-accessibility": "error"
+  indent: ["error", 2, {"SwitchCase": 1}]
+  semi: ["error", "always"]
+  brace-style: ["error", "allman", { "allowSingleLine": true}]
+  quotes: ["error", "double"]
+  max-len: ["error", {"code": 79}]
+  unused-imports/no-unused-imports: "error"
+  # put semicolon at the end of a member (mainly for an interface member)
+  # https://stackoverflow.com/a/65388500/14748231
+  "@typescript-eslint/member-delimiter-style": [
+    "error",
+    {
+        "multiline": {
+            "delimiter": "semi",
+            "requireLast": true
+        },
+        "singleline": {
+            "delimiter": "semi",
+            "requireLast": false
+        }
+    }
+  ]
+ignorePatterns:
+  - "polyfills.ts"
+  - "**/*.spec.ts"
+  - src/**/*.test.ts
+  - src/frontend/generated/*
