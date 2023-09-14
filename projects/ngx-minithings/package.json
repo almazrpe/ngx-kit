@@ -1,5 +1,5 @@
 {
-  "name": "ngx-minithings",
+  "name": "@slimebones/ngx-minithings",
   "version": "0.0.1",
   "watch": {
     "tailwind-build": {
