@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, Subject } from "rxjs";
 import { CallEvent } from "./alert-stack.component";
-import Alert from "./alert";
+import { Alert } from "./models";
 
 @Injectable({
   providedIn: "root"

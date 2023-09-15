@@ -16,12 +16,12 @@ import {
   Validators
 } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
-import { AlertLevel } from "../../alert/alert";
-import { AlertService } from "../../alert/alert.service";
-import { makeid } from "../makeid";
+import { AlertLevel } from "../alert/models";
+import { AlertService } from "../alert/alert.service";
 import { InputType } from "../input/input-type";
 import { DatalistOption } from "./datalist-option";
 import { KeyboardService } from "../keyboard/keyboard.service";
+import { StringUtils } from "ngx-minithings/str/str";
 
 /**
  * List with searchable options implementation.
@@ -34,7 +34,7 @@ import { KeyboardService } from "../keyboard/keyboard.service";
  * intermediate changes.
  */
 @Component({
-  selector: "util-datalist",
+  selector: "minithings-datalist",
   templateUrl: "./datalist.component.html",
   styles: [
   ],
@@ -75,7 +75,7 @@ export class DatalistComponent implements
 
   public ngOnInit(): void
   {
-    this.datalistId = makeid();
+    this.datalistId = StringUtils.makeid();
     this.options$.next(this.options);
     this.form = new FormGroup({
       main: new FormControl(null, Validators.required)
@@ -84,9 +84,9 @@ export class DatalistComponent implements
 
   public ngOnChanges(changes: SimpleChanges): void
   {
-    if (changes.options != undefined)
+    if (changes["options"] != undefined)
     {
-      this.options$.next(changes.options.currentValue);
+      this.options$.next(changes["options"].currentValue);
     }
   }
 
@@ -139,7 +139,7 @@ export class DatalistComponent implements
 
   public writeValue(value: any): void
   {
-    this.form.controls.main.setValue(value);
+    this.form.controls["main"].setValue(value);
   }
 
   public registerOnChange(fn: any): void

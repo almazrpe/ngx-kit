@@ -1,16 +1,16 @@
 import { Component, Input, OnInit } from "@angular/core";
-import Alert, { AlertLevel } from "./alert";
+import { Alert, AlertLevel } from "./models";
 
 @Component({
-  selector: "util-alert",
+  selector: "minithings-alert",
   templateUrl: "./alert.component.html",
   styles: [
   ]
 })
-export class AlertComponent implements OnInit 
+export class AlertComponent implements OnInit
 {
   @Input() public alert: Alert;
-  public html: any = {
+  public html: {classes: string[]} = {
     classes: []
   };
 
@@ -21,9 +21,9 @@ export class AlertComponent implements OnInit
     this.adjustHtmlClasses();
   }
 
-  private adjustHtmlClasses(): void 
+  private adjustHtmlClasses(): void
   {
-    switch (this.alert.level) 
+    switch (this.alert.level)
     {
       case AlertLevel.INFO:
         this.html.classes = ["bg-sky-200", "text-sky-800"];
@@ -41,7 +41,7 @@ export class AlertComponent implements OnInit
 
   public get iconPath(): string
   {
-    switch (this.alert.level) 
+    switch (this.alert.level)
     {
       case AlertLevel.INFO:
         return "assets/info.svg";

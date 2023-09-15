@@ -5,7 +5,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 import { TranslationService } from "../translation/translation.service";
 import { UICode } from "src/app/helpers/codes";
-import { ButtonMode } from "../btn/btn.component";
+import { ButtonMode } from "../button/button.component";
 
 @Component({
   selector: "dps",

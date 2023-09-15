@@ -22,18 +22,18 @@ export enum ButtonMode {
 }
 
 @Component({
-  selector: "util-btn",
-  templateUrl: "./btn.component.html",
+  selector: "minithings-button",
+  templateUrl: "./button.component.html",
   styles: [
   ]
 })
-export class BtnComponent implements OnInit, OnChanges
+export class ButtonComponent implements OnInit, OnChanges
 {
   @Input() public type = "submit";
   @Input() public mode: ButtonMode = ButtonMode.DEFAULT;
   @Input() public isEnabled: boolean | null = true;
   @Input() public extraCssClasses: string[] | null = null;
-  @Input() public extraData: any;
+  @Input() public extraData: object;
 
   @Output() public clickFunc: EventEmitter<EventPlus> =
     new EventEmitter<EventPlus>();
@@ -49,7 +49,7 @@ export class BtnComponent implements OnInit, OnChanges
     classes: []
   };
 
-  private CSS_CLASSES_ORDERED: Array<Array<string>> = [
+  private CssClassesOrdered: Array<Array<string>> = [
     // DEFAULT
     [
       "bg-c10", "text-c10-text", "rounded", "shadow",
@@ -113,7 +113,7 @@ export class BtnComponent implements OnInit, OnChanges
     this.mode$.subscribe({
       next: mode =>
       {
-        this.html.classes = this.CSS_CLASSES_ORDERED[mode];
+        this.html.classes = this.CssClassesOrdered[mode];
       }
     });
 
@@ -126,16 +126,16 @@ export class BtnComponent implements OnInit, OnChanges
 
   public ngOnChanges(changes: SimpleChanges): void
   {
-    if (changes.mode != null)
+    if (changes["mode"] != null)
     {
-      this.modeSubject.next(changes.mode.currentValue);
+      this.modeSubject.next(changes["mode"].currentValue);
       this.setCSSClasses();
     }
-    if (changes.isEnabled != null)
+    if (changes["isEnabled"] != null)
     {
       this.isEnabled =
-        changes.isEnabled.currentValue !== undefined
-          ? changes.isEnabled.currentValue : false;
+        changes["isEnabled"].currentValue !== undefined
+          ? changes["isEnabled"].currentValue : false;
       this.setCSSClasses();
     }
   }

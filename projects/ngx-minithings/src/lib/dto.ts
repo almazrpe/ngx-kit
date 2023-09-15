@@ -1,4 +1,4 @@
-import { UnsupportedError } from "./errors";
+import { UnsupportedError } from "@slimebones/ngx-antievil";
 
 /**
  * Host DTO is the outermost JSON body object sent from backend services.
@@ -65,10 +65,7 @@ export abstract class DTOUtils
       return result;
     }
 
-    throw new UnsupportedError({
-      title: "convertMany data",
-      value: JSON.stringify(data)
-    });
+    throw new UnsupportedError("convertMany data", JSON.stringify(data));
   }
 
   public static isHostDTO(obj: object): obj is HostDTO

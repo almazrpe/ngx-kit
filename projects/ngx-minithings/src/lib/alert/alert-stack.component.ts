@@ -1,20 +1,20 @@
 import { Component, OnInit } from "@angular/core";
-import Alert from "./alert";
+import {Alert} from "./models";
 import { AlertService } from "./alert.service";
 import {Queue} from "queue-typescript";
-import { clearQueue } from "src/app/utils/struct";
+import { QueueUtils } from "ngx-minithings/queue";
 
 export enum CallEvent {
   CLEAR = 0
 }
 
 @Component({
-  selector: "util-alert-stack",
+  selector: "minithings-alert-stack",
   templateUrl: "./alert-stack.component.html",
   styles: [
   ]
 })
-export class AlertStackComponent implements OnInit 
+export class AlertStackComponent implements OnInit
 {
   public readonly ALERT_LIVING_TIME: number = 5;
   public readonly MAX_QUEUE_LEN: number = 3;
@@ -24,18 +24,18 @@ export class AlertStackComponent implements OnInit
 
   public constructor(
     private alertService: AlertService
-  ) 
+  )
   {
   }
 
   public ngOnInit(): void
   {
     this.alertService.alerts$.subscribe({
-      next: (alert: Alert) => 
+      next: (alert: Alert) =>
       {
         this.add(alert);
       },
-      error: (err: Error) => 
+      error: (err: Error) =>
       {
         throw err;
       }
@@ -49,7 +49,7 @@ export class AlertStackComponent implements OnInit
 
   private call(event: CallEvent): void
   {
-    switch (event) 
+    switch (event)
     {
       case CallEvent.CLEAR:
         this.clear();
@@ -62,13 +62,13 @@ export class AlertStackComponent implements OnInit
   // Clear all alerts
   private clear(): void
   {
-    clearQueue<Alert>(this.alertQueue);
+    QueueUtils.clearQueue<Alert>(this.alertQueue);
     this.disableClearingTimer();
   }
 
-  private add(alert: Alert): void 
+  private add(alert: Alert): void
   {
-    if (this.alertQueue.length + 1 > this.MAX_QUEUE_LEN) 
+    if (this.alertQueue.length + 1 > this.MAX_QUEUE_LEN)
     {
       // Dequeue oldest element instantly
       this.alertQueue.dequeue();
@@ -84,9 +84,9 @@ export class AlertStackComponent implements OnInit
    *
    * Only one timer should be active at a time to avoid concurrency.
    */
-  private startClearingTimer(): void 
+  private startClearingTimer(): void
   {
-    if (!this.isClearingTimerActive) 
+    if (!this.isClearingTimerActive)
     {
       this.isClearingTimerActive = true;
       this.clearingTimer = setTimeout(
@@ -96,18 +96,18 @@ export class AlertStackComponent implements OnInit
   }
 
   // Immediatelly manually disable clearing timer
-  private disableClearingTimer(): void 
+  private disableClearingTimer(): void
   {
     clearTimeout(this.clearingTimer);
     this.isClearingTimerActive = false;
   }
 
-  private removeOldestByTimer(): void 
+  private removeOldestByTimer(): void
   {
     this.alertQueue.dequeue();
     this.isClearingTimerActive = false;
 
-    if (this.alertQueue.length > 0) 
+    if (this.alertQueue.length > 0)
     {
       // Start new cleans recursively until all items are gone
       this.startClearingTimer();
