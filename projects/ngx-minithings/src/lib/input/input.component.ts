@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnInit, Output, forwardRef }
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { InputType } from "./input-type";
-import { makeid } from "../makeid";
 import { SelectedInputEvent, ValueHost} from "./selected-input/selected-input";
 import { SelectedInputService } from "./selected-input/selected-input.service";
 import { ValueValidator } from "./selected-input/value-validator";
@@ -12,7 +11,7 @@ import { checkValueAgainstValidators } from "./selected-input/helpers";
 import { ValueValidatorEvent } from "./selected-input/value-validator-event";
 
 @Component({
-  selector: "util-input",
+  selector: "minithings-input",
   templateUrl: "./input.component.html",
   styles: [
   ],
@@ -24,7 +23,7 @@ import { ValueValidatorEvent } from "./selected-input/value-validator-event";
     }
   ],
 })
-export class InputComponent<T> implements OnInit, ControlValueAccessor  
+export class InputComponent<T> implements OnInit, ControlValueAccessor
 {
   @Input() public id: string;
   @Input() public name: string;
@@ -73,13 +72,13 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
 
     this.selectedInputEventSubscription =
       this.selectedInputService.eventBus$.subscribe({
-        next: (event: SelectedInputEvent<any>) => 
+        next: (event: SelectedInputEvent<any>) =>
         {
           if (
             event.selectedInput.id === this.id
             // do not re-accept self-made changes
             && event.host !== ValueHost.INPUT
-          ) 
+          )
           {
             // don't resend an input change event back to keyboard, because
             // here the keyboard initiated the change
@@ -93,12 +92,12 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
         }
       });
 
-    if (this.isDefaultInputValidatorsEnabled) 
+    if (this.isDefaultInputValidatorsEnabled)
     {
       this.inputValueValidators = this.getInputValueValidators();
     }
 
-    if (this.isDefaultBlurValidatorsEnabled) 
+    if (this.isDefaultBlurValidatorsEnabled)
     {
       this.blurValueValidators = this.getBlurValueValidators();
     }
@@ -116,7 +115,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
 
   public writeValue(value: T): void
   {
-    if (this.selectedInputService.isSelected(this.id)) 
+    if (this.selectedInputService.isSelected(this.id))
     {
       this.selectedInputService.sendInputValue(value);
     }
@@ -144,14 +143,14 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     if (
       this.isDefaultInputValidatorsEnabled
       && this.inputValueValidators !== undefined
-    ) 
+    )
     {
       const validatedValue: T | ValueValidatorEvent | undefined =
         checkValueAgainstValidators(
           value,
           this.inputValueValidators
         );
-      if (validatedValue !== undefined) 
+      if (validatedValue !== undefined)
       {
         isValueChanged = true;
         value = validatedValue;
@@ -166,7 +165,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
       // keyboard) about the change
       (_shouldSendEvent || isValueChanged)
       && this.selectedInputService.isSelected(this.id)
-    ) 
+    )
     {
       this.selectedInputService.sendInputValue(value);
     }
@@ -192,14 +191,14 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     if (
       this.isDefaultBlurValidatorsEnabled
       && this.blurValueValidators !== undefined
-    ) 
+    )
     {
       const validatedValue: T | ValueValidatorEvent | undefined =
         checkValueAgainstValidators(
           event.target.value,
           this.blurValueValidators
         );
-      if (validatedValue !== undefined) 
+      if (validatedValue !== undefined)
       {
         event.target.value = validatedValue;
       }
@@ -213,11 +212,11 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     this.blur.emit(event);
   }
 
-  private getInputValueValidators(): ValueValidator<T>[] 
+  private getInputValueValidators(): ValueValidator<T>[]
   {
     const valueValidators: ValueValidator<T>[] = [];
 
-    switch (this.inputType) 
+    switch (this.inputType)
     {
       case InputType.NUMBER:
         valueValidators.push(this.getNaNValidator());
@@ -227,14 +226,14 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     return valueValidators;
   }
 
-  private getBlurValueValidators(): ValueValidator<T>[] 
+  private getBlurValueValidators(): ValueValidator<T>[]
   {
     const valueValidators: ValueValidator<T>[] = [];
 
-    switch (this.inputType) 
+    switch (this.inputType)
     {
       case InputType.NUMBER:
-        if (this.min !== undefined || this.max !== undefined) 
+        if (this.min !== undefined || this.max !== undefined)
         {
           valueValidators.push(
             this.getMinMaxValueValidator() as ValueValidator<T>
@@ -246,28 +245,28 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     return valueValidators;
   }
 
-  private getNaNValidator(): ValueValidator<T> 
+  private getNaNValidator(): ValueValidator<T>
   {
     return ((value: string): any =>
     {
-      if (!hasOnlyNumbers(value)) 
+      if (!hasOnlyNumbers(value))
       {
         return ValueValidatorEvent.Clear;
       }
     });
   }
 
-  private getMinMaxValueValidator(): ValueValidator<number> 
+  private getMinMaxValueValidator(): ValueValidator<number>
   {
     return ((value: string): any =>
     {
       const numericValue: number = value !== "" ? Number(value) : 0;
 
-      if (this.min !== undefined && numericValue < this.min) 
+      if (this.min !== undefined && numericValue < this.min)
       {
         return this.min;
       }
-      if (this.max !== undefined && numericValue > this.max) 
+      if (this.max !== undefined && numericValue > this.max)
       {
         return this.max;
       }
@@ -276,7 +275,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     );
   }
 
-  private setValue(value: T | ValueValidatorEvent): void 
+  private setValue(value: T | ValueValidatorEvent): void
   {
     // apply value set only on correct form API initialization, sometimes the
     // input catches old input values from the bus before it has been properly
@@ -284,7 +283,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     // raised in such case and such values are just ignored
     if (this.onChange !== undefined)
     {
-      switch (value) 
+      switch (value)
       {
         case ValueValidatorEvent.Clear:
           value = (this.min !== undefined ? this.min : "") as T;

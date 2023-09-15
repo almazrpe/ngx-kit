@@ -13,6 +13,7 @@ import {
   StatusCircleComponent
 } from "./status-circle/status-circle.component";
 import { AlertStackComponent } from "./alert/alert-stack.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { AlertStackComponent } from "./alert/alert-stack.component";
     StatusCircleComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   exports: [
     ButtonComponent,

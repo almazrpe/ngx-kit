@@ -13,7 +13,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 @Directive({
   selector: "[blockContent]"
 })
-export class BlockContentDirective 
+export class BlockContentDirective
 {
   public constructor(public templateRef: TemplateRef<unknown>) {}
 }
@@ -24,9 +24,9 @@ export class BlockContentDirective
   styles: [
   ]
 })
-export class BlockComponent implements OnInit, OnChanges 
+export class BlockComponent implements OnInit, OnChanges
 {
-  @ContentChild(TemplateRef) public template: TemplateRef<any>;
+  @ContentChild(TemplateRef) public template: TemplateRef<object>;
 
   @Input() public extraClass = "";
 
@@ -53,13 +53,13 @@ export class BlockComponent implements OnInit, OnChanges
 
   public ngOnInit(): void
   {
-    if (this.isLoaded === null) 
+    if (this.isLoaded === null)
     {
       this.isLoaded = false;
     }
 
     this.isLoaded$.subscribe({
-      next: v => 
+      next: v =>
       {
         v
           ? this.html.classes = this.DEFAULT_CLASSES
@@ -74,9 +74,9 @@ export class BlockComponent implements OnInit, OnChanges
 
   public ngOnChanges(changes: SimpleChanges): void
   {
-    if (changes.isLoaded != null)
+    if (changes["isLoaded"] != null)
     {
-      this.isLoadedSubject.next(changes.isLoaded.currentValue);
+      this.isLoadedSubject.next(changes["isLoaded"].currentValue);
     }
   }
 }

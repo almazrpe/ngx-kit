@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, map, take } from "rxjs";
-import { Modifier } from "./modifier";
-import { capitalize } from "../str/str";
+import { Modifier } from "./models";
 import { TranslationOptions } from "./options";
+import { StringUtils } from "ngx-minithings/str/str";
+import { NotFoundError } from "@slimebones/ngx-antievil";
 
 @Injectable({
   providedIn: "root"
@@ -24,45 +25,59 @@ export class TranslationService
     options?: TranslationOptions
   ): Observable<string>
   {
-    if (options === undefined)
+    let finalOptions: TranslationOptions = {};
+    if (options !== undefined)
     {
-      options = {};
+      finalOptions = options;
     }
 
     let finalTranslationKey: string;
     if (
-      options.modifier === undefined || options.modifier === Modifier.DEFAULT
+      finalOptions.modifier === undefined
+      || finalOptions.modifier === Modifier.Default
     )
     {
       finalTranslationKey = key + ".$";
     }
     else
     {
-      finalTranslationKey = key + ".$" + options.modifier;
+      finalTranslationKey = key + ".$" + finalOptions.modifier;
     }
 
-    const isCapitalized: boolean =
-      options.isCapitalized !== undefined ? options.isCapitalized : true;
+    const isCapitalized: boolean = finalOptions.isCapitalized !== undefined
+      ? finalOptions.isCapitalized : true;
 
     return this.nativeTranslation.get(
       finalTranslationKey,
-      options.params
+      finalOptions.params
     ).pipe(
       map((res: string) =>
       {
         // due to special design, ngx-translate returns the key passed, if the
         // according value is not found, so here we throw an error instead for
-        // such cases
-        if (res === finalTranslationKey)
+        // such cases, but only if a fallback translation is not specified
+        if (
+          res === finalTranslationKey
+          && finalOptions.fallbackTranslation === undefined
+        )
         {
-          throw Error(
-            `a translation for a key ${finalTranslationKey} was not found`
+          throw new NotFoundError(
+            "a translation for a key",
+            finalTranslationKey,
+            options
           );
         }
-        else
+        else if (
+          res === finalTranslationKey
+          && finalOptions.fallbackTranslation !== undefined
+        )
         {
-          return isCapitalized ? capitalize(res) : res;
+          // note that capitalization and other options do not affect fallback
+          // translation string
+          return finalOptions.fallbackTranslation;
         }
+
+        return isCapitalized ? StringUtils.capitalize(res) : res;
       }),
       take(1)
     );

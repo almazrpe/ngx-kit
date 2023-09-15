@@ -6,3 +6,13 @@
 export interface DocumentPage {
   url: string;
 }
+
+export enum DocumentPageExtension {
+  JPEG = "jpeg",
+  PNG = "png"
+}
+
+export interface DPSTranslationCodes
+{
+  pageNumber?: string;
+}

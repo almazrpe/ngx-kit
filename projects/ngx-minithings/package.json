@@ -18,6 +18,8 @@
     "@angular/core": "^14.2.0"
   },
   "dependencies": {
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@slimebones/ngx-antievil": "../../lib/slimebones-ngx-antievil-v0.1.1.tgz",
     "queue-typescript": "^1.0.1",
     "tslib": "^2.3.0"

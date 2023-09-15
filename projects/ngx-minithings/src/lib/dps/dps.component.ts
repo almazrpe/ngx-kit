@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DocumentPage } from "./documentpage";
+import { DPSTranslationCodes, DocumentPage } from "./models";
 import { InputType } from "../input/input-type";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 import { TranslationService } from "../translation/translation.service";
-import { UICode } from "src/app/helpers/codes";
 import { ButtonMode } from "../button/button.component";
 
 @Component({
@@ -19,6 +18,7 @@ export class DPSComponent implements OnInit
   public ButtonMode = ButtonMode;
 
   @Input() public pages: DocumentPage[];
+  @Input() public translationCodes?: DPSTranslationCodes;
 
   @Output() public back: EventEmitter<any> = new EventEmitter<any>();
 
@@ -42,12 +42,16 @@ export class DPSComponent implements OnInit
     // Remove arrows from number inputs (see input.class)
     // https://stackoverflow.com/a/75872055
     "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none"
-    + " [&::-webkit-inner-spin-button]:appearance-none",
+      + " [&::-webkit-inner-spin-button]:appearance-none",
     "w-full",
     "h-full",
     "text-center",
     "rounded"
   ];
+
+  private readonly FallbackTranslations: DPSTranslationCodes = {
+    pageNumber: "Page Number"
+  };
 
   public constructor(
     private translation: TranslationService
