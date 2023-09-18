@@ -8,9 +8,6 @@ import { Component, OnInit } from "@angular/core";
 })
 export class LoadingComponent implements OnInit
 {
-
-  //public constructor() { }
-
   public ngOnInit: () => void;
 
 }

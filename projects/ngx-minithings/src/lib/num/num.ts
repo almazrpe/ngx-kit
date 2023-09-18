@@ -1,9 +1,12 @@
-export function hasNumber(text: string): boolean 
+export abstract class NumUtils
 {
-  return /\d/.test(text);
-}
+  public static hasNumber(text: string): boolean
+  {
+    return /\d/.test(text);
+  }
 
-export function hasOnlyNumbers(text: string): boolean 
-{
-  return /^\d+$/.test(text);
+  public static hasOnlyNumbers(text: string): boolean
+  {
+    return /^\d+$/.test(text);
+  }
 }

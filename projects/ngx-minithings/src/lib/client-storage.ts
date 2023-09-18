@@ -2,7 +2,7 @@
  * Extended functionality for client-side browser storages.
  */
 
-import { NotFoundError, TypeExpectError } from "./errors";
+import { NotFoundError, TypeExpectError } from "@slimebones/ngx-antievil";
 
 // SUGGESTION(ryzhovalex):
 //    in order to implement the session storage utils, consider creating a

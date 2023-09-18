@@ -1,29 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import FingerprintJS, { Agent } from "@fingerprintjs/fingerprintjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class LogService
 {
-  private browserFingerprint: string;
-
   public constructor(
     private http: HttpClient
-  )
-  {
-    // Generate fingerprint of current browser
-    const fingerprintPromise: Promise<Agent> = FingerprintJS.load({
-      monitoring: false
-    });
-    fingerprintPromise
-      .then(fp => fp.get())
-      .then(result =>
-      {
-        this.browserFingerprint = result.visitorId;
-      });
-  }
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private log(level: string, message: string): void

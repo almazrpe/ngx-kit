@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { capitalize } from "./str";
+import { StringUtils } from "./str";
 
 @Pipe({
   name: "capitalizeEach"
 })
-export class CapitalizeEachPipe implements PipeTransform 
+export class CapitalizeEachPipe implements PipeTransform
 {
 
   public transform(values: string[]): string[];
@@ -12,13 +12,13 @@ export class CapitalizeEachPipe implements PipeTransform
   public transform(values: string[] | null): string[] | null;
   public transform(values: string[] | null): string[] | null
   {
-    if (values === null) 
+    if (values === null)
     {
       return null;
     }
-    else 
+    else
     {
-      return values.map(v => capitalize(v));
+      return values.map(v => StringUtils.capitalize(v));
     }
   }
 

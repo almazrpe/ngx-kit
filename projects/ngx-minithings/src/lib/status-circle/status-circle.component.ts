@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "util-status-circle",
+  selector: "minithings-status-circle",
   templateUrl: "./status-circle.component.html",
   styles: [
   ]
 })
-export class StatusCircleComponent 
+export class StatusCircleComponent
 {
 
 }
