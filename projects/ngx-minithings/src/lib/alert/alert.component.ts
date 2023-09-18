@@ -25,13 +25,13 @@ export class AlertComponent implements OnInit
   {
     switch (this.alert.level)
     {
-      case AlertLevel.INFO:
+      case AlertLevel.Info:
         this.html.classes = ["bg-sky-200", "text-sky-800"];
         break;
-      case AlertLevel.WARNING:
+      case AlertLevel.Warning:
         this.html.classes = ["bg-yellow-200", "text-yellow-800"];
         break;
-      case AlertLevel.ERROR:
+      case AlertLevel.Error:
         this.html.classes = ["bg-red-200", "text-red-800"];
         break;
       default:
@@ -43,11 +43,11 @@ export class AlertComponent implements OnInit
   {
     switch (this.alert.level)
     {
-      case AlertLevel.INFO:
+      case AlertLevel.Info:
         return "assets/info.svg";
-      case AlertLevel.WARNING:
+      case AlertLevel.Warning:
         return "assets/warning2.svg";
-      case AlertLevel.ERROR:
+      case AlertLevel.Error:
         return "assets/error.svg";
       default:
         throw Error("Unrecognized alert level " + this.alert.level);

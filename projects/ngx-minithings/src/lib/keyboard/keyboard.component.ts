@@ -6,10 +6,10 @@ import { SelectedInputService }
   from "../input/selected-input/selected-input.service";
 
 @Component({
-  selector: "util-keyboard",
+  selector: "minithings-keyboard",
   templateUrl: "./keyboard.component.html"
 })
-export class KeyboardComponent implements OnInit 
+export class KeyboardComponent implements OnInit
 {
   public cssSelectors$: Observable<string[]>;
   public selectedInputEvent$: Observable<SelectedInputEvent<any>>;
@@ -24,7 +24,7 @@ export class KeyboardComponent implements OnInit
     // initialize css selectors on init, not after DOM load or angular somehow
     // will give ChangedBeforeChecked-ish error
     this.cssSelectors$ = this.keyboardService.isEnabled$.pipe(
-      map((isEnabled: boolean) => 
+      map((isEnabled: boolean) =>
       {
         return isEnabled ? ["flex"] : ["hidden"];
       })

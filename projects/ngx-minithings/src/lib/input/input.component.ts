@@ -9,6 +9,7 @@ import { ValueValidator } from "./selected-input/value-validator";
 import { hasOnlyNumbers } from "../num/num";
 import { checkValueAgainstValidators } from "./selected-input/helpers";
 import { ValueValidatorEvent } from "./selected-input/value-validator-event";
+import { StringUtils } from "ngx-minithings/str/str";
 
 @Component({
   selector: "minithings-input",
@@ -60,7 +61,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
 
   public ngOnInit(): void
   {
-    const randomId: string = makeid();
+    const randomId: string = StringUtils.makeid();
     if (this.id == "")
     {
       this.id = randomId;

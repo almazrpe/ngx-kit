@@ -242,6 +242,16 @@ semver@~7.0.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.0.0.tgz#5f3ca35761e47e05b206c6daff2cf814f0316b8e"
   integrity sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==
 
+simple-keyboard-layouts@^3.3.16:
+  version "3.3.16"
+  resolved "https://registry.yarnpkg.com/simple-keyboard-layouts/-/simple-keyboard-layouts-3.3.16.tgz#8d05d976d524ef65325be34e4d882972c76422a4"
+  integrity sha512-avSi7t2hAXZWm9usZ2+BmNt0G48NxMGQ2nLoxOBv4iEu0HZAvCmPHyMmB32/wp7ZSAj1FZk6dEhmyX1LJxVSCA==
+
+simple-keyboard@^3.7.12:
+  version "3.7.12"
+  resolved "https://registry.yarnpkg.com/simple-keyboard/-/simple-keyboard-3.7.12.tgz#559f132fd200ed6ce8ca3b83e69abf5f099ff0b4"
+  integrity sha512-py3HTSD6HH+X5kJblSja9si5LV2aTukoTqdB6H9zwUO4irAMCPm57Ok7Fk9odIofS82n1UigxDXAK6vPCLp0pg==
+
 simple-update-notifier@^1.0.7:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/simple-update-notifier/-/simple-update-notifier-1.1.0.tgz#67694c121de354af592b347cdba798463ed49c82"

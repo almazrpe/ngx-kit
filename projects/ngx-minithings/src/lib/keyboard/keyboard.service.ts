@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { SelectedInput } from "../input/selected-input/selected-input";
 import { NoKeyboardFocusError } from "./errors";
 import Keyboard from "simple-keyboard";
-import { BaseError } from "src/app/utils/errors";
 import englishLayout from "simple-keyboard-layouts/build/layouts/english";
 import russianLayout from "simple-keyboard-layouts/build/layouts/russian";
 import { SelectedInputService }
@@ -13,6 +12,7 @@ import { ValueHost } from "../input/selected-input/selected-input";
 import { ValueValidatorEvent }
   from "../input/selected-input/value-validator-event";
 import { LayoutItem } from "simple-keyboard-layouts/build/interfaces";
+import { BaseError } from "@slimebones/ngx-antievil";
 
 @Injectable({
   providedIn: "root"

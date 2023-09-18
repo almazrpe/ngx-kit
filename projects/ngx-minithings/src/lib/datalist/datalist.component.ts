@@ -171,7 +171,7 @@ export class DatalistComponent implements
   private spawnUnmatchAlert(value: any): void
   {
     this.alertService.spawn({
-      level: AlertLevel.WARNING,
+      level: AlertLevel.Warning,
       message: `
         Введённое значение ${value} не соответствует
         ни одной опции из списка "${this.labelText}"

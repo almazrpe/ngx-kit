@@ -1,3 +1,3 @@
-import { BaseError } from "src/app/utils/errors";
+import { BaseError } from "@slimebones/ngx-antievil";
 
 export class NoSelectedInputError extends BaseError {}
