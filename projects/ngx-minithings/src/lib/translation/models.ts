@@ -1,3 +1,5 @@
+import { TranslationOptions } from "./options";
+
 export enum Modifier {
     Default = "default",
     Many = "many",
@@ -10,4 +12,17 @@ export enum Modifier {
 export interface TranslationCodes
 {
     [title: string]: string | undefined;
+}
+
+export interface FallbackTranslations
+{
+    [ket: string]: string;
+}
+
+export interface GetFromCodesMapArgs
+{
+    key: string;
+    codes?: TranslationCodes;
+    fallback?: FallbackTranslations;
+    options?: TranslationOptions;
 }

@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 import { TranslationService } from "../translation/translation.service";
 import { ButtonMode } from "../button/button.component";
+import { FallbackTranslations } from "ngx-minithings/translation/models";
 
 @Component({
   selector: "dps",
@@ -49,8 +50,9 @@ export class DPSComponent implements OnInit
     "rounded"
   ];
 
-  private readonly FallbackTranslations: DPSTranslationCodes = {
-    pageNumber: "Page Number"
+  private readonly FallbackTranslations: FallbackTranslations = {
+    pageNumber: "Page Number",
+    noSuchDocumentPage: "No such document page"
   };
 
   public constructor(
@@ -67,9 +69,11 @@ export class DPSComponent implements OnInit
       currentPageNumber: new FormControl(1)
     });
 
-    this.pageNumberTranslation$ = this.translation.get(
-      UICode.DOCUMENT_PAGE_NUMBER
-    );
+    this.pageNumberTranslation$ = this.translation.getFromCodesMap({
+      key: "pageNumber",
+      codes: this.translationCodes,
+      fallback: this.FallbackTranslations
+    });
 
     this.togglePageNavigationButtons();
   }
@@ -77,14 +81,14 @@ export class DPSComponent implements OnInit
   public pageup(): void
   {
     this.currentPageNumber--;
-    this.form.controls.currentPageNumber.setValue(this.currentPageNumber);
+    this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
     this.emitCurrentPage();
   }
 
   public pagedown(): void
   {
     this.currentPageNumber++;
-    this.form.controls.currentPageNumber.setValue(this.currentPageNumber);
+    this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
     this.emitCurrentPage();
 
   }
@@ -106,14 +110,16 @@ export class DPSComponent implements OnInit
 
     if (currentPage === undefined)
     {
-      this.errorMessage$.next(this.translation.get(
-        UICode.NO_SUCH_DOCUMENT_PAGE,
-        {
+      this.errorMessage$.next(this.translation.getFromCodesMap({
+        key: "noSuchDocumentPage",
+        codes: this.translationCodes,
+        fallback: this.FallbackTranslations,
+        options: {
           params: {
             number: this.currentPageNumber
           }
         }
-      ));
+      }));
     }
     else
     {

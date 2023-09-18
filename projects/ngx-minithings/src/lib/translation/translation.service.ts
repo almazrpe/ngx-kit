@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, map, take } from "rxjs";
-import { Modifier } from "./models";
+import { Observable, map, of, take } from "rxjs";
+import { GetFromCodesMapArgs, Modifier } from "./models";
 import { TranslationOptions } from "./options";
 import { StringUtils } from "ngx-minithings/str/str";
-import { NotFoundError } from "@slimebones/ngx-antievil";
+import { NotFoundError, PleaseDefineError } from "@slimebones/ngx-antievil";
 
 @Injectable({
   providedIn: "root"
@@ -82,4 +82,53 @@ export class TranslationService
       take(1)
     );
   }
+
+  /**
+   * Searches translation codes objects for required key.
+   *
+   * @param key code key to search for
+   * @param codes code map to search in
+   * @param fallback fallback translations to pick from using the key
+   * @throws NotFoundError no code is found for given key in code maps and
+   *   fallback translations
+   * @returns translated string either using code from the code maps or ready
+   *   translation from the fallback map
+   */
+  public getFromCodesMap(
+    args: GetFromCodesMapArgs
+  ): Observable<string>
+  {
+    if (args.codes === undefined && args.fallback === undefined)
+    {
+      throw new PleaseDefineError(
+        "getting translation from code map",
+        "either codes or/and fallback translations"
+      );
+    }
+
+    if (args.codes !== undefined && Object.hasOwn(args.codes, args.key))
+    {
+      const code: string | undefined = args.codes[args.key];
+
+      if (code !== undefined)
+      {
+        return this.get(args.key, args.options);
+      }
+    }
+
+    if (args.fallback !== undefined && Object.hasOwn(args.fallback, args.key))
+    {
+      return of(args.fallback[args.key]);
+    }
+
+    throw new NotFoundError(
+      "code value for key",
+      args.key,
+      {
+        codes: args.codes,
+        fallback: args.fallback
+      }
+    );
+  }
+
 }

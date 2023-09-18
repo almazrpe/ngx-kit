@@ -1,3 +1,5 @@
+import { TranslationCodes } from "ngx-minithings/translation/models";
+
 /**
  * Page of a document.
  *
@@ -12,7 +14,7 @@ export enum DocumentPageExtension {
   PNG = "png"
 }
 
-export interface DPSTranslationCodes
+export interface DPSTranslationCodes extends TranslationCodes
 {
   pageNumber?: string;
 }
