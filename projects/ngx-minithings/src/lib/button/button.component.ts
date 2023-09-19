@@ -24,8 +24,7 @@ export enum ButtonMode {
 @Component({
   selector: "minithings-button",
   templateUrl: "./button.component.html",
-  styles: [
-  ]
+  styleUrls: ["../tailwind.css"]
 })
 export class ButtonComponent implements OnInit, OnChanges
 {

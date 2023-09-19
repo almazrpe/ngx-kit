@@ -3,8 +3,7 @@ import { Component, OnInit } from "@angular/core";
 @Component({
   selector: "minithings-loading",
   templateUrl: "./loading.component.html",
-  styles: [
-  ]
+  styleUrls: ["../tailwind.css"],
 })
 export class LoadingComponent implements OnInit
 {

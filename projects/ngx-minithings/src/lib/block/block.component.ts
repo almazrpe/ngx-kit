@@ -19,10 +19,9 @@ export class BlockContentDirective
 }
 
 @Component({
-  selector: "util-block",
+  selector: "minithings-block",
   templateUrl: "./block.component.html",
-  styles: [
-  ]
+  styleUrls: ["../tailwind.css"]
 })
 export class BlockComponent implements OnInit, OnChanges
 {
@@ -39,17 +38,23 @@ export class BlockComponent implements OnInit, OnChanges
     new BehaviorSubject<boolean>(true);
   public isLoaded$: Observable<boolean> = this.isLoadedSubject.asObservable();
 
-  private BASE_CLASSES: string[] = ["container", "shadow", "mx-auto", "p-3"];
-  private DEFAULT_CLASSES: string[] = this.BASE_CLASSES.concat(["bg-c30"]);
-  private LOADING_CLASSES: string[] = this.BASE_CLASSES.concat(
-    ["animate-pulse", "bg-c30"]
-  );
+  private readonly BaseClasses: string[] = [
+    "container",
+    "shadow",
+    "mx-auto",
+    "p-3"
+  ];
+  private readonly DefaultClasses: string[] = this.BaseClasses.concat([
+    "bg-c30"
+  ]);
+  private readonly LoadingClasses: string[] = this.BaseClasses.concat([
+    "animate-pulse",
+    "bg-c30"
+  ]);
 
   public html: {classes: string[]} = {
     classes: []
   };
-
-  //constructor() {}
 
   public ngOnInit(): void
   {
@@ -62,8 +67,8 @@ export class BlockComponent implements OnInit, OnChanges
       next: v =>
       {
         v
-          ? this.html.classes = this.DEFAULT_CLASSES
-          : this.html.classes = this.LOADING_CLASSES;
+          ? this.html.classes = this.DefaultClasses
+          : this.html.classes = this.LoadingClasses;
 
         this.html.classes = this.html.classes.concat(
           ...this.extraClass.split(" ")

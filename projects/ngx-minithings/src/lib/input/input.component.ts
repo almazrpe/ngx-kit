@@ -6,16 +6,15 @@ import { InputType } from "./input-type";
 import { SelectedInputEvent, ValueHost} from "./selected-input/selected-input";
 import { SelectedInputService } from "./selected-input/selected-input.service";
 import { ValueValidator } from "./selected-input/value-validator";
-import { hasOnlyNumbers } from "../num/num";
 import { checkValueAgainstValidators } from "./selected-input/helpers";
 import { ValueValidatorEvent } from "./selected-input/value-validator-event";
 import { StringUtils } from "ngx-minithings/str/str";
+import { NumUtils } from "ngx-minithings/num/num";
 
 @Component({
   selector: "minithings-input",
   templateUrl: "./input.component.html",
-  styles: [
-  ],
+  styleUrls: ["../tailwind.css"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -250,7 +249,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
   {
     return ((value: string): any =>
     {
-      if (!hasOnlyNumbers(value))
+      if (!NumUtils.hasOnlyNumbers(value))
       {
         return ValueValidatorEvent.Clear;
       }

@@ -36,8 +36,7 @@ import { StringUtils } from "ngx-minithings/str/str";
 @Component({
   selector: "minithings-datalist",
   templateUrl: "./datalist.component.html",
-  styles: [
-  ],
+  styleUrls: ["../tailwind.css"],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

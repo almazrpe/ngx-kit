@@ -11,8 +11,7 @@ export enum CallEvent {
 @Component({
   selector: "minithings-alert-stack",
   templateUrl: "./alert-stack.component.html",
-  styles: [
-  ]
+  styleUrls: ["../tailwind.css"]
 })
 export class AlertStackComponent implements OnInit
 {
