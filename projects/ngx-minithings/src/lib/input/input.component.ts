@@ -12,7 +12,7 @@ import { StringUtils } from "ngx-minithings/str/str";
 import { NumUtils } from "ngx-minithings/num/num";
 
 @Component({
-  selector: "minithings-input",
+  selector: "ngx-minithings-input",
   templateUrl: "./input.component.html",
   styleUrls: ["../tailwind.css"],
   providers: [

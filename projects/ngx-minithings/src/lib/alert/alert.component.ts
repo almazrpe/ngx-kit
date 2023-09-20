@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Alert, AlertLevel } from "./models";
 
 @Component({
-  selector: "minithings-alert",
+  selector: "ngx-minithings-alert",
   templateUrl: "./alert.component.html",
   styles: [
   ]

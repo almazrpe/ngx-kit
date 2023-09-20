@@ -9,16 +9,16 @@ export enum CallEvent {
 }
 
 @Component({
-  selector: "minithings-alert-stack",
+  selector: "ngx-minithings-alert-stack",
   templateUrl: "./alert-stack.component.html",
   styleUrls: ["../tailwind.css"]
 })
 export class AlertStackComponent implements OnInit
 {
   @Input() private urls: AlertUrls = {
-    info: "assets/minithings/info.svg",
-    warning: "assets/minithings/warning.svg",
-    error: "assets/minithings/error.svg",
+    info: "assets/ngx-minithings/info.svg",
+    warning: "assets/ngx-minithings/warning.svg",
+    error: "assets/ngx-minithings/error.svg",
   };
 
   public readonly ALERT_LIVING_TIME: number = 5;

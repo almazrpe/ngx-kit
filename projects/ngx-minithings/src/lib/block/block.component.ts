@@ -19,7 +19,7 @@ export class BlockContentDirective
 }
 
 @Component({
-  selector: "minithings-block",
+  selector: "ngx-minithings-block",
   templateUrl: "./block.component.html",
   styleUrls: ["../tailwind.css"]
 })

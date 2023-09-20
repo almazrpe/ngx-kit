@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "minithings-status-circle",
+  selector: "ngx-minithings-status-circle",
   templateUrl: "./status-circle.component.html",
   styleUrls: ["../tailwind.css"],
 })

@@ -6,7 +6,7 @@
       class="flex flex-row h-full justify-start items-center gap-1"
       [formGroup]="form"
     >
-      <minithings-input
+      <ngx-minithings-input
         class="w-1/6 h-2/3"
         [cssClasses]="pageNumberSelectorCSSClasses"
         [localizedName]="(pageNumberTranslation$ | async) || ''"
@@ -25,7 +25,7 @@
       <div
         class="flex flex-row justify-center items-center ml-2 gap-1"
       >
-        <minithings-button
+        <ngx-minithings-button
           class="flex items-center"
           [mode]="ButtonMode.CONTROLS"
           [isEnabled]="isPageupEnabled$ | async"
@@ -36,8 +36,8 @@
             alt="pageup"
             class="w-8"
           >
-        </minithings-button>
-        <minithings-button
+        </ngx-minithings-button>
+        <ngx-minithings-button
           class="flex items-center"
           [mode]="ButtonMode.CONTROLS"
           [isEnabled]="isPagedownEnabled$ | async"
@@ -48,14 +48,14 @@
             alt="pagedown"
             class="w-8"
           >
-        </minithings-button>
+        </ngx-minithings-button>
       </div>
       <!---->
     </form>
     <!---->
 
     <!-- Back Button -->
-    <minithings-button
+    <ngx-minithings-button
       class="flex items-center"
       [mode]="ButtonMode.CONTROLS"
       (clickFunc)="backInner($event)"
@@ -65,7 +65,7 @@
         alt="go back"
         class="w-8"
       >
-    </minithings-button>
+    </ngx-minithings-button>
     <!---->
   </div>
 

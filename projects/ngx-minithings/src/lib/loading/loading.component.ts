@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: "minithings-loading",
+  selector: "ngx-minithings-loading",
   templateUrl: "./loading.component.html",
   styleUrls: ["../tailwind.css"],
 })

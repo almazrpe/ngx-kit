@@ -34,7 +34,7 @@ import { StringUtils } from "ngx-minithings/str/str";
  * intermediate changes.
  */
 @Component({
-  selector: "minithings-datalist",
+  selector: "ngx-minithings-datalist",
   templateUrl: "./datalist.component.html",
   styleUrls: ["../tailwind.css"],
   providers: [

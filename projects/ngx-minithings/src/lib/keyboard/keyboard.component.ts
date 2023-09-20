@@ -6,7 +6,7 @@ import { SelectedInputService }
   from "../input/selected-input/selected-input.service";
 
 @Component({
-  selector: "minithings-keyboard",
+  selector: "ngx-minithings-keyboard",
   templateUrl: "./keyboard.component.html",
   styleUrls: ["../tailwind.css"]
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: "minithings-hr",
+  selector: "ngx-minithings-hr",
   templateUrl: "./hr.component.html",
   styleUrls: ["../tailwind.css"],
 })
