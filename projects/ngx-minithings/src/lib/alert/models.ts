@@ -8,3 +8,10 @@ export interface Alert {
   level: AlertLevel;
   message: string;
 }
+
+export interface AlertUrls
+{
+  info: string;
+  warning: string;
+  error: string;
+}

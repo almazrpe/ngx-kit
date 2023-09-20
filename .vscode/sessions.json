@@ -47,7 +47,7 @@
             {
                 "name": "testground",
                 "commands": [
-                    "cd projects/testgroun/src/app",
+                    "cd projects/testground/src/app",
                     "clear"
                 ],
                 "autoExecuteCommands": true

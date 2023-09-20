@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import {Alert} from "./models";
+import { Component, Input, OnInit } from "@angular/core";
+import {Alert, AlertLevel, AlertUrls} from "./models";
 import { AlertService } from "./alert.service";
 import {Queue} from "queue-typescript";
 import { QueueUtils } from "ngx-minithings/queue";
@@ -15,17 +15,22 @@ export enum CallEvent {
 })
 export class AlertStackComponent implements OnInit
 {
+  @Input() private urls: AlertUrls = {
+    info: "assets/minithings/info.svg",
+    warning: "assets/minithings/warning.svg",
+    error: "assets/minithings/error.svg",
+  };
+
   public readonly ALERT_LIVING_TIME: number = 5;
   public readonly MAX_QUEUE_LEN: number = 3;
   public alertQueue: Queue<Alert> = new Queue();
+
   private clearingTimer: NodeJS.Timeout;
   private isClearingTimerActive = false;
 
   public constructor(
     private alertService: AlertService
-  )
-  {
-  }
+  ) {}
 
   public ngOnInit(): void
   {
@@ -110,6 +115,21 @@ export class AlertStackComponent implements OnInit
     {
       // Start new cleans recursively until all items are gone
       this.startClearingTimer();
+    }
+  }
+
+  public getAlertIconURL(alert: Alert): string
+  {
+    switch (alert.level)
+    {
+      case AlertLevel.Info:
+        return this.urls.info;
+      case AlertLevel.Warning:
+        return this.urls.warning;
+      case AlertLevel.Error:
+        return this.urls.error;
+      default:
+        throw Error("Unrecognized alert level " + alert.level);
     }
   }
 }

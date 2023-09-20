@@ -37,7 +37,6 @@ import { ReactiveFormsModule } from "@angular/forms";
   exports: [
     ButtonComponent,
     InputComponent,
-    AlertComponent,
     AlertStackComponent,
     BlockComponent,
     DatalistComponent,
