@@ -33,8 +33,12 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
   @Input() public attrList: string[];
   @Input() public min: number;
   @Input() public max: number;
-  @Input() public isDefaultInputValidatorsEnabled = true;
-  @Input() public isDefaultBlurValidatorsEnabled = true;
+  @Input() public isDefaultInputValidatorsEnabled: boolean = true;
+  @Input() public isDefaultBlurValidatorsEnabled: boolean = true;
+  /**
+   * Whether to emit changes despite of form's initialization state.
+   */
+  @Input() public isFormRequired: boolean = true;
 
   @Input() public type: InputType = InputType.Text;
   @Input() public placeholder: T = "" as T;
@@ -281,7 +285,10 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     // input catches old input values from the bus before it has been properly
     // initialized (e.g. on logout transition) - so ensure no error will be
     // raised in such case and such values are just ignored
-    if (this.onChange !== undefined)
+    //
+    // but allow for auto-overwriting this logic for input without forms
+    // attached
+    if (this.onChange !== undefined && this.isFormRequired)
     {
       switch (value)
       {

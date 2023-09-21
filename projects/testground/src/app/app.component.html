@@ -21,36 +21,41 @@
 
   <div class="flex flex-col gap-2">
     <p class="text-2xl">⚠️ Alert + ⌨️ Input</p>
-    <div class="flex flex-col justify-center items-center gap-2">
-      <div class="flex flex-row gap-2">
+    <div class="flex flex-col justify-center items-center gap-4">
+      <div class="flex flex-col gap-2 items-end">
         <div class="flex flex-row gap-2">
           <label>Level</label>
-          <ngx-minithings-input
-            class="w-1/6 h-2/3"
-            [type]="InputType.Text"
-            [min]="1"
-            [max]="totalPagesNumber"
-            [isDefaultBlurValidatorsEnabled]="false"
-            (inputValue)="onInputValue($event)"
+          <ngx-minithings-datalist
+            [options]="levelOptions"
+            [isFormRequired]="false"
+            (select)="onInputValue('level', $event.value)"
           />
         </div>
         <div class="flex flex-row gap-2">
           <label>Message</label>
           <ngx-minithings-input
-            class="w-1/6 h-2/3"
             [type]="InputType.Text"
+            [isFormRequired]="false"
+            (inputValue)="onInputValue('message', $event.value)"
+          />
+        </div>
+        <div class="flex flex-row gap-2">
+          <label>Living Time</label>
+          <ngx-minithings-input
+            [type]="InputType.Number"
             [min]="1"
-            [max]="totalPagesNumber"
-            [isDefaultBlurValidatorsEnabled]="false"
-            (inputValue)="onInputValue($event)"
+            [max]="99"
+            [isFormRequired]="false"
+            (inputValue)="onInputValue('livingTime', $event.value)"
           />
         </div>
       </div>
-      <ngx-minithings-button (click)="spawnAlert(AlertLevel.Info, 'hello')">
+      {{level}} {{message}} {{livingTime}}
+      <ngx-minithings-button (click)="spawnAlert(level, message)">
         Spawn Alert
       </ngx-minithings-button>
       <ngx-minithings-alert-stack
-        [alertLivingTime]="60"
+        [alertLivingTime]="livingTime"
       />
     </div>
   </div>

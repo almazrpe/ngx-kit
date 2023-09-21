@@ -51,6 +51,7 @@ export class DatalistComponent implements
   @Input() public inputType: InputType = InputType.Text;
   @Input() public labelText: string;
   @Input() public options: DatalistOption[];
+  @Input() public isFormRequired: boolean = true;
 
   @Output() public select: EventEmitter<DatalistOption> =
     new EventEmitter<DatalistOption>();
@@ -171,10 +172,7 @@ export class DatalistComponent implements
   {
     this.alertService.spawn({
       level: AlertLevel.Warning,
-      message: `
-        Введённое значение ${value} не соответствует
-        ни одной опции из списка "${this.labelText}"
-      `
+      message: `Entered value ${value} does not match any option from the list`
     });
   }
 
@@ -184,7 +182,7 @@ export class DatalistComponent implements
       this.options.find(option => option.value === value)
       || ((): any =>
       {
-        throw new Error(`Couldn't find option with value ${value}`);
+        throw new Error(`couldn't find option with value ${value}`);
       })()
     );
   }
