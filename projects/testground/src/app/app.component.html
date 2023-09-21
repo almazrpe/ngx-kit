@@ -8,8 +8,11 @@
     <div>
       <ngx-minithings-block class="w-screen text-center">
         <ng-template>
-          <div>
+          <div class="overflow-y-scroll">
             Block Content
+            <br>
+            <br>
+            Technically this is the most used parent construction unit.
           </div>
         </ng-template>
       </ngx-minithings-block>
@@ -17,14 +20,38 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <p class="text-2xl">⚠️ Alert</p>
-    <div class="flex">
-      <ngx-minithings-alert-stack></ngx-minithings-alert-stack>
-      <div>
-        <ngx-minithings-button (click)="spawnAlert(AlertLevel.Info, 'hello')">
-          Spawn Alert
-        </ngx-minithings-button>
+    <p class="text-2xl">⚠️ Alert + ⌨️ Input</p>
+    <div class="flex flex-col justify-center items-center gap-2">
+      <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-2">
+          <label>Level</label>
+          <ngx-minithings-input
+            class="w-1/6 h-2/3"
+            [type]="InputType.Text"
+            [min]="1"
+            [max]="totalPagesNumber"
+            [isDefaultBlurValidatorsEnabled]="false"
+            (inputValue)="onInputValue($event)"
+          />
+        </div>
+        <div class="flex flex-row gap-2">
+          <label>Message</label>
+          <ngx-minithings-input
+            class="w-1/6 h-2/3"
+            [type]="InputType.Text"
+            [min]="1"
+            [max]="totalPagesNumber"
+            [isDefaultBlurValidatorsEnabled]="false"
+            (inputValue)="onInputValue($event)"
+          />
+        </div>
       </div>
+      <ngx-minithings-button (click)="spawnAlert(AlertLevel.Info, 'hello')">
+        Spawn Alert
+      </ngx-minithings-button>
+      <ngx-minithings-alert-stack
+        [alertLivingTime]="60"
+      />
     </div>
   </div>
 

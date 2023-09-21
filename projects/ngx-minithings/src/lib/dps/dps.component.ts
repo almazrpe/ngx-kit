@@ -24,7 +24,7 @@ export class DPSComponent implements OnInit
 
   public currentPageNumber: number;
   public totalPagesNumber: number;
-  public inputType: InputType = InputType.NUMBER;
+  public inputType: InputType = InputType.Number;
   public form: FormGroup;
 
   public currentPage$: ReplaySubject<DocumentPage> =

@@ -1,0 +1,66 @@
+<div
+    *ngIf="!isFinished; else loading"
+>
+    <form
+        class="flex flex-col"
+        [formGroup]="form"
+    >
+        <!-- Input block -->
+        <div class="w-2/3 self-center justify-self-center">
+            <!-- Datalist case -->
+            <ng-container
+                *ngIf="
+                    choosingControl.type === ControlType.DATALIST
+                "
+            >
+                <util-datalist
+                    [labelText]="choosingControl.labelText"
+                    [options]="choosingControlOptions"
+                    formControlName="choosing"
+                    (select)="onInputValue($event)"
+                    (setDatalistMatched)="setDatalistMatched($event)"
+                />
+            </ng-container>
+
+            <!-- Input case -->
+            <ng-container
+                *ngIf="
+                    choosingControl.type === ControlType.INPUT
+                "
+            >
+                <div class="flex flex-col">
+                    <label class="mb-1">
+                        {{choosingControl.labelText}}
+                    </label>
+                    <ng-container
+                        *ngIf="inputType == InputType.NUMBER"
+                    >
+                        <util-input
+                            [localizedName]="choosingControl.labelText"
+                            [cssClasses]="['w-full']"
+                            formControlName="choosing"
+                            [inputType]="inputType"
+                            (inputValue)="onInputValue($event)"
+                            [min]="inputMin"
+                            [max]="inputMax"
+                        />
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Submit block -->
+        <div class="mt-2 self-center">
+            <util-btn
+                [isEnabled]="form.valid"
+                (clickFunc)="finish()"
+            >
+                {{finishButtonText}}
+            </util-btn>
+        </div>
+    </form>
+</div>
+
+<ng-template #loading>
+    <util-loading></util-loading>
+</ng-template>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AlertService } from "ngx-minithings/alert/alert.service";
 import { AlertLevel } from "ngx-minithings/alert/models";
+import { InputType } from "ngx-minithings/input/input-type";
 AnalyserNode;
 @Component({
   selector: "app-root",
@@ -8,6 +9,7 @@ AnalyserNode;
 })
 export class AppComponent implements OnInit
 {
+  public InputType = InputType;
   public readonly AlertLevel = AlertLevel;
 
   public constructor(

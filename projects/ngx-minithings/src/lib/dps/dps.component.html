@@ -11,7 +11,7 @@
         [cssClasses]="pageNumberSelectorCSSClasses"
         [localizedName]="(pageNumberTranslation$ | async) || ''"
         formControlName="currentPageNumber"
-        [inputType]="inputType"
+        [type]="inputType"
         [min]="1"
         [max]="totalPagesNumber"
         [isDefaultBlurValidatorsEnabled]="false"

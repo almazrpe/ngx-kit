@@ -1,4 +1,7 @@
-<div class="rounded p-3 flex flex-row" [ngClass]="html.classes">
-  <img [src]="iconPath" alt="INFO" class="w-6 mr-3">
-  <span>{{ alert.message }}</span>
+<div
+  class="rounded flex p-2 flex-row gap-2 justify-center items-center"
+  [ngClass]="rootCSSClasses"
+>
+  <img [src]="iconURL" class="w-6">
+  <span>{{alert.message}}</span>
 </div>

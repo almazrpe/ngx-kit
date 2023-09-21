@@ -48,7 +48,7 @@ import { StringUtils } from "ngx-minithings/str/str";
 export class DatalistComponent implements
     OnInit, ControlValueAccessor, OnChanges
 {
-  @Input() public inputType: InputType = InputType.TEXT;
+  @Input() public inputType: InputType = InputType.Text;
   @Input() public labelText: string;
   @Input() public options: DatalistOption[];
 

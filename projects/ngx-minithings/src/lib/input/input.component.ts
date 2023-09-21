@@ -36,7 +36,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
   @Input() public isDefaultInputValidatorsEnabled = true;
   @Input() public isDefaultBlurValidatorsEnabled = true;
 
-  @Input() public inputType: InputType = InputType.TEXT;
+  @Input() public type: InputType = InputType.Text;
   @Input() public placeholder: T = "" as T;
 
   @Output() public inputValue: EventEmitter<any> = new EventEmitter<any>();
@@ -179,7 +179,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
       {
         id: this.id,
         name: this.localizedName != "" ? this.localizedName : "noname",
-        type: this.inputType,
+        type: this.type,
         inputValueValidators: this.inputValueValidators
       },
       this.value$.value
@@ -216,9 +216,9 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
   {
     const valueValidators: ValueValidator<T>[] = [];
 
-    switch (this.inputType)
+    switch (this.type)
     {
-      case InputType.NUMBER:
+      case InputType.Number:
         valueValidators.push(this.getNaNValidator());
         break;
     }
@@ -230,9 +230,9 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
   {
     const valueValidators: ValueValidator<T>[] = [];
 
-    switch (this.inputType)
+    switch (this.type)
     {
-      case InputType.NUMBER:
+      case InputType.Number:
         if (this.min !== undefined || this.max !== undefined)
         {
           valueValidators.push(

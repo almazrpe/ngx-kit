@@ -15,14 +15,14 @@ export enum CallEvent {
 })
 export class AlertStackComponent implements OnInit
 {
-  @Input() private urls: AlertUrls = {
+  @Input() public alertLivingTime: number = 5;
+  @Input() public maxQueueLen: number = 3;
+  @Input() public urls: AlertUrls = {
     info: "assets/ngx-minithings/info.svg",
     warning: "assets/ngx-minithings/warning.svg",
     error: "assets/ngx-minithings/error.svg",
   };
 
-  public readonly ALERT_LIVING_TIME: number = 5;
-  public readonly MAX_QUEUE_LEN: number = 3;
   public alertQueue: Queue<Alert> = new Queue();
 
   private clearingTimer: NodeJS.Timeout;
@@ -72,7 +72,7 @@ export class AlertStackComponent implements OnInit
 
   private add(alert: Alert): void
   {
-    if (this.alertQueue.length + 1 > this.MAX_QUEUE_LEN)
+    if (this.alertQueue.length + 1 > this.maxQueueLen)
     {
       // Dequeue oldest element instantly
       this.alertQueue.dequeue();
@@ -94,7 +94,7 @@ export class AlertStackComponent implements OnInit
     {
       this.isClearingTimerActive = true;
       this.clearingTimer = setTimeout(
-        this.removeOldestByTimer.bind(this), this.ALERT_LIVING_TIME * 1000
+        this.removeOldestByTimer.bind(this), this.alertLivingTime * 1000
       );
     }
   }

@@ -7,11 +7,11 @@
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist
  */
 export enum InputType {
-  TEXT = "text",
-  PASSWORD = "password",
-  SEARCH = "search",
+  Text = "text",
+  Password = "password",
+  Search = "search",
   URL = "url",
-  TEL = "tel",
-  EMAIL = "email",
-  NUMBER = "number"
+  Tel = "tel",
+  Email = "email",
+  Number = "number"
 }
