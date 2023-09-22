@@ -9,5 +9,11 @@ test:
 
 check: lint test
 
-pack:
-	ng build ngx-minithings && cd dist/ngx-minithings && yarn pack && mv slimebones-ngx-minithings-v*.tgz ../
+build:
+	ng build ngx-minithings
+
+pack: build
+	cd dist/ngx-minithings && yarn pack && mv slimebones-ngx-minithings-v*.tgz ../
+
+pack.move: pack
+	mv dist/slimebones-ngx-minithings-v*.tgz $(t)

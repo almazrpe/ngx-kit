@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, map, of, take } from "rxjs";
-import { GetFromCodesMapArgs, Modifier } from "./models";
+import { GetFromCodesMapArgs, TranslationModifier } from "./models";
 import { TranslationOptions } from "./options";
-import { StringUtils } from "ngx-minithings/str/str";
+import { StringUtils } from "ngx-minithings/str/utils";
 import { NotFoundError, PleaseDefineError } from "@slimebones/ngx-antievil";
 
 @Injectable({
@@ -34,7 +34,7 @@ export class TranslationService
     let finalTranslationKey: string;
     if (
       finalOptions.modifier === undefined
-      || finalOptions.modifier === Modifier.Default
+      || finalOptions.modifier === TranslationModifier.Default
     )
     {
       finalTranslationKey = key + ".$";

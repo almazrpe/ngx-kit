@@ -8,8 +8,8 @@ import { SelectedInputService } from "./selected-input/selected-input.service";
 import { ValueValidator } from "./selected-input/value-validator";
 import { checkValueAgainstValidators } from "./selected-input/helpers";
 import { ValueValidatorEvent } from "./selected-input/value-validator-event";
-import { StringUtils } from "ngx-minithings/str/str";
-import { NumUtils } from "ngx-minithings/num/num";
+import { StringUtils } from "ngx-minithings/str/utils";
+import { NumUtils } from "ngx-minithings/num";
 
 @Component({
   selector: "ngx-minithings-input",

@@ -1,7 +1,7 @@
-import { Modifier } from "./models";
+import { TranslationModifier } from "./models";
 
 export interface TranslationOptions {
-  modifier?: Modifier;
+  modifier?: TranslationModifier;
   params?: { [key: string]: unknown };
   isCapitalized?: boolean;
 

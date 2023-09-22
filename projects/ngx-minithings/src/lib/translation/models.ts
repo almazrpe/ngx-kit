@@ -1,6 +1,6 @@
 import { TranslationOptions } from "./options";
 
-export enum Modifier {
+export enum TranslationModifier {
     Default = "default",
     Many = "many",
     Short = "short"

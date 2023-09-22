@@ -1,23 +1,26 @@
-export function constructUrl(
-  host: string,
-  port: number | string,
-  route?: string
-): string 
+export abstract class URLUtils
 {
-  // check if the port is parseable
-  if (typeof port === "string") 
+  public static constructUrl(
+    host: string,
+    port: number | string,
+    route?: string
+  ): string
   {
-    Number.parseInt(port);
-  }
+    // check if the port is parseable
+    if (typeof port === "string")
+    {
+      Number.parseInt(port);
+    }
 
-  if (route === undefined) 
-  {
-    route = "";
-  }
-  else if (route[0] !== "/" && route !== "") 
-  {
-    route = "/" + route;
-  }
+    if (route === undefined)
+    {
+      route = "";
+    }
+    else if (route[0] !== "/" && route !== "")
+    {
+      route = "/" + route;
+    }
 
-  return `http://${host}:${port}${route}`;
+    return `http://${host}:${port}${route}`;
+  }
 }

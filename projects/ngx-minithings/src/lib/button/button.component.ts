@@ -8,7 +8,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
-import { EventPlus, createEventPlus } from "../event-plus";
+import { EventPlus, EventPlusUtils } from "../event-plus";
 
 export enum ButtonMode {
   DEFAULT = 0,
@@ -141,7 +141,7 @@ export class ButtonComponent implements OnInit, OnChanges
 
   public click(event: Event): void
   {
-    const eventPlus: EventPlus = createEventPlus(
+    const eventPlus: EventPlus = EventPlusUtils.createEventPlus(
       event,
       {
         extraData: this.extraData

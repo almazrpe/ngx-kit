@@ -14,6 +14,9 @@ import {
 } from "./status-circle/status-circle.component";
 import { AlertStackComponent } from "./alert/alert-stack.component";
 import { ReactiveFormsModule } from "@angular/forms";
+import { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
+import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
+import { CapitalizePipe } from "./str/capitalize.pipe";
 
 
 @NgModule({
@@ -28,7 +31,10 @@ import { ReactiveFormsModule } from "@angular/forms";
     HrComponent,
     KeyboardComponent,
     LoadingComponent,
-    StatusCircleComponent
+    StatusCircleComponent,
+    UnixTimestampToDatePipe,
+    CapitalizeEachPipe,
+    CapitalizePipe
   ],
   imports: [
     CommonModule,
@@ -44,7 +50,10 @@ import { ReactiveFormsModule } from "@angular/forms";
     HrComponent,
     KeyboardComponent,
     LoadingComponent,
-    StatusCircleComponent
+    StatusCircleComponent,
+    UnixTimestampToDatePipe,
+    CapitalizeEachPipe,
+    CapitalizePipe
   ]
 })
 export class NgxMinithingsModule { }

@@ -21,7 +21,7 @@ import { AlertService } from "../alert/alert.service";
 import { InputType } from "../input/input-type";
 import { DatalistOption } from "./datalist-option";
 import { KeyboardService } from "../keyboard/keyboard.service";
-import { StringUtils } from "ngx-minithings/str/str";
+import { StringUtils } from "ngx-minithings/str/utils";
 
 /**
  * List with searchable options implementation.

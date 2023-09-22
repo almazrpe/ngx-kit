@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { StringUtils } from "./str";
+import { StringUtils } from "./utils";
 
 @Pipe({
   name: "capitalizeEach"
