@@ -4,6 +4,10 @@
   "lib": {
     "entryFile": "src/public-api.ts"
   },
+  "assets": [
+    "src/assets/**/*.svg",
+    "src/assets/**/*.css"
+  ],
   "allowedNonPeerDependencies": [
     "."
   ]

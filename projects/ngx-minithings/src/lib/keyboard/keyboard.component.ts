@@ -8,7 +8,7 @@ import { SelectedInputService }
 @Component({
   selector: "ngx-minithings-keyboard",
   templateUrl: "./keyboard.component.html",
-  styleUrls: ["../tailwind.css"]
+  styleUrls: []
 })
 export class KeyboardComponent implements OnInit
 {

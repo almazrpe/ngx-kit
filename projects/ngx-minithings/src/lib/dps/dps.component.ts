@@ -10,7 +10,7 @@ import { FallbackTranslations } from "ngx-minithings/translation/models";
 @Component({
   selector: "dps",
   templateUrl: "./dps.component.html",
-  styleUrls: ["../tailwind.css"],
+  styleUrls: [],
 })
 export class DPSComponent implements OnInit
 {

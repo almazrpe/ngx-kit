@@ -4,7 +4,7 @@ import { Alert, AlertLevel } from "./models";
 @Component({
   selector: "ngx-minithings-alert",
   templateUrl: "./alert.component.html",
-  styleUrls: ["../tailwind.css"]
+  styleUrls: []
 })
 export class AlertComponent implements OnInit
 {

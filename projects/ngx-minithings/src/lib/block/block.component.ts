@@ -21,7 +21,7 @@ export class BlockContentDirective
 @Component({
   selector: "ngx-minithings-block",
   templateUrl: "./block.component.html",
-  styleUrls: ["../tailwind.css"]
+  styleUrls: []
 })
 export class BlockComponent implements OnInit, OnChanges
 {

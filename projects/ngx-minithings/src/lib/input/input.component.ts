@@ -14,7 +14,7 @@ import { NumUtils } from "ngx-minithings/num";
 @Component({
   selector: "ngx-minithings-input",
   templateUrl: "./input.component.html",
-  styleUrls: ["../tailwind.css"],
+  styleUrls: [],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
