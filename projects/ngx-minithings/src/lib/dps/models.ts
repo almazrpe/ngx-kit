@@ -1,4 +1,4 @@
-import { TranslationCodes } from "ngx-minithings/translation/models";
+import { TranslationCodes } from "../translation/models";
 
 /**
  * Page of a document.

@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Observable, map, of, take } from "rxjs";
 import { GetFromCodesMapArgs, TranslationModifier } from "./models";
 import { TranslationOptions } from "./options";
-import { StringUtils } from "ngx-minithings/str/utils";
+import { StringUtils } from "../str/utils";
 import { NotFoundError, PleaseDefineError } from "@slimebones/ngx-antievil";
 
 @Injectable({

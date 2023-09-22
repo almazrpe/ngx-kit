@@ -5,7 +5,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 import { TranslationService } from "../translation/translation.service";
 import { ButtonMode } from "../button/button.component";
-import { FallbackTranslations } from "ngx-minithings/translation/models";
+import { FallbackTranslations } from "../translation/models";
 
 @Component({
   selector: "dps",

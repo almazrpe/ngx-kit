@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.3
+
+- fix: internal import paths
+
 ## 0.1.2
 
 - refactor: tailwind.css -> main.css

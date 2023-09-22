@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable, NgZone } from "@angular/core";
 import { BaseError, CoreErrorCode } from "@slimebones/ngx-antievil";
-import { AlertService } from "ngx-minithings/alert/alert.service";
-import { AlertLevel } from "ngx-minithings/alert/models";
-import { HostDTO } from "ngx-minithings/dto";
-import { LogService } from "ngx-minithings/log/log.service";
-import { TranslationOptions } from "ngx-minithings/translation/options";
+import { AlertService } from "../alert/alert.service";
+import { AlertLevel } from "../alert/models";
+import { HostDTO } from "../dto";
+import { LogService } from "../log/log.service";
+import { TranslationOptions } from "../translation/options";
 import {
   TranslationService
-} from "ngx-minithings/translation/translation.service";
+} from "../translation/translation.service";
 
 @Injectable({
   providedIn: "root"
