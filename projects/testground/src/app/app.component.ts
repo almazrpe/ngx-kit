@@ -1,9 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { TypeExpectError, UnsupportedError } from "@slimebones/ngx-antievil";
+import {
+  LogicError, TypeExpectError, UnsupportedError
+} from "@slimebones/ngx-antievil";
 import { AlertService } from "ngx-minithings/alert/alert.service";
 import { AlertLevel } from "ngx-minithings/alert/models";
 import { AlertUtils } from "ngx-minithings/alert/utils";
 import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
+import { DatalistUtils } from "ngx-minithings/datalist/utils";
 import { InputType } from "ngx-minithings/input/input-type";
 
 @Component({
@@ -27,15 +30,23 @@ export class AppComponent implements OnInit
   public ngOnInit(): void
   {
     this.levelOptions = [];
-    for (const level in AlertLevel)
+
+    // since we know enum iteration goes over keys first, we can safely store
+    // their indexes as their actual values
+    // for example for AlertLevel the array would be:
+    // ["Info", "Warning", "Error", 0, 1, 2]
+    Object.values(AlertLevel).forEach((
+      level: string | number, index: number
+    ) =>
     {
       if (isNaN(Number(level)))
       {
         this.levelOptions.push({
-          value: level as string
+          value: level as string,
+          obj: index
         });
       }
-    }
+    });
   }
 
   public spawnAlert(level: AlertLevel, message: string): void
@@ -51,18 +62,30 @@ export class AppComponent implements OnInit
     value: string | number | DatalistOption<AlertLevel>
   ): void
   {
-    console.log(value);
+    const numValue: number = Number(value);
 
     switch (type)
     {
       case "level":
-        if (!AlertUtils.isAlertLevel(value))
+        if (!DatalistUtils.isDatalistOption(value))
+        {
+          throw new TypeExpectError(
+            {"title": "value"}, "DatalistOption", typeof value
+          );
+        }
+        if (!AlertUtils.isAlertLevel(value.value))
         {
           throw new TypeExpectError(
             {"title": "value"}, "AlertLevel", typeof value
           );
         }
-        this.level = value;
+        if (value.obj === undefined)
+        {
+          throw new LogicError(
+            "datalist option's obj field should be defined for the AlertLevel"
+          );
+        }
+        this.level = value.obj;
         break;
       case "message":
         if (typeof value !== "string")
@@ -74,13 +97,13 @@ export class AppComponent implements OnInit
         this.message = value;
         break;
       case "livingTime":
-        if (typeof value !== "number")
+        if (isNaN(numValue))
         {
           throw new TypeExpectError(
             {"title": "value"}, "number", typeof value
           );
         }
-        this.livingTime = value;
+        this.livingTime = numValue;
         break;
       default:
         throw new UnsupportedError("input type", type);

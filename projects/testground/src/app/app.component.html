@@ -1,10 +1,10 @@
 <div class="flex flex-col gap-6">
   <div>
-    <p class="text-4xl">💁 Minithings Showcase</p>
+    <p class="text-2xl">💁 Minithings Showcase</p>
   </div>
 
   <div class="flex flex-col gap-2">
-    <p class="text-2xl">💪 Block</p>
+    <p class="text-xl">💪 Block</p>
     <div>
       <ngx-minithings-block class="w-screen text-center">
         <ng-template>
@@ -20,7 +20,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <p class="text-2xl">⚠️ Alert + ⌨️ Input</p>
+    <p class="text-xl">⚠️ Alert + ⌨️ Input</p>
     <div class="flex flex-col justify-center items-center gap-4">
       <div class="flex flex-col gap-2 items-end">
         <div class="flex flex-row gap-2">
@@ -28,7 +28,7 @@
           <ngx-minithings-datalist
             [options]="levelOptions"
             [isFormRequired]="false"
-            (select)="onInputValue('level', $event.value)"
+            (select)="onInputValue('level', $event)"
           />
         </div>
         <div class="flex flex-row gap-2">
@@ -36,7 +36,7 @@
           <ngx-minithings-input
             [type]="InputType.Text"
             [isFormRequired]="false"
-            (inputValue)="onInputValue('message', $event.value)"
+            (inputValue)="onInputValue('message', $event)"
           />
         </div>
         <div class="flex flex-row gap-2">
@@ -45,12 +45,12 @@
             [type]="InputType.Number"
             [min]="1"
             [max]="99"
+            [placeholder]="5"
             [isFormRequired]="false"
-            (inputValue)="onInputValue('livingTime', $event.value)"
+            (inputValue)="onInputValue('livingTime', $event)"
           />
         </div>
       </div>
-      {{level}} {{message}} {{livingTime}}
       <ngx-minithings-button (click)="spawnAlert(level, message)">
         Spawn Alert
       </ngx-minithings-button>

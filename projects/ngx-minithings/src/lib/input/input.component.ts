@@ -288,7 +288,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     //
     // but allow for auto-overwriting this logic for input without forms
     // attached
-    if (this.onChange !== undefined && this.isFormRequired)
+    if (this.onChange !== undefined || !this.isFormRequired)
     {
       switch (value)
       {
@@ -297,7 +297,13 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
           break;
       }
       this.value$.next(value);
-      this.onChange(value);
+
+      if (this.onChange !== undefined)
+      {
+        this.onChange(value);
+      }
+
+      console.log("setValue:", value);
       this.inputValue.emit(value);
     }
   }
