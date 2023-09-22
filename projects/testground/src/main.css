@@ -2,4 +2,4 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "../../ngx-minithings/src/assets/tailwind.css"
+@import "../../ngx-minithings/src/assets/main.css"
