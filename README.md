@@ -12,11 +12,15 @@ make pack  # creates a tgz tarball in ./dist directory
 yarn add file:path/to/generated/pack
 ```
 
-In order to import styles, you need to import stylesheet `main.css` into
-your global css:
-```css
-// your-project/main.css
-@import "~@slimebones/ngx-minithings/src/assets/main.css";
+In order to import styles, you need to install `tailwindcss` and specify
+library's content in your `tailwind.config.js`:
+```js
+module.exports = {
+  content: [
+    ...
+    "./node_modules/slimebones/ngx-minithings/**/*.{html,ts}"
+  ]
+}
 ```
 
 > ⚠️ In order to import other assets, you need to copy-paste them into your
