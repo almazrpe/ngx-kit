@@ -17,6 +17,8 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
 import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 import { CapitalizePipe } from "./str/capitalize.pipe";
+import { PaginationComponent } from './pagination/pagination.component';
+import { PaginationRefBtnComponent } from './pagination/pagination-ref-btn/pagination-ref-btn.component';
 
 
 @NgModule({
@@ -34,7 +36,9 @@ import { CapitalizePipe } from "./str/capitalize.pipe";
     StatusCircleComponent,
     UnixTimestampToDatePipe,
     CapitalizeEachPipe,
-    CapitalizePipe
+    CapitalizePipe,
+    PaginationComponent,
+    PaginationRefBtnComponent
   ],
   imports: [
     CommonModule,
@@ -53,7 +57,8 @@ import { CapitalizePipe } from "./str/capitalize.pipe";
     StatusCircleComponent,
     UnixTimestampToDatePipe,
     CapitalizeEachPipe,
-    CapitalizePipe
+    CapitalizePipe,
+    PaginationComponent
   ]
 })
 export class NgxMinithingsModule { }

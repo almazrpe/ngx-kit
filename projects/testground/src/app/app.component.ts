@@ -8,6 +8,7 @@ import { AlertUtils } from "ngx-minithings/alert/utils";
 import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
 import { DatalistUtils } from "ngx-minithings/datalist/utils";
 import { InputType } from "ngx-minithings/input/input-type";
+import { PaginationItem, PaginationFilter } from "ngx-minithings/pagination/models";
 
 @Component({
   selector: "app-root",
@@ -23,8 +24,11 @@ export class AppComponent implements OnInit
   public message: string;
   public livingTime: number = 5;
 
+  public paginationItems: PaginationItem[] = [];
+  public paginationFilters: PaginationFilter[] = [];
+
   public constructor(
-    private alertService: AlertService
+    private alertService: AlertService,
   ) {}
 
   public ngOnInit(): void
@@ -46,6 +50,88 @@ export class AppComponent implements OnInit
           obj: index
         });
       }
+    });
+
+    this.paginationFilters.push({
+      id: "1",
+      labelText: "Отдел",
+      inputConfig: {
+          type: InputType.Text,
+          min: 1,
+          max: 10,
+          placeholder: "Введите название отдела..."
+      },
+    });
+
+    this.paginationFilters.push({
+      id: "2",
+      labelText: "Количество страниц",
+      inputConfig: {
+          type: InputType.Number,
+      },
+    });
+
+    this.paginationItems.push({
+      text: "Журнал разработки Л904",
+      route: "/another",
+      filterValues: [
+        {filterId: "1", filterValue: "IT"},
+        {filterId: "2", filterValue: 200}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Поваренная книга 1975",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "Кухня"},
+        {filterId: "2", filterValue: 200}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Руководство пользователя блоком АТ1",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "IT"},
+        {filterId: "2", filterValue: 20}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Рекомендации к разработке проектов",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "IT"},
+        {filterId: "2", filterValue: 10}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Описание модуля для работы с wifi",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "IT"},
+        {filterId: "2", filterValue: 20}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Пособие по варке компотов 1999",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "Кухня"},
+        {filterId: "2", filterValue: 10}
+      ]
+    });
+
+    this.paginationItems.push({
+      text: "Норма потребления сахара ГОСТ 09.87",
+      route: "/",
+      filterValues: [
+        {filterId: "1", filterValue: "Кухня"},
+        {filterId: "2", filterValue: 10}
+      ]
     });
   }
 

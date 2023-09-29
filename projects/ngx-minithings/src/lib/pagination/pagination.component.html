@@ -1,0 +1,192 @@
+<ngx-minithings-block class="w-screen text-center">
+  <ng-template>
+
+    <div class="w-full flex flex-row justify-between">
+      <div class="flex flex-col gap-2 pb-3 overflow-x-scroll">
+        <div class="flex gap-2 flex-row flex-wrap justify-start">
+          <ng-container *ngIf="paginationFilters$ | async as filters">
+            <div class="flex flex-row" *ngFor="let filter of filters">
+              <div class="px-3 bg-c10 rounded-l cursor-default">
+                {{filter.labelText}}
+              </div>
+              <div
+                class="px-1.5 bg-c60 rounded-r cursor-pointer"
+                (click)="dropFilter(filter.id)"
+              >X
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <ngx-minithings-button
+        class="justify-center"
+        (clickFunc)="toggleFiltersWindow()"
+      >
+        👁️
+      </ngx-minithings-button>
+    </div>
+
+    <ng-container *ngIf="isFiltersWindowShown">
+      <div class="flex flex-col gap-2 mt-2">
+        <ng-container *ngIf="paginationFilters$ | async as filters">
+          <div *ngFor="let filter of filters">
+            <div class="mb-1 text-left">
+              {{filter.labelText}}
+            </div>
+            <ngx-minithings-input
+              [type]="filter.inputConfig.type"
+              [min]="filter.inputConfig['min']"
+              [max]="filter.inputConfig['max']"
+              [placeholder]="filter.inputConfig['placeholder']"
+              [isFormRequired]="false"
+              [cssClasses]="['w-full', 'px-2']"
+              (keyup)="filterChange(filter.id, $event)"
+            />
+          </div>
+        </ng-container>
+
+        <ngx-minithings-button
+          class="justify-center w-full"
+          (clickFunc)="toggleAvailableFilters()"
+        >
+          Показать/Скрыть доступные фильтры
+        </ngx-minithings-button>
+        <ng-container *ngIf="isAvailableFiltersShown">
+          <div class="flex flex-row gap-2">
+            <div class="flex flex-row" *ngFor="let filter of paginationFilters">
+              <div class="px-3 bg-c10 rounded-l cursor-default">
+                {{filter.labelText}}
+              </div>
+              <div
+                class="px-1.5 bg-c60 rounded-r cursor-pointer"
+                (click)="addFilter(filter.id)"
+              >+
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <ngx-minithings-hr class="w-full mb-2"></ngx-minithings-hr>
+
+    <ng-container *ngIf="paginationItems$ | async as items">
+      <div
+        class="flex overflow-auto max-h-[60vh]"
+        [ngClass]="{
+            'flex-col' : config.viewType == PagViewType.List,
+            'flex-row
+             flex-wrap
+             justify-center' : config.viewType == PagViewType.Tiles
+          }"
+        *ngIf="items.length > 0; else no_items"
+      >
+        <div
+          *ngFor="
+            let item of items;
+              index as i;
+          "
+        >
+          <ng-container
+              *ngIf="MathModule.floor(i / config.itemCntPerPage) == curPage"
+          >
+            <ngx-minithings-pagination-ref-btn
+              [paginationItem] = "item"
+              [ngClass]="{
+                'w-40 h-40 block m-1' : config.viewType == PagViewType.Tiles
+              }"
+            >
+            </ngx-minithings-pagination-ref-btn>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #no_items>
+      <div class="no-items text-center mt-2 fst-italic">
+        Страницы не найдены...
+      </div>
+    </ng-template>
+
+    <ngx-minithings-hr class="w-full mb-2"></ngx-minithings-hr>
+
+    <div class="flex flex-row justify-between items-center">
+
+      <ngx-minithings-button
+        class="flex justify-center"
+        (clickFunc)="getPreviousPage()"
+        [isEnabled]="curPage > 0"
+      >
+        < НАЗАД
+      </ngx-minithings-button>
+
+      <div class="flex flex-row">
+        <div
+          *ngFor="let iter of [].constructor(pageCnt); let i = index"
+        >
+
+          <ng-container
+              *ngIf="i == 0
+                     || i == pageCnt - 1
+                     || (i > leftSlice
+                         && i <= leftSlice + config.visiblePagesCnt - 2)"
+          >
+            <ng-container
+                *ngIf="i == curPage"
+            >
+              <div class="mx-2">
+                <ngx-minithings-button
+                  class="justify-center"
+                  [mode]="BtnMode.DIMMED"
+                  (clickFunc)="getPage(i)"
+                >
+                  {{i + 1}}
+                </ngx-minithings-button>
+              </div>
+            </ng-container>
+
+            <ng-container
+                *ngIf="i != curPage"
+            >
+              <div class="mx-2">
+                <ngx-minithings-button
+                  class="justify-center"
+                  (clickFunc)="getPage(i)"
+                >
+                  {{i + 1}}
+                </ngx-minithings-button>
+              </div>
+            </ng-container>
+
+          </ng-container>
+
+          <ng-container
+              *ngIf="i == 1 && leftSlice > 0"
+          >
+            <div class="text-center mx-2">...</div>
+          </ng-container>
+
+          <ng-container
+              *ngIf="i == pageCnt - 2
+                     && i > leftSlice + config.visiblePagesCnt - 2"
+          >
+            <div class="text-center mx-2">...</div>
+          </ng-container>
+
+
+        </div>
+      </div>
+
+      <ngx-minithings-button
+        class="flex justify-center"
+        (clickFunc)="getNextPage()"
+        [isEnabled]="curPage < pageCnt - 1"
+      >
+        ВПЕРЁД >
+      </ngx-minithings-button>
+
+    </div>
+
+  </ng-template>
+</ngx-minithings-block>

@@ -6,6 +6,10 @@ const routes: Routes = [
   {
     path: "/",
     component: AppComponent
+  },
+  {
+    path: "another",
+    component: AppComponent
   }
 ];
 
