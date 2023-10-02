@@ -6,7 +6,7 @@
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
-    "./projects/**/*.{html,ts}"
+    "../ngx-minithings/**/*.{html,ts}"
   ],
   theme: {
     extend: {
