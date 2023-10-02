@@ -6,9 +6,10 @@ Small utilities for Angular Framework.
 
 Currently pack installations are supported:
 ```sh
-make pack  # creates a tgz tarball in ./dist directory
+# creates a tgz tarball in ./dist directory
+make pack
 
-# at your project
+# and installs it at your project
 yarn add file:path/to/generated/pack
 ```
 
