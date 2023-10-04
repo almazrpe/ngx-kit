@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.1.4
+
+- fix: better tailwind usage
+- docs: improvements
+
 ## 0.1.3
 
 - fix: internal import paths
