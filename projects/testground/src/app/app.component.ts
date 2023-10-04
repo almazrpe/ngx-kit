@@ -8,7 +8,12 @@ import { AlertUtils } from "ngx-minithings/alert/utils";
 import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
 import { DatalistUtils } from "ngx-minithings/datalist/utils";
 import { InputType } from "ngx-minithings/input/input-type";
-import { PaginationItem, PaginationFilter } from "ngx-minithings/pagination/models";
+import {
+  PaginationItem,
+  PaginationFilter,
+  PaginationConfig,
+  PaginationViewType
+} from "ngx-minithings/pagination/models";
 
 @Component({
   selector: "app-root",
@@ -26,6 +31,7 @@ export class AppComponent implements OnInit
 
   public paginationItems: PaginationItem[] = [];
   public paginationFilters: PaginationFilter[] = [];
+  public paginationConfig: PaginationConfig;
 
   public constructor(
     private alertService: AlertService,
@@ -52,14 +58,24 @@ export class AppComponent implements OnInit
       }
     });
 
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////// Pagination settings ////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    this.paginationConfig =
+    {
+      itemCntPerPage: 5,
+      visiblePagesCnt: 5,
+      viewType: PaginationViewType.Table
+    };
+
     this.paginationFilters.push({
       id: "1",
       labelText: "Отдел",
       inputConfig: {
-          type: InputType.Text,
-          min: 1,
-          max: 10,
-          placeholder: "Введите название отдела..."
+        type: InputType.Text,
+        min: 1,
+        max: 10,
+        placeholder: "Введите название отдела..."
       },
     });
 
@@ -67,7 +83,7 @@ export class AppComponent implements OnInit
       id: "2",
       labelText: "Количество страниц",
       inputConfig: {
-          type: InputType.Number,
+        type: InputType.Number,
       },
     });
 
@@ -77,7 +93,8 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 200}
-      ]
+      ],
+      "Размер": 200
     });
 
     this.paginationItems.push({
@@ -86,7 +103,10 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 200}
-      ]
+      ],
+      "Тип": "Книга",
+      "Размер": 200,
+      "Переиздание": true
     });
 
     this.paginationItems.push({
@@ -95,7 +115,9 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 20}
-      ]
+      ],
+      "Тип": "Руководство",
+      "Размер": 20
     });
 
     this.paginationItems.push({
@@ -104,7 +126,10 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 10}
-      ]
+      ],
+      "Тип": "Руководство",
+      "Размер": 10,
+      "Переиздание": false
     });
 
     this.paginationItems.push({
@@ -113,7 +138,9 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 20}
-      ]
+      ],
+      "Тип": "Руководство",
+      "Размер": 20
     });
 
     this.paginationItems.push({
@@ -122,7 +149,9 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 10}
-      ]
+      ],
+      "Тип": "Руководство",
+      "Размер": 10
     });
 
     this.paginationItems.push({
@@ -131,7 +160,9 @@ export class AppComponent implements OnInit
       filterValues: [
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 10}
-      ]
+      ],
+      "Тип": "ГОСТ",
+      "Размер": 10
     });
   }
 

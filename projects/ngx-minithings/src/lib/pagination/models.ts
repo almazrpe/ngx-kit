@@ -9,6 +9,7 @@ export interface PaginationItem {
   text: string;
   route: string;
   filterValues: FilterValuesItem[];
+  [tableValue: string]: any;
 }
 
 export interface FilterInputConfig {
@@ -24,7 +25,8 @@ export interface PaginationFilter {
 
 export enum PaginationViewType {
   List = 0,
-  Tiles = 1
+  Tiles = 1,
+  Table = 2
 }
 
 export interface PaginationConfig {
@@ -34,4 +36,20 @@ export interface PaginationConfig {
   // that must be shown in the bottom part
   visiblePagesCnt: number;
   viewType?: PaginationViewType;
+}
+
+export interface TableColumn {
+  labelText: string;
+  type: string;
+}
+
+export enum SortColumnMode {
+  OFF = 0,
+  ASC = 1,
+  DESC = 2
+}
+
+export interface SortTableColumn {
+  column: TableColumn;
+  mode: SortColumnMode;
 }

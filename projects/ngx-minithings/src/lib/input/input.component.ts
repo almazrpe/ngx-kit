@@ -303,7 +303,6 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
         this.onChange(value);
       }
 
-      console.log("setValue:", value);
       this.inputValue.emit(value);
     }
   }

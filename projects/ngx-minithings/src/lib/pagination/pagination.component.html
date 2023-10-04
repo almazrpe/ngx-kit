@@ -2,7 +2,15 @@
   <ng-template>
 
     <div class="w-full flex flex-row justify-between">
-      <div class="flex flex-col gap-2 pb-3 overflow-x-scroll">
+      <div class="w-full mr-2 flex flex-col gap-2 pb-3 overflow-x-scroll">
+        <ngx-minithings-input
+          [type]="InpType.Text"
+          [placeholder]="'Поиск по словам...'"
+          [isFormRequired]="false"
+          [cssClasses]="['w-full', 'h-7', 'px-2', 'rounded-sm']"
+          (keyup)="columnFilterChange($event)"
+        />
+
         <div class="flex gap-2 flex-row flex-wrap justify-start">
           <ng-container *ngIf="paginationFilters$ | async as filters">
             <div class="flex flex-row" *ngFor="let filter of filters">
@@ -10,7 +18,7 @@
                 {{filter.labelText}}
               </div>
               <div
-                class="px-1.5 bg-c60 rounded-r cursor-pointer"
+                class="px-1.5 bg-red-50 rounded-r cursor-pointer"
                 (click)="dropFilter(filter.id)"
               >X
               </div>
@@ -46,61 +54,147 @@
           </div>
         </ng-container>
 
-        <ngx-minithings-button
-          class="justify-center w-full"
-          (clickFunc)="toggleAvailableFilters()"
-        >
-          Показать/Скрыть доступные фильтры
-        </ngx-minithings-button>
-        <ng-container *ngIf="isAvailableFiltersShown">
-          <div class="flex flex-row gap-2">
-            <div class="flex flex-row" *ngFor="let filter of paginationFilters">
-              <div class="px-3 bg-c10 rounded-l cursor-default">
-                {{filter.labelText}}
-              </div>
-              <div
-                class="px-1.5 bg-c60 rounded-r cursor-pointer"
-                (click)="addFilter(filter.id)"
-              >+
-              </div>
-            </div>
+
+      <div class="flex flex-row gap-2">
+        <div
+          class="flex flex-row"
+          *ngFor="let filter of paginationFilters">
+          <div class="px-3 bg-c10 rounded-l cursor-default">
+            {{filter.labelText}}
           </div>
-        </ng-container>
+          <div
+            class="px-1.5 bg-red-50 rounded-r cursor-pointer"
+            (click)="addFilter(filter.id)"
+          >+
+          </div>
+        </div>
+      </div>
+
       </div>
     </ng-container>
 
     <ngx-minithings-hr class="w-full mb-2"></ngx-minithings-hr>
-
     <ng-container *ngIf="paginationItems$ | async as items">
-      <div
-        class="flex overflow-auto max-h-[60vh]"
+      <table
+        class="overflow-auto max-h-[60vh] w-full"
         [ngClass]="{
+            'flex' : config.viewType == PagViewType.List
+                     || config.viewType == PagViewType.Tiles,
             'flex-col' : config.viewType == PagViewType.List,
             'flex-row
              flex-wrap
-             justify-center' : config.viewType == PagViewType.Tiles
+             justify-center' : config.viewType == PagViewType.Tiles,
+            'border-collapse' : config.viewType == PagViewType.Table
           }"
         *ngIf="items.length > 0; else no_items"
       >
-        <div
+        <ng-container *ngIf="config.viewType == PagViewType.Table">
+          <tr class="w-full">
+            <th
+              class="px-3 align-top cursor-pointer hover:bg-c10/50 select-none"
+              *ngFor="let column of tableColumns;"
+              [ngClass]="{
+                'bg-c10/25': chosenColumnCheck(column,
+                               [SortColMode.ASC, SortColMode.DESC]) == true
+              }"
+              (click)="sortPaginationItems(column, $event)"
+              >
+              <div
+                class="flex flex-row gap-1 text-left"
+                [ngClass]="{
+                  'justify-center': column.type == 'boolean',
+                  'justify-start': column.type != 'boolean'
+                }"
+              >
+                <ng-container
+                  *ngIf="column.labelText != 'text'; else first_column">
+                  <div>{{column.labelText}}</div>
+                </ng-container>
+                <ng-template #first_column>
+                  <div>Название</div>
+                </ng-template>
+
+                <ng-container
+                  *ngIf="chosenColumnCheck(column, [SortColMode.ASC]) == true"
+                >
+                  <div>⬇️</div>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="chosenColumnCheck(column, [SortColMode.DESC]) == true"
+                >
+                  <div>⬆️</div>
+                </ng-container>
+              </div>
+            </th>
+          </tr>
+        </ng-container>
+        <tr
           *ngFor="
             let item of items;
               index as i;
           "
+          [ngClass]="{
+            'bg-white/25': i % 2 == 1 && config.viewType == PagViewType.Table,
+            'hover:bg-c10/75
+             cursor-pointer' : config.viewType == PagViewType.Table,
+            'mt-1' : MathModule.floor(i / config.itemCntPerPage) == curPage
+          }"
+          (click)="goLink(item.route)"
         >
           <ng-container
-              *ngIf="MathModule.floor(i / config.itemCntPerPage) == curPage"
+            *ngIf="MathModule.floor(i / config.itemCntPerPage) == curPage"
           >
-            <ngx-minithings-pagination-ref-btn
-              [paginationItem] = "item"
-              [ngClass]="{
-                'w-40 h-40 block m-1' : config.viewType == PagViewType.Tiles
-              }"
+            <ng-container
+              *ngIf="config.viewType != PagViewType.Table; else show_table"
             >
-            </ngx-minithings-pagination-ref-btn>
+              <ngx-minithings-button
+                [ngClass]="{
+                  'w-40 h-40 block m-1' : config.viewType == PagViewType.Tiles
+                }"
+                [extraCssClasses]="['h-full']"
+                (clickFunc)="goLink(item.route)"
+              >
+                {{item.text}}
+              </ngx-minithings-button>
+
+            </ng-container>
+
+            <ng-template #show_table>
+              <td
+                *ngFor="let column of tableColumns;"
+                class="px-3 py-1.5 text-left"
+                [ngClass]="{
+                  'align-top text-left' : column.type != 'boolean',
+                  'text-center' : column.type == 'boolean'
+                }"
+                >
+
+                <ng-container
+                  *ngIf="
+                    column.type != 'boolean'
+                    || item[column.labelText] == undefined;
+                      else boolean_decor
+                  "
+                  >
+                  {{item[column.labelText]}}
+                </ng-container>
+                <ng-template #boolean_decor>
+                  <ngx-minithings-status-circle
+                    class="inline-block"
+                    [mode]="item[column.labelText] == true
+                            ? CircleMode.ACTIVE
+                            : CircleMode.NONACTIVE"
+                  >
+                  </ngx-minithings-status-circle>
+                </ng-template>
+
+              </td>
+            </ng-template>
+
           </ng-container>
-        </div>
-      </div>
+        </tr>
+      </table>
     </ng-container>
 
     <ng-template #no_items>
