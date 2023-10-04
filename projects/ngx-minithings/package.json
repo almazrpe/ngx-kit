@@ -20,7 +20,7 @@
   "dependencies": {
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
-    "@slimebones/ngx-antievil": "^0.1.1",
+    "@slimebones/ngx-antievil": "^0.1.2",
     "queue-typescript": "^1.0.1",
     "simple-keyboard": "^3.7.12",
     "simple-keyboard-layouts": "^3.3.16",

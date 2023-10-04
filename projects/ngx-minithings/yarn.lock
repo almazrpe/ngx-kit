@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@ngx-translate/http-loader/-/http-loader-8.0.0.tgz#e02c25dbe33c6b1edee73e3654ab8a161572cdfb"
   integrity sha512-SFMsdUcmHF5OdZkL1CHEoSAwbP5EbAOPTLLboOCRRoOg21P4GJx+51jxGdJeGve6LSKLf4Pay7BkTwmE6vxYlg==
 
-"@slimebones/ngx-antievil@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@slimebones/ngx-antievil/-/ngx-antievil-0.1.1.tgz#32e29aab182633591c7e028a13a75a446c4819c6"
-  integrity sha512-AP6DPLS0uCAzFs67MGold+JWOxvGCQbsylTdDcjrea8qzXdnPl+zYUfBb4V33p2s/bZO2wJTnSeAo4/X0tHZvQ==
+"@slimebones/ngx-antievil@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@slimebones/ngx-antievil/-/ngx-antievil-0.1.2.tgz#160ee44737bbfaed2b091b6813ad5036b09ac656"
+  integrity sha512-oVcSa9qlkU98Xm/3RdoM5KYKFnxz/WThpaUnwSuyN+g+2tGt2O/Q5ub9M6ELoAQ6zMx0RPNo+wOYL0T4zzkHZQ==
   dependencies:
     tslib "^2.3.0"
 
