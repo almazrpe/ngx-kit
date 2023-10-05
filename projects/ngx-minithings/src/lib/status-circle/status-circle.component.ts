@@ -1,4 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
+
+export enum StatusCircleMode {
+  ACTIVE = 0,
+  NONACTIVE = 1
+}
 
 @Component({
   selector: "ngx-minithings-status-circle",
@@ -7,5 +12,7 @@ import { Component } from "@angular/core";
 })
 export class StatusCircleComponent
 {
+  @Input() public mode: StatusCircleMode = StatusCircleMode.ACTIVE;
 
+  public CircleMode: any = StatusCircleMode;
 }
