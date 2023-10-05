@@ -1,6 +1,6 @@
 import { InputType } from "../input/input-type";
 
-export interface FilterValuesItem {
+export interface PaginationFilterValuesItem {
   filterId: string;
   filterValue: any;
 }
@@ -8,7 +8,7 @@ export interface FilterValuesItem {
 export interface PaginationItem {
   text: string;
   route: string;
-  filterValues: FilterValuesItem[];
+  filterValues: PaginationFilterValuesItem[];
   [tableValue: string]: any;
 }
 

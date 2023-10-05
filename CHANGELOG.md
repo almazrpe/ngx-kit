@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.1.5
+
+### Features
+
+- Pagination component
+
 ## 0.1.4
 
 - fix: better tailwind usage

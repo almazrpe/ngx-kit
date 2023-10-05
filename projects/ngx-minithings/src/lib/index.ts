@@ -1,3 +1,12 @@
+export { PaginationComponent } from "./pagination/pagination.component";
+export {
+  PaginationItem,
+  PaginationFilter,
+  PaginationConfig,
+  PaginationFilterValuesItem,
+  PaginationViewType
+} from "./pagination/models";
+
 export { NumUtils } from "./num";
 export { ObjectUtils } from "./obj";
 export { QueueUtils } from "./queue";
