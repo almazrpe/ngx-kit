@@ -62,7 +62,7 @@ export class PaginationComponent implements OnInit
   public sortChosenColumns: SortTableColumn[] =
     [{
       column: {
-        labelText: "text",
+        labelText: "Название",
         type: "string"
       },
       mode: SortColumnMode.OFF
@@ -74,22 +74,28 @@ export class PaginationComponent implements OnInit
 
   public ngOnInit(): void
   {
-    this.paginationItems.forEach(item => 
+    this.tableColumns.push({
+      labelText: "Название",
+      type: "string"
+    });
+
+    this.paginationItems.forEach((item: PaginationItem, index: number) =>
     {
-      for (const key in item)
+      for (const key in item.attr)
       {
-        if (!(["route", "filterValues"].includes(key))
-            && undefined == this.tableColumns.find(item => 
+        if (undefined == this.tableColumns.find(item =>
             {
               return item.labelText == key;
             }))
         {
           this.tableColumns.push({
             labelText: key,
-            type: typeof item[key]
+            type: typeof item.attr[key]
           });
         }
       }
+
+      this.paginationItems[index].attr["Название"] = item.text
     });
 
     this.paginationItems$.next(this.paginationItems);
@@ -224,10 +230,10 @@ export class PaginationComponent implements OnInit
           {
             isThereColumnFilters = true;
 
-            for (const key in item)
+            for (const key in item.attr)
             {
               if (key == fid.slice(2)
-                  && String(item[key]).toLowerCase().includes(
+                  && String(item.attr[key]).toLowerCase().includes(
                     String(this.curFilterValues.get(fid)).toLowerCase()))
                 isColumnFilterApproved = true;
             }
@@ -280,27 +286,27 @@ export class PaginationComponent implements OnInit
     const modeFactor: number = this.sortChosenColumns[iter].mode +
       Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
 
-    if (( a[chosenColumnName] == undefined
-          && b[chosenColumnName] == undefined)
-        || a[chosenColumnName] != undefined
-           && b[chosenColumnName] != undefined
-           && a[chosenColumnName] == b[chosenColumnName])
+    if (( a.attr[chosenColumnName] == undefined
+          && b.attr[chosenColumnName] == undefined)
+        || a.attr[chosenColumnName] != undefined
+           && b.attr[chosenColumnName] != undefined
+           && a.attr[chosenColumnName] == b.attr[chosenColumnName])
       return this.sortingCondition(a, b, iter + 1);
-    else if (a[chosenColumnName] != undefined
-             && b[chosenColumnName] == undefined)
+    else if (a.attr[chosenColumnName] != undefined
+             && b.attr[chosenColumnName] == undefined)
       return -1 * modeFactor;
-    else if (a[chosenColumnName] == undefined
-             && b[chosenColumnName] != undefined)
+    else if (a.attr[chosenColumnName] == undefined
+             && b.attr[chosenColumnName] != undefined)
       return 1 * modeFactor;
-    else if (typeof a[chosenColumnName] == "boolean"
-             && typeof b[chosenColumnName] == "boolean"
-             && b[chosenColumnName] == true)
+    else if (typeof a.attr[chosenColumnName] == "boolean"
+             && typeof b.attr[chosenColumnName] == "boolean"
+             && b.attr[chosenColumnName] == true)
       return 1 * modeFactor;
-    else if (typeof a[chosenColumnName] == "boolean"
-             && typeof b[chosenColumnName] == "boolean"
-             && a[chosenColumnName] == true)
+    else if (typeof a.attr[chosenColumnName] == "boolean"
+             && typeof b.attr[chosenColumnName] == "boolean"
+             && a.attr[chosenColumnName] == true)
       return -1 * modeFactor;
-    else if (a[chosenColumnName] > b[chosenColumnName])
+    else if (a.attr[chosenColumnName] > b.attr[chosenColumnName])
       return 1 * modeFactor;
     else
       return -1 * modeFactor;

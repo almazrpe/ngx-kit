@@ -14,7 +14,7 @@
         <div class="flex gap-2 flex-row flex-wrap justify-start">
           <ng-container *ngIf="paginationFilters$ | async as filters">
             <div class="flex flex-row" *ngFor="let filter of filters">
-              <div class="px-3 bg-c10 rounded-l cursor-default">
+              <div class="px-3 bg-c10 text-white rounded-l cursor-default">
                 {{filter.labelText}}
               </div>
               <div
@@ -36,7 +36,7 @@
     </div>
 
     <ng-container *ngIf="isFiltersWindowShown">
-      <div class="flex flex-col gap-2 mt-2">
+      <div class="flex flex-col gap-2 mt-1">
         <ng-container *ngIf="paginationFilters$ | async as filters">
           <div *ngFor="let filter of filters">
             <div class="mb-1 text-left">
@@ -46,7 +46,9 @@
               [type]="filter.inputConfig.type"
               [min]="filter.inputConfig['min']"
               [max]="filter.inputConfig['max']"
-              [placeholder]="filter.inputConfig['placeholder']"
+              [placeholder]="filter.inputConfig['placeholder'] != undefined
+                             ? filter.inputConfig['placeholder']
+                             : 'Введите что-нибудь...'"
               [isFormRequired]="false"
               [cssClasses]="['w-full', 'px-2']"
               (keyup)="filterChange(filter.id, $event)"
@@ -59,7 +61,7 @@
         <div
           class="flex flex-row"
           *ngFor="let filter of paginationFilters">
-          <div class="px-3 bg-c10 rounded-l cursor-default">
+          <div class="px-3 bg-c10 text-white rounded-l cursor-default">
             {{filter.labelText}}
           </div>
           <div
@@ -106,13 +108,8 @@
                   'justify-start': column.type != 'boolean'
                 }"
               >
-                <ng-container
-                  *ngIf="column.labelText != 'text'; else first_column">
-                  <div>{{column.labelText}}</div>
-                </ng-container>
-                <ng-template #first_column>
-                  <div>Название</div>
-                </ng-template>
+
+                <div>{{column.labelText}}</div>
 
                 <ng-container
                   *ngIf="chosenColumnCheck(column, [SortColMode.ASC]) == true"
@@ -173,16 +170,16 @@
                 <ng-container
                   *ngIf="
                     column.type != 'boolean'
-                    || item[column.labelText] == undefined;
+                    || item.attr[column.labelText] == undefined;
                       else boolean_decor
                   "
                   >
-                  {{item[column.labelText]}}
+                  {{item.attr[column.labelText]}}
                 </ng-container>
                 <ng-template #boolean_decor>
                   <ngx-minithings-status-circle
                     class="inline-block"
-                    [mode]="item[column.labelText] == true
+                    [mode]="item.attr[column.labelText] == true
                             ? CircleMode.ACTIVE
                             : CircleMode.NONACTIVE"
                   >

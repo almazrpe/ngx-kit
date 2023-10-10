@@ -94,7 +94,9 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 200}
       ],
-      "Размер": 200
+      attr: {
+        "Размер": 200
+      }
     });
 
     this.paginationItems.push({
@@ -104,9 +106,11 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 200}
       ],
-      "Тип": "Книга",
-      "Размер": 200,
-      "Переиздание": true
+      attr: {
+        "Тип": "Книга",
+        "Размер": 200,
+        "Переиздание": true
+      }
     });
 
     this.paginationItems.push({
@@ -116,8 +120,10 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 20}
       ],
-      "Тип": "Руководство",
-      "Размер": 20
+      attr: {
+        "Тип": "Руководство",
+        "Размер": 20
+      }
     });
 
     this.paginationItems.push({
@@ -127,9 +133,11 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 10}
       ],
-      "Тип": "Руководство",
-      "Размер": 10,
-      "Переиздание": false
+      attr: {
+        "Тип": "Руководство",
+        "Размер": 10,
+        "Переиздание": false
+      }
     });
 
     this.paginationItems.push({
@@ -139,8 +147,10 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "IT"},
         {filterId: "2", filterValue: 20}
       ],
-      "Тип": "Руководство",
-      "Размер": 20
+      attr: {
+        "Тип": "Руководство",
+        "Размер": 20
+      }
     });
 
     this.paginationItems.push({
@@ -150,8 +160,10 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 10}
       ],
-      "Тип": "Руководство",
-      "Размер": 10
+      attr: {
+        "Тип": "Руководство",
+        "Размер": 10
+      }
     });
 
     this.paginationItems.push({
@@ -161,8 +173,10 @@ export class AppComponent implements OnInit
         {filterId: "1", filterValue: "Кухня"},
         {filterId: "2", filterValue: 10}
       ],
-      "Тип": "ГОСТ",
-      "Размер": 10
+      attr: {
+        "Тип": "ГОСТ",
+        "Размер": 10
+      }
     });
   }
 

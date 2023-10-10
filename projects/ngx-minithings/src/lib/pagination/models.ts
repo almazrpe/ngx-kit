@@ -9,7 +9,9 @@ export interface PaginationItem {
   text: string;
   route: string;
   filterValues: PaginationFilterValuesItem[];
-  [tableValue: string]: any;
+  attr: {
+    [key: string]: any;
+  }
 }
 
 export interface FilterInputConfig {
