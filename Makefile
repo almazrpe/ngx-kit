@@ -12,6 +12,9 @@ check: lint test
 build:
 	ng build ngx-minithings
 
+publish: build
+	cd dist/ngx-minithings && yarn publish --access public
+
 pack: build
 	cd dist/ngx-minithings && yarn pack && mv slimebones-ngx-minithings-v*.tgz ../
 
