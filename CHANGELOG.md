@@ -1,6 +1,12 @@
 # CHANGELOG
 
-## 0.1.5
+## 0.2.1
+
+### Fixes
+
+- Pagination component architecture
+
+## 0.2.0
 
 ### Features
 
