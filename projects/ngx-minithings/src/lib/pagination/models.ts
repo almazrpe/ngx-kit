@@ -11,7 +11,7 @@ export interface PaginationItem {
   filterValues: PaginationFilterValuesItem[];
   attr: {
     [key: string]: any;
-  }
+  };
 }
 
 export interface FilterInputConfig {

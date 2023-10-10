@@ -84,9 +84,9 @@ export class PaginationComponent implements OnInit
       for (const key in item.attr)
       {
         if (undefined == this.tableColumns.find(item =>
-            {
-              return item.labelText == key;
-            }))
+        {
+          return item.labelText == key;
+        }))
         {
           this.tableColumns.push({
             labelText: key,
@@ -95,7 +95,7 @@ export class PaginationComponent implements OnInit
         }
       }
 
-      this.paginationItems[index].attr["Название"] = item.text
+      this.paginationItems[index].attr["Название"] = item.text;
     });
 
     this.paginationItems$.next(this.paginationItems);
