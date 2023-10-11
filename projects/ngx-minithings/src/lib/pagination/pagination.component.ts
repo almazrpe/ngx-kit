@@ -148,7 +148,7 @@ export class PaginationComponent implements OnInit
   public dropFilter(filterId: string): void
   {
     const filter: PaginationFilter | undefined =
-      this.unsortedPaginationFilters.find(filter=> 
+      this.unsortedPaginationFilters.find(filter=>
       {
         return filter.id == filterId;
       });
@@ -169,7 +169,7 @@ export class PaginationComponent implements OnInit
         return;
     }
 
-    this.paginationFilters = this.paginationFilters.filter(filter => 
+    this.paginationFilters = this.paginationFilters.filter(filter =>
     {
       if (filter.id == filterId)
       {
@@ -186,9 +186,9 @@ export class PaginationComponent implements OnInit
     this.isFiltersWindowShown = true;
   }
 
-  public columnFilterChange(event: any): void
+  public columnFilterChange(value: any): void
   {
-    if (event.target.value.length == 0)
+    if (value.length == 0)
     {
       for (const fid of this.curFilterValues.keys())
       {
@@ -198,9 +198,9 @@ export class PaginationComponent implements OnInit
     }
     else
     {
-      this.tableColumns.forEach(column => 
+      this.tableColumns.forEach(column =>
       {
-        this.curFilterValues.set("__" + column.labelText, event.target.value);
+        this.curFilterValues.set("__" + column.labelText, value);
       });
     }
     this.refreshPages();
@@ -208,9 +208,9 @@ export class PaginationComponent implements OnInit
     this.leftSlice = 0;
   }
 
-  public filterChange(filterId: string, event: any): void
+  public filterChange(filterId: string, value: any): void
   {
-    this.curFilterValues.set(filterId, event.target.value);
+    this.curFilterValues.set(filterId, value);
     this.refreshPages();
     this.curPage = 0;
     this.leftSlice = 0;
@@ -329,7 +329,7 @@ export class PaginationComponent implements OnInit
       }];
 
       if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
-        this.paginationItems.sort((a, b) => 
+        this.paginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
@@ -341,7 +341,7 @@ export class PaginationComponent implements OnInit
     else
     {
       const oldSortColumnIndex: number =
-        this.sortChosenColumns.findIndex(scolumn => 
+        this.sortChosenColumns.findIndex(scolumn =>
         {
           return scolumn.column.labelText == chosenColumn.labelText;
         });
@@ -364,7 +364,7 @@ export class PaginationComponent implements OnInit
       }
 
       if (this.sortChosenColumns.length != 0)
-        this.paginationItems.sort((a, b) => 
+        this.paginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });

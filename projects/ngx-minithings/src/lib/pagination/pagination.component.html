@@ -8,7 +8,7 @@
           [placeholder]="'Поиск по словам...'"
           [isFormRequired]="false"
           [cssClasses]="['w-full', 'h-7', 'px-2', 'rounded-sm']"
-          (keyup)="columnFilterChange($event)"
+          (inputValue)="columnFilterChange($event)"
         />
 
         <div class="flex gap-2 flex-row flex-wrap justify-start">
@@ -51,7 +51,7 @@
                              : 'Введите что-нибудь...'"
               [isFormRequired]="false"
               [cssClasses]="['w-full', 'px-2']"
-              (keyup)="filterChange(filter.id, $event)"
+              (inputValue)="filterChange(filter.id, $event)"
             />
           </div>
         </ng-container>
