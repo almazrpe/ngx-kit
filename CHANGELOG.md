@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.3.0
+
+### Features
+
+- Integrate keyboard
+
 ## 0.2.1
 
 ### Fixes
