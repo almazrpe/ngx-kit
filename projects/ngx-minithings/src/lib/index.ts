@@ -1,3 +1,18 @@
+export {
+  ValueValidatorEvent
+} from "./input/selected-input/value-validator-event";
+export {
+  ValueValidator
+} from "./input/selected-input/value-validator";
+export { NoSelectedInputError } from "./input/selected-input/errors";
+export {
+  SelectedInput, SelectedInputEvent, ValueHost
+} from "./input/selected-input/selected-input";
+
+export {
+  SelectedInputService
+} from "./input/selected-input/selected-input.service";
+
 export { PaginationComponent } from "./pagination/pagination.component";
 export {
   PaginationItem,
