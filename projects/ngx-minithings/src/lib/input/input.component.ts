@@ -27,7 +27,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
 {
   @Input() public id: string;
   @Input() public name: string;
-  @Input() public localizedName: string;
+  @Input() public localizedName: string = "noname";
   @Input() public cssClasses: string[];
   @Input() public required: boolean;
   @Input() public attrList: string[];
@@ -64,8 +64,13 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
 
   public ngOnInit(): void
   {
+    if (this.localizedName == "" || this.localizedName == undefined)
+    {
+      this.localizedName = "noname";
+    }
+
     const randomId: string = StringUtils.makeid();
-    if (this.id == "")
+    if (this.id == "" || this.id == undefined)
     {
       this.id = randomId;
     }
@@ -182,7 +187,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
     this.selectedInputService.select(
       {
         id: this.id,
-        name: this.localizedName != "" ? this.localizedName : "noname",
+        name: this.localizedName,
         type: this.type,
         inputValueValidators: this.inputValueValidators
       },

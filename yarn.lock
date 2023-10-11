@@ -266,6 +266,15 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/localize@15.2.9":
+  version "15.2.9"
+  resolved "https://registry.yarnpkg.com/@angular/localize/-/localize-15.2.9.tgz#9fd960b5b6daab597c816b33e2f00977719c673f"
+  integrity sha512-7ZGK3BWwIukSK5ORWjM3y/FYj7/ZJFl1RO1GCeL/tHD4nq0kd3q3pYvcpnoi9HGl+q8AkL24xdsfzgCFo8SB0g==
+  dependencies:
+    "@babel/core" "7.19.3"
+    glob "8.1.0"
+    yargs "^17.2.1"
+
 "@angular/platform-browser-dynamic@^15.2.9":
   version "15.2.9"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-15.2.9.tgz#aa31ba63d535ee49fdf3a60fe771503565b4e3c9"
@@ -1656,11 +1665,6 @@
   version "15.2.9"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-15.2.9.tgz#d7a8d922e59abb10b1e374132b8ece14ea78e699"
   integrity sha512-nOXUGqKkAEMlCcrhkDwWDzcVdKNH7MNRUXfNzsFc9zdeR/5p3qt6SVMN7OOE3NREyI7P6nzARc3S+6QDBjf3Jg==
-
-"@ngx-translate/core@^15.0.0":
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/@ngx-translate/core/-/core-15.0.0.tgz#0fe55b9bd47e75b03d1123658f15fb7b5a534f3c"
-  integrity sha512-Am5uiuR0bOOxyoercDnAA3rJVizo4RRqJHo8N3RqJ+XfzVP/I845yEnMADykOHvM6HkVm4SZSnJBOiz0Anx5BA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-6">
+<div class="h-screen flex flex-col gap-6 relative">
   <div>
     <p class="text-2xl">💁 Minithings Showcase</p>
   </div>
@@ -35,6 +35,7 @@
           <label>Message</label>
           <ngx-minithings-input
             [type]="InputType.Text"
+            localizedName="Message"
             [isFormRequired]="false"
             (inputValue)="onInputValue('message', $event)"
           />
@@ -43,6 +44,7 @@
           <label>Living Time</label>
           <ngx-minithings-input
             [type]="InputType.Number"
+            localizedName="Living Time"
             [min]="1"
             [max]="99"
             [placeholder]="5"
@@ -73,11 +75,5 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <p class="text-xl">⌨️ Keyboard</p>
-    <div>
-      <ngx-minithings-input/>
-      <ngx-minithings-keyboard/>
-    </div>
-  </div>
+  <ngx-minithings-keyboard/>
 </div>

@@ -13,6 +13,8 @@ import { ValueValidatorEvent }
   from "../input/selected-input/value-validator-event";
 import { LayoutItem } from "simple-keyboard-layouts/build/interfaces";
 import { BaseError } from "@slimebones/ngx-antievil";
+import { NavigationEnd, Router } from "@angular/router";
+import { Event as GeneralRouterEvent } from "@angular/router";
 
 @Injectable({
   providedIn: "root"
@@ -37,11 +39,29 @@ export class KeyboardService
   private enabledLayoutsLength: number;
 
   public constructor(
-    private selectedInputService: SelectedInputService
+    private selectedInputService: SelectedInputService,
+    private router: Router
   )
   {
     this.enabledLayoutsLength = this.ENABLED_LAYOUTS.length;
+
+    this.router.events.subscribe({
+      next: (event: GeneralRouterEvent) =>
+      {
+        if (event instanceof NavigationEnd)
+        {
+          this.clearInterRouteState();
+        }
+      }
+    });
   }
+
+  private clearInterRouteState(): void
+  {
+    this.disable();
+    this.selectedInputService.deselect();
+  }
+
 
   public get isEnabledValue(): boolean
   {

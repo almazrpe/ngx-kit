@@ -10,7 +10,7 @@ import { NoSelectedInputError } from "./errors";
 @Injectable({
   providedIn: "root"
 })
-export class SelectedInputService 
+export class SelectedInputService
 {
   private _eventBus$: ReplaySubject<SelectedInputEvent<any>> =
     new ReplaySubject<SelectedInputEvent<any>>;
@@ -26,11 +26,11 @@ export class SelectedInputService
    */
   public isSelected(id: string): boolean
   {
-    if (this.selectedInput !== null) 
+    if (this.selectedInput !== null)
     {
       return id === this.selectedInput.id;
     }
-    else 
+    else
     {
       return false;
     }
@@ -65,7 +65,7 @@ export class SelectedInputService
 
   public deselect(): void
   {
-    try 
+    try
     {
       this._eventBus$.next({
         host: ValueHost.INPUT,
@@ -74,13 +74,13 @@ export class SelectedInputService
         isSelected: false
       });
     }
-    catch (error) 
+    catch (error)
     {
-      if (error instanceof NoSelectedInputError) 
+      if (error instanceof NoSelectedInputError)
       {
         return;
       }
-      else 
+      else
       {
         throw error;
       }
@@ -88,13 +88,13 @@ export class SelectedInputService
     this.selectedInput = null;
   }
 
-  private checkCanSend(): SelectedInput<any> 
+  private checkCanSend(): SelectedInput<any>
   {
-    if (this.selectedInput === null) 
+    if (this.selectedInput === null)
     {
       throw new NoSelectedInputError("cannot send value: no selected input");
     }
-    else 
+    else
     {
       return this.selectedInput;
     }

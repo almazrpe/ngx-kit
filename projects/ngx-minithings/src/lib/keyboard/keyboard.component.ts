@@ -4,6 +4,7 @@ import { Observable, map } from "rxjs";
 import { SelectedInputEvent } from "../input/selected-input/selected-input";
 import { SelectedInputService }
   from "../input/selected-input/selected-input.service";
+import { ButtonMode } from "ngx-minithings/button/button.component";
 
 @Component({
   selector: "ngx-minithings-keyboard",
@@ -12,6 +13,7 @@ import { SelectedInputService }
 })
 export class KeyboardComponent implements OnInit
 {
+  public keyboardButtonMode: ButtonMode = ButtonMode.DIMMED;
   public cssSelectors$: Observable<string[]>;
   public selectedInputEvent$: Observable<SelectedInputEvent<any>>;
 
@@ -37,5 +39,10 @@ export class KeyboardComponent implements OnInit
     // initialize keyboard only after DOM is initialized
     this.keyboardService.initialize();
     this.selectedInputEvent$ = this.selectedInputService.eventBus$;
+  }
+
+  public toggleKeyboard(): void
+  {
+    this.keyboardService.toggle();
   }
 }
