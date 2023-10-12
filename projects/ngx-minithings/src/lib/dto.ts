@@ -18,6 +18,7 @@ export enum HostDTOType
 export interface UnitDTO
 {
     id: string;
+    code: string | null;
 }
 
 export interface ContainerDTO

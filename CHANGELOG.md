@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.4.0
+
+### Features
+
+- TableSearch interface
+- UnitDTO.code
+
+### Fixed
+
+- Populated index.ts with missing API
+
+### Refactor
+
+- FormUtils
+
 ## 0.3.0
 
 ### Features
