@@ -4,7 +4,7 @@ import { Observable, map } from "rxjs";
 import { SelectedInputEvent } from "../input/selected-input/selected-input";
 import { SelectedInputService }
   from "../input/selected-input/selected-input.service";
-import { ButtonMode } from "ngx-minithings/button/button.component";
+import { ButtonMode } from "../button/button.component";
 
 @Component({
   selector: "ngx-minithings-keyboard",
