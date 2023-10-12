@@ -18,6 +18,7 @@ import { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
 import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 import { CapitalizePipe } from "./str/capitalize.pipe";
 import { PaginationComponent } from "./pagination/pagination.component";
+import { IncludesPipe } from "./includes.pipe";
 
 
 @NgModule({
@@ -36,13 +37,15 @@ import { PaginationComponent } from "./pagination/pagination.component";
     UnixTimestampToDatePipe,
     CapitalizeEachPipe,
     CapitalizePipe,
-    PaginationComponent
+    PaginationComponent,
+    IncludesPipe
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule
   ],
   exports: [
+    IncludesPipe,
     ButtonComponent,
     InputComponent,
     AlertStackComponent,
