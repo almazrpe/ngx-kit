@@ -1,3 +1,5 @@
+export { FormUtils } from "./forms";
+
 export {
   ValueValidatorEvent
 } from "./input/selected-input/value-validator-event";
