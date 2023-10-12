@@ -1,3 +1,4 @@
+export { IncludesPipe } from "./includes.pipe";
 export { KeyboardService } from "./keyboard/keyboard.service";
 
 export { TranslationUtils } from "./translation/utils";
