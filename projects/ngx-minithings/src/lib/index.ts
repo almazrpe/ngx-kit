@@ -1,4 +1,5 @@
 export { FormUtils } from "./forms";
+export { TableSearch } from "./search";
 
 export {
   ValueValidatorEvent
