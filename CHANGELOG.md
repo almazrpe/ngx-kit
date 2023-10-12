@@ -16,6 +16,10 @@
 - FormUtils
 - dps -> ngx-minithings-dps
 
+### Docs
+
+- Readme safelist recommendations
+
 ## 0.3.0
 
 ### Features

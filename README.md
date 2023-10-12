@@ -24,6 +24,23 @@ module.exports = {
 }
 ```
 
+Tailwind uses as minimal final generated stylesheet as possible, scanning your
+files, but it is possible for some styles to not load correctly, for these
+cases we recommend to additionally add this safelist configuration:
+```js
+module.exports = {
+  ...
+  safelist: [
+    "bg-sky-200",
+    "text-sky-800",
+    "bg-yellow-200",
+    "text-yellow-800",
+    "bg-red-200",
+    "text-red-800"
+  ]
+}
+```
+
 > ⚠️ In order to import other assets, you need to copy-paste them into your
 > app's `assets/ngx-minithings` directory.
 
