@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.1
+
+### Fixed
+
+- Invalid import paths
+
 ## 0.4.0
 
 ### Features
