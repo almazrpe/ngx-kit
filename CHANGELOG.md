@@ -14,6 +14,7 @@
 ### Refactor
 
 - FormUtils
+- dps -> ngx-minithings-dps
 
 ## 0.3.0
 

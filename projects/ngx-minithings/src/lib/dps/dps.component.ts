@@ -8,7 +8,7 @@ import { ButtonMode } from "../button/button.component";
 import { FallbackTranslations } from "../translation/models";
 
 @Component({
-  selector: "dps",
+  selector: "ngx-minithings-dps",
   templateUrl: "./dps.component.html",
   styleUrls: [],
 })
