@@ -1,12 +1,15 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, AsyncSubject } from "rxjs";
 import {
   PaginationItem,
   PaginationFilter,
   PaginationConfig,
   PaginationViewType,
+  makeConfig,
   TableColumn,
+  PaginationIcon,
+  isPaginationIcon,
   SortTableColumn,
   SortColumnMode
 } from "./models";
@@ -22,25 +25,16 @@ import { StatusCircleMode } from "../status-circle/status-circle.component";
 export class PaginationComponent implements OnInit
 {
   // List of items for the pagination
-  @Input() public paginationItems: PaginationItem[];
+  @Input() public paginationItems: PaginationItem[] = [];
   // List of available filters for the pagination
-  @Input() public paginationFilters: PaginationFilter[];
+  @Input() public paginationFilters: PaginationFilter[] = [];
   // Configuration object for the pagination
-  @Input() public config: PaginationConfig =
-    {
-      itemCntPerPage: 1,
-      visiblePagesCnt: 5,
-      viewType: PaginationViewType.Table
-    };
+  @Input() public config: PaginationConfig = makeConfig();
 
   // Lists of items and filters that are active and on the screen
-  public paginationItems$: BehaviorSubject<PaginationItem[]> =
-    new BehaviorSubject<PaginationItem[]>([]);
-  public paginationFilters$: BehaviorSubject<PaginationFilter[]> =
-    new BehaviorSubject<PaginationFilter[]>([]);
-
-  private unsortedPaginationItems: PaginationItem[];
-  private unsortedPaginationFilters: PaginationFilter[];
+  public activePaginationItems: PaginationItem[] = [];
+  public activePaginationFilters: PaginationFilter[] = [];
+  public disabledPaginationFilters: PaginationFilter[] = [];
 
   // Imported modules for html
   public MathModule: any = Math;
@@ -58,15 +52,13 @@ export class PaginationComponent implements OnInit
   private curFilterValues: Map<string, any> = new Map<string, any>([]);
 
   public tableColumns: TableColumn[] = [];
+  public sortChosenColumns: SortTableColumn[] = [];
 
-  public sortChosenColumns: SortTableColumn[] =
-    [{
-      column: {
-        labelText: "Название",
-        type: "string"
-      },
-      mode: SortColumnMode.OFF
-    }];
+  public paginationItemsCount: number;
+  public paginationFiltersCount: number;
+  private updateCheckingInterval: number = 1000;
+
+  public isTableOverflowing: boolean = false;
 
   public constructor(
     private router: Router,
@@ -78,34 +70,75 @@ export class PaginationComponent implements OnInit
       labelText: "Название",
       type: "string"
     });
-
     this.paginationItems.forEach((item: PaginationItem, index: number) =>
     {
       for (const key in item.attr)
       {
-        if (undefined == this.tableColumns.find(item =>
+        let attrType: string;
+        if (isPaginationIcon(item.attr[key]))
+          attrType = "PaginationIcon";
+        else
+          attrType = typeof item.attr[key];
+
+        if (undefined == this.tableColumns.find(column =>
         {
-          return item.labelText == key;
+          return column.labelText == key
+                 && column.type == attrType;
         }))
         {
+          if (attrType == undefined)
+            continue
+
           this.tableColumns.push({
             labelText: key,
-            type: typeof item.attr[key]
+            type: attrType
           });
         }
       }
 
       this.paginationItems[index].attr["Название"] = item.text;
     });
-
-    this.paginationItems$.next(this.paginationItems);
-    this.unsortedPaginationItems = this.paginationItems.concat();
-    this.unsortedPaginationFilters = this.paginationFilters.concat();
-
+    this.activePaginationItems = this.paginationItems.concat();
+    this.disabledPaginationFilters = this.paginationFilters.concat();
+    this.paginationItemsCount = this.paginationItems.length;
+    this.paginationFiltersCount = this.paginationFilters.length;
     this.pageCnt = this.paginationItems.length > 1
       ? Math.ceil(this.paginationItems.length /
                        this.config.itemCntPerPage)
       : 1;
+
+    setInterval(() => {
+      if (this.paginationItems.length != this.paginationItemsCount)
+      {
+        this.paginationItemsCount = this.paginationItems.length;
+        this.paginationItems.forEach((item: PaginationItem, index: number) =>
+        {
+          this.paginationItems[index].attr["Название"] = item.text;
+        });
+        this.refreshPages();
+      }
+      if (this.paginationFilters.length != this.paginationFiltersCount)
+      {
+        this.paginationFiltersCount = this.paginationFilters.length;
+        this.disabledPaginationFilters = this.disabledPaginationFilters.concat(
+          this.paginationFilters.filter( mainFilter =>
+          {
+            let activeCheck: PaginationFilter | undefined =
+              this.activePaginationFilters.find(activeFilter =>
+            {
+              return mainFilter.id == activeFilter.id;
+            });
+
+            let disabledCheck: PaginationFilter | undefined =
+              this.disabledPaginationFilters.find(disabledFilter =>
+            {
+              return mainFilter.id == disabledFilter.id;
+            });
+
+            return activeCheck == undefined && disabledCheck == undefined;
+          }));
+      }
+    }, this.updateCheckingInterval);
   }
 
   public getNextPage(): void
@@ -148,14 +181,16 @@ export class PaginationComponent implements OnInit
   public dropFilter(filterId: string): void
   {
     const filter: PaginationFilter | undefined =
-      this.unsortedPaginationFilters.find(filter=>
+      this.paginationFilters.find(filter=>
       {
         return filter.id == filterId;
       });
-    filter != undefined ? this.paginationFilters.push(filter) : null;
+    filter != undefined ? this.disabledPaginationFilters.push(filter) : null;
 
-    this.paginationFilters$.next(
-      this.paginationFilters$.value.filter(f => {return f.id !== filterId;}));
+    this.activePaginationFilters = this.activePaginationFilters.filter(f =>
+    {
+      return f.id !== filterId;
+    });
 
     this.curFilterValues.delete(filterId);
     this.refreshPages();
@@ -163,20 +198,18 @@ export class PaginationComponent implements OnInit
 
   public addFilter(filterId: string): void
   {
-    for (const filter of this.paginationFilters$.value)
+    for (const filter of this.activePaginationFilters)
     {
       if (filter.id == filterId)
         return;
     }
 
-    this.paginationFilters = this.paginationFilters.filter(filter =>
+    this.disabledPaginationFilters =
+      this.disabledPaginationFilters.filter(filter =>
     {
       if (filter.id == filterId)
       {
-        const newPagFilters: PaginationFilter[] =
-          this.paginationFilters$.value;
-        newPagFilters.push(filter);
-        this.paginationFilters$.next(newPagFilters);
+        this.activePaginationFilters.push(filter);
         return false;
       }
       else
@@ -218,8 +251,9 @@ export class PaginationComponent implements OnInit
 
   private refreshPages(): void
   {
-    this.paginationItems$.next(
-      this.paginationItems.filter(item =>
+    this.sortChosenColumns = []
+    this.activePaginationItems =
+      this.paginationItems.concat().filter(item =>
       {
         let isThereColumnFilters: boolean = false;
         let isColumnFilterApproved: boolean = false;
@@ -261,10 +295,10 @@ export class PaginationComponent implements OnInit
           return false;
         else
           return true;
-      }));
+      });
 
-    this.pageCnt = this.paginationItems$.value.length > 1
-      ? Math.ceil(this.paginationItems$.value.length /
+    this.pageCnt = this.activePaginationItems.length > 1
+      ? Math.ceil(this.activePaginationItems.length /
                        this.config.itemCntPerPage)
       : 1;
   }
@@ -298,6 +332,16 @@ export class PaginationComponent implements OnInit
     else if (a.attr[chosenColumnName] == undefined
              && b.attr[chosenColumnName] != undefined)
       return 1 * modeFactor;
+    else if (isPaginationIcon(a.attr[chosenColumnName])
+             && isPaginationIcon(b.attr[chosenColumnName])
+             && (a.attr[chosenColumnName].priority >=
+                   b.attr[chosenColumnName].priority))
+      return 1 * modeFactor;
+    else if (isPaginationIcon(a.attr[chosenColumnName])
+             && isPaginationIcon(b.attr[chosenColumnName])
+             && (a.attr[chosenColumnName].priority <
+                   b.attr[chosenColumnName].priority))
+      return -1 * modeFactor;
     else if (typeof a.attr[chosenColumnName] == "boolean"
              && typeof b.attr[chosenColumnName] == "boolean"
              && b.attr[chosenColumnName] == true)
@@ -329,14 +373,12 @@ export class PaginationComponent implements OnInit
       }];
 
       if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
-        this.paginationItems.sort((a, b) =>
+        this.activePaginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
       else
-        this.paginationItems = this.unsortedPaginationItems.concat();
-
-      this.refreshPages();
+        this.refreshPages();
     }
     else
     {
@@ -364,14 +406,12 @@ export class PaginationComponent implements OnInit
       }
 
       if (this.sortChosenColumns.length != 0)
-        this.paginationItems.sort((a, b) =>
+        this.activePaginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
       else
-        this.paginationItems = this.unsortedPaginationItems.concat();
-
-      this.refreshPages();
+        this.refreshPages();
     }
   }
 
@@ -383,6 +423,22 @@ export class PaginationComponent implements OnInit
         scolumn.column.labelText == column.labelText);
 
     return sortColumn == undefined ? false : modes.includes(sortColumn.mode);
+  }
+
+  public scrollTableRight(event: any): void
+  {
+    const elem: HTMLElement = (event.target.parentElement.parentElement
+                                 .parentElement.getElementsByTagName("table")[0]
+                                 .parentElement)
+    elem.scrollLeft -= 50;
+  }
+
+  public scrollTableLeft(event: any): void
+  {
+    const elem: HTMLElement = (event.target.parentElement.parentElement
+                                 .parentElement.getElementsByTagName("table")[0]
+                                 .parentElement)
+    elem.scrollLeft += 50;
   }
 
 }

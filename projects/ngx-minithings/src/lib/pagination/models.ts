@@ -37,12 +37,48 @@ export interface PaginationConfig {
   // Number of pages (including first and last page)
   // that must be shown in the bottom part
   visiblePagesCnt: number;
-  viewType?: PaginationViewType;
+  // Title that will be displayed in case no suitable
+  // items was found (after all filters implementation)
+  noSuitableItemsTitle?: string;
+  // Title that will be displayed in case
+  // no items have been sent to the component
+  noAnyItemsTitle?: string;
+
+  viewType: PaginationViewType;
+}
+
+export function makeConfig(options?:Partial<PaginationConfig>): PaginationConfig
+{
+  const defaults = {
+    itemCntPerPage: 1,
+    visiblePagesCnt: 5,
+    noSuitableItemsTitle: "Подходящие страницы не найдены...",
+    noAnyItemsTitle: "Страницы не найдены...",
+    viewType: PaginationViewType.Table
+  };
+
+  return {
+    ...defaults,
+    ...options,
+  };
 }
 
 export interface TableColumn {
   labelText: string;
   type: string;
+}
+
+export interface PaginationIcon {
+  priority: number;
+  src: string;
+  animatePing: boolean;
+}
+
+export const isPaginationIcon =
+  (item: PaginationIcon | any): item is PaginationIcon =>
+{
+  return (item as PaginationIcon).priority !== undefined
+          && (item as PaginationIcon).src !== undefined
 }
 
 export enum SortColumnMode {
