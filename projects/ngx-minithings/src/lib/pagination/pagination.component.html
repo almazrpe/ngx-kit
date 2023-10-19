@@ -5,7 +5,10 @@
     <!------------------------------------------------------------------------>
     <ng-container *ngIf="paginationItemsCount > 0">
       <div class="w-full flex flex-row justify-between">
-        <div class="w-full mr-2 flex flex-col gap-2 pb-3 overflow-x-scroll">
+        <div
+          class="w-full flex flex-col gap-2 pb-3 overflow-x-auto"
+          [ngClass]="{'mr-2': paginationFiltersCount > 0}"
+        >
           <ngx-minithings-input
             [type]="InpType.Text"
             [placeholder]="'Поиск по словам...'"
@@ -21,7 +24,7 @@
                   {{filter.labelText}}
                 </div>
                 <div
-                  class="px-1.5 bg-red-50 rounded-r cursor-pointer"
+                  class="px-2 bg-red-50 rounded-r cursor-pointer"
                   (click)="dropFilter(filter.id)"
                 >X
                 </div>
@@ -69,7 +72,7 @@
                   {{filter.labelText}}
                 </div>
                 <div
-                  class="px-1.5 bg-red-50 rounded-r cursor-pointer"
+                  class="px-2 bg-red-50 rounded-r cursor-pointer"
                   (click)="addFilter(filter.id)"
                 >+
                 </div>
@@ -179,10 +182,9 @@
               <ng-template #show_table>
                 <td
                   *ngFor="let column of tableColumns;"
-                  class="px-3 py-1.5 text-left"
+                  class="px-3 py-1.5"
                   [ngClass]="{
-                    'align-top
-                     text-left': !(['boolean',
+                    'text-left': !(['boolean',
                                     'PaginationIcon'].includes(column.type)),
                     'text-center': ['boolean',
                                     'PaginationIcon'].includes(column.type),
@@ -191,7 +193,9 @@
 
                   <ng-container
                     *ngIf="
-                      !(['boolean', 'PaginationIcon'].includes(column.type))
+                      !(['boolean',
+                         'PaginationIcon',
+                         'PaginationDateTime'].includes(column.type))
                       || item.attr[column.labelText] == undefined;
                         else decorated_output
                     "
@@ -199,6 +203,18 @@
                     {{item.attr[column.labelText]}}
                   </ng-container>
                   <ng-template #decorated_output>
+                    <ng-container
+                      *ngIf="column.type == 'PaginationDateTime'
+                             && item.attr[column.labelText] as dt"
+                    >
+                      {{
+                        (dt.formatter
+                         ?? defaultDateTimeFormatters[(dt.type ?? 0)])
+                           .format(dt.value) +
+                        (dt.endStr ?? '')
+                      }}
+                    </ng-container>
+
                     <ng-container *ngIf="column.type == 'boolean'">
                       <ngx-minithings-status-circle
                         class="inline-block"

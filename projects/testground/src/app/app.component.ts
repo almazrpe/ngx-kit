@@ -15,7 +15,6 @@ import {
   makeConfig,
   PaginationViewType
 } from "ngx-minithings/pagination/models";
-import { Observable, of, from, switchMap, delay, concatMap, timer } from "rxjs"
 
 @Component({
   selector: "app-root",
@@ -66,16 +65,15 @@ export class AppComponent implements OnInit
     ///////////////////////// Pagination settings ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     this.paginationConfig = makeConfig(
-    {
-      itemCntPerPage: 5,
-      visiblePagesCnt: 5,
-      //noSuitableItemsTitle: "Подходящие страницы не найдены...",
-      //noAnyItemsTitle: "Страницы не найдены...",
-      viewType: PaginationViewType.Table
-    });
+      {
+        itemCntPerPage: 5,
+        visiblePagesCnt: 5,
+        //noSuitableItemsTitle: "Подходящие страницы не найдены...",
+        //noAnyItemsTitle: "Страницы не найдены...",
+        viewType: PaginationViewType.Table
+      });
 
-    /*
-    this.paginationFilters.push({
+    setTimeout(() => this.paginationFilters.unshift({
       id: "1",
       labelText: "Отдел",
       inputConfig: {
@@ -84,16 +82,15 @@ export class AppComponent implements OnInit
         max: 10,
         placeholder: "Введите название отдела..."
       },
-    });
+    }), 5000 );
 
-    this.paginationFilters.push({
+    setTimeout(() => this.paginationFilters.unshift({
       id: "2",
       labelText: "Количество страниц",
       inputConfig: {
         type: InputType.Number,
       },
-    });
-    */
+    }), 5000 );
 
     this.paginationItems.push({
       text: "Журнал разработки Л904",
@@ -105,8 +102,8 @@ export class AppComponent implements OnInit
       attr: {
         "Размер": 200,
         "Статус": {priority: 3,
-                   src: "assets/ngx-minithings/info.svg",
-                   animatePing: true}
+          src: "assets/ngx-minithings/info.svg",
+          animatePing: true}
       }
     });
 
@@ -120,7 +117,24 @@ export class AppComponent implements OnInit
       attr: {
         "Тип": "Книга",
         "Размер": 200,
-        "Переиздание": true
+        "Переиздание": true,
+        "Дата & Время": {
+          value: new Date(628021800000)
+        },
+        "Дата": {
+          value: new Date(628021800000),
+          type: 1,
+          formatter: new Intl.DateTimeFormat("ru-RU",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+        },
+        "Время": {
+          value: new Date(628021800000),
+          type: 2
+        }
       }
     });
 
@@ -135,8 +149,21 @@ export class AppComponent implements OnInit
         "Тип": "Руководство",
         "Размер": 20,
         "Статус": {priority: 2,
-                   src: "assets/ngx-minithings/warning.svg",
-                   animatePing: false}
+          src: "assets/ngx-minithings/warning.svg",
+          animatePing: false},
+        "Дата & Время": {
+          value: new Date()
+        },
+        "Дата": {
+          value: new Date(),
+          type: 1,
+          endStr: " г."
+        },
+        "Время": {
+          value: new Date(),
+          type: 2,
+          endStr: " МСК"
+        }
       }
     });
 
@@ -152,8 +179,8 @@ export class AppComponent implements OnInit
         "Размер": 10,
         "Переиздание": false,
         "Статус": {priority: 1,
-                   src: "assets/ngx-minithings/error.svg",
-                   animatePing: false}
+          src: "assets/ngx-minithings/error.svg",
+          animatePing: false}
       }
     });
 
@@ -166,7 +193,14 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "Руководство",
-        "Размер": 20
+        "Размер": 20,
+        "Дата & Время": {
+          value: new Date(2023, 10, 18)
+        },
+        "Дата": {
+          value: new Date(2023, 10, 18),
+          type: 1
+        }
       }
     });
 
@@ -179,7 +213,14 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "Руководство",
-        "Размер": 10
+        "Размер": 10,
+        "Дата & Время": {
+          value: new Date(2023, 10, 17)
+        },
+        "Дата": {
+          value: new Date(2023, 10, 17),
+          type: 1
+        }
       }
     });
 
@@ -192,19 +233,16 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "ГОСТ",
-        "Размер": 10
+        "Размер": 10,
+        "Дата & Время": {
+          value: new Date(2024, 10, 17)
+        },
+        "Дата": {
+          value: new Date(2024, 10, 17),
+          type: 1
+        }
       }
     });
-
-
-    /*let myarray: PaginationItem[] = [{
-      text: "0000000",
-      route: "/",
-      filterValues: [],
-      attr: {}
-    }]*/
-    //let paginationItems$ = of(this.paginationItems);
-    //console.log(paginationItems$.value)
 
     setTimeout(() => this.paginationItems.unshift({
       text: "0000000",
@@ -223,28 +261,6 @@ export class AppComponent implements OnInit
         "Размер": 10
       }
     }), 10000 );
-
-    setTimeout(() => this.paginationItems.unshift({
-      text: "222222222",
-      route: "/",
-      filterValues: [],
-      attr: {
-        "Размер": 10
-      }
-    }), 15000 );
-
-    setTimeout(() => this.paginationFilters.unshift({
-      id: "3",
-      labelText: "Test",
-      inputConfig: {
-        type: InputType.Text,
-      },
-    }), 5000 );
-
-    //this.paginationItems$.subscribe((items: PaginationItem[]) => console.log(items))
-
-    //this.paginationItems$.pipe(delay(7000)).subscribe((items: PaginationItem[]) => console.log(items))
-
   }
 
   public spawnAlert(level: AlertLevel, message: string): void

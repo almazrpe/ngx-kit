@@ -5,10 +5,10 @@ import {
   Input,
   EventEmitter,
   ElementRef
-} from '@angular/core';
+} from "@angular/core";
 
 @Directive({
-  selector: '[paginationOverflowDetect]'
+  selector: "[paginationOverflowDetect]"
 })
 export class PaginationOverflowDirective
 {
@@ -21,21 +21,22 @@ export class PaginationOverflowDirective
   public ngOnInit(): void
   {
     this.oldPage = this.curPage;
-    setInterval(() => {
+    setInterval(() => 
+    {
       if (this.curPage != this.oldPage)
         this.oldPage = this.curPage;
-        this.overflowCheck();
+      this.overflowCheck();
     }, 100);
   }
 
-  constructor(
+  public constructor(
     public element: ElementRef
   ) {}
 
-  @HostListener('window:load')
+  @HostListener("window:load")
   public onLoad(): void { this.overflowCheck(); }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   public onResize(): void { this.overflowCheck(); }
 
   private overflowCheck(): void

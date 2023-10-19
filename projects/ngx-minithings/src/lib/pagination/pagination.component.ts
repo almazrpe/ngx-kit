@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject, AsyncSubject } from "rxjs";
 import {
   PaginationItem,
   PaginationFilter,
@@ -8,10 +7,10 @@ import {
   PaginationViewType,
   makeConfig,
   TableColumn,
-  PaginationIcon,
-  isPaginationIcon,
   SortTableColumn,
-  SortColumnMode
+  SortColumnMode,
+  isPaginationIcon,
+  isPaginationDateTime
 } from "./models";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
@@ -44,6 +43,31 @@ export class PaginationComponent implements OnInit
   public InpType: any = InputType;
   public SortColMode: any = SortColumnMode;
 
+  public defaultDateTimeFormatters: Intl.DateTimeFormat[] =
+    [
+      new Intl.DateTimeFormat("ru-RU",
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }),
+
+      new Intl.DateTimeFormat("ru-RU",
+        {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }),
+
+      new Intl.DateTimeFormat("ru-RU",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+    ];
+
   public pageCnt: number;
   public curPage: number = 0;
   public leftSlice: number = 0;
@@ -75,8 +99,10 @@ export class PaginationComponent implements OnInit
       for (const key in item.attr)
       {
         let attrType: string;
-        if (isPaginationIcon(item.attr[key]))
+        if (isPaginationIcon(item.attr[key]) == true)
           attrType = "PaginationIcon";
+        else if (isPaginationDateTime(item.attr[key]) == true)
+          attrType = "PaginationDateTime";
         else
           attrType = typeof item.attr[key];
 
@@ -87,7 +113,7 @@ export class PaginationComponent implements OnInit
         }))
         {
           if (attrType == undefined)
-            continue
+            continue;
 
           this.tableColumns.push({
             labelText: key,
@@ -98,6 +124,7 @@ export class PaginationComponent implements OnInit
 
       this.paginationItems[index].attr["Название"] = item.text;
     });
+    console.log(this.tableColumns);
     this.activePaginationItems = this.paginationItems.concat();
     this.disabledPaginationFilters = this.paginationFilters.concat();
     this.paginationItemsCount = this.paginationItems.length;
@@ -107,7 +134,8 @@ export class PaginationComponent implements OnInit
                        this.config.itemCntPerPage)
       : 1;
 
-    setInterval(() => {
+    setInterval(() => 
+    {
       if (this.paginationItems.length != this.paginationItemsCount)
       {
         this.paginationItemsCount = this.paginationItems.length;
@@ -123,17 +151,17 @@ export class PaginationComponent implements OnInit
         this.disabledPaginationFilters = this.disabledPaginationFilters.concat(
           this.paginationFilters.filter( mainFilter =>
           {
-            let activeCheck: PaginationFilter | undefined =
+            const activeCheck: PaginationFilter | undefined =
               this.activePaginationFilters.find(activeFilter =>
-            {
-              return mainFilter.id == activeFilter.id;
-            });
+              {
+                return mainFilter.id == activeFilter.id;
+              });
 
-            let disabledCheck: PaginationFilter | undefined =
+            const disabledCheck: PaginationFilter | undefined =
               this.disabledPaginationFilters.find(disabledFilter =>
-            {
-              return mainFilter.id == disabledFilter.id;
-            });
+              {
+                return mainFilter.id == disabledFilter.id;
+              });
 
             return activeCheck == undefined && disabledCheck == undefined;
           }));
@@ -206,15 +234,15 @@ export class PaginationComponent implements OnInit
 
     this.disabledPaginationFilters =
       this.disabledPaginationFilters.filter(filter =>
-    {
-      if (filter.id == filterId)
       {
-        this.activePaginationFilters.push(filter);
-        return false;
-      }
-      else
-        return true;
-    });
+        if (filter.id == filterId)
+        {
+          this.activePaginationFilters.push(filter);
+          return false;
+        }
+        else
+          return true;
+      });
 
     this.isFiltersWindowShown = true;
   }
@@ -251,7 +279,7 @@ export class PaginationComponent implements OnInit
 
   private refreshPages(): void
   {
-    this.sortChosenColumns = []
+    this.sortChosenColumns = [];
     this.activePaginationItems =
       this.paginationItems.concat().filter(item =>
       {
@@ -328,19 +356,51 @@ export class PaginationComponent implements OnInit
       return this.sortingCondition(a, b, iter + 1);
     else if (a.attr[chosenColumnName] != undefined
              && b.attr[chosenColumnName] == undefined)
-      return -1 * modeFactor;
+      return (modeFactor == 1
+        ? -1 * modeFactor
+        : 1 * modeFactor);
     else if (a.attr[chosenColumnName] == undefined
              && b.attr[chosenColumnName] != undefined)
-      return 1 * modeFactor;
-    else if (isPaginationIcon(a.attr[chosenColumnName])
-             && isPaginationIcon(b.attr[chosenColumnName])
-             && (a.attr[chosenColumnName].priority >=
+      return (modeFactor == 1
+        ? 1 * modeFactor
+        : -1 * modeFactor);
+    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
+             && isPaginationIcon(b.attr[chosenColumnName]) == true
+             && (a.attr[chosenColumnName].priority >
                    b.attr[chosenColumnName].priority))
       return 1 * modeFactor;
-    else if (isPaginationIcon(a.attr[chosenColumnName])
-             && isPaginationIcon(b.attr[chosenColumnName])
-             && (a.attr[chosenColumnName].priority <
+    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
+             && isPaginationIcon(b.attr[chosenColumnName]) == true
+             && (a.attr[chosenColumnName].priority <=
                    b.attr[chosenColumnName].priority))
+      return -1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type != 2
+             && b.attr[chosenColumnName].type != 2
+             && (a.attr[chosenColumnName].value >
+                   b.attr[chosenColumnName].value))
+      return 1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type != 2
+             && b.attr[chosenColumnName].type != 2
+             && (a.attr[chosenColumnName].value <=
+                   b.attr[chosenColumnName].value))
+      return -1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type == 2
+             && b.attr[chosenColumnName].type == 2
+             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") >
+                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
+      return 1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type == 2
+             && b.attr[chosenColumnName].type == 2
+             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") <=
+                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
       return -1 * modeFactor;
     else if (typeof a.attr[chosenColumnName] == "boolean"
              && typeof b.attr[chosenColumnName] == "boolean"
@@ -428,16 +488,16 @@ export class PaginationComponent implements OnInit
   public scrollTableRight(event: any): void
   {
     const elem: HTMLElement = (event.target.parentElement.parentElement
-                                 .parentElement.getElementsByTagName("table")[0]
-                                 .parentElement)
+      .parentElement.getElementsByTagName("table")[0]
+      .parentElement);
     elem.scrollLeft -= 50;
   }
 
   public scrollTableLeft(event: any): void
   {
     const elem: HTMLElement = (event.target.parentElement.parentElement
-                                 .parentElement.getElementsByTagName("table")[0]
-                                 .parentElement)
+      .parentElement.getElementsByTagName("table")[0]
+      .parentElement);
     elem.scrollLeft += 50;
   }
 
