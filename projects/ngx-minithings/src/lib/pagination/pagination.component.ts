@@ -10,7 +10,9 @@ import {
   SortTableColumn,
   SortColumnMode,
   isPaginationIcon,
-  isPaginationDateTime
+  isPaginationDateTime,
+  PaginationDateTimeMode,
+  defaultDateTimeFormatters
 } from "./models";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
@@ -30,43 +32,36 @@ export class PaginationComponent implements OnInit
   // Configuration object for the pagination
   @Input() public config: PaginationConfig = makeConfig();
 
+  // Map object with custom sorting functions (compare-like)
+  // for sorting columns of the component
+  // (in case viewType configuration of the component is Table)
+  // The keys of the Map object are names of table columns
+  // The values of the Map object are functions
+  // that must be used to sort this columns
+  // Your custom function should receive 3 arguments:
+  // a (of your expected type),
+  // b (of your expected type), and
+  // modeFactor (1 or -1) that will tell your
+  // function is that ASC or DESC sorting
+  // Your function must return a number
+  /* eslint-disable @typescript-eslint/ban-types */
+  @Input() public customColumnSortingFunctions: Map<string, Function> =
+    new Map<string, Function>([]);
+  /* eslint-enable */
+
   // Lists of items and filters that are active and on the screen
   public activePaginationItems: PaginationItem[] = [];
   public activePaginationFilters: PaginationFilter[] = [];
   public disabledPaginationFilters: PaginationFilter[] = [];
 
-  // Imported modules for html
+  // Imported modules, interfaces and etc for html
   public MathModule: any = Math;
   public BtnMode: any = ButtonMode;
   public CircleMode: any = StatusCircleMode;
   public PagViewType: any = PaginationViewType;
   public InpType: any = InputType;
   public SortColMode: any = SortColumnMode;
-
-  public defaultDateTimeFormatters: Intl.DateTimeFormat[] =
-    [
-      new Intl.DateTimeFormat("ru-RU",
-        {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
-        }),
-
-      new Intl.DateTimeFormat("ru-RU",
-        {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-        }),
-
-      new Intl.DateTimeFormat("ru-RU",
-        {
-          hour: "2-digit",
-          minute: "2-digit"
-        })
-    ];
+  public defaultDTFormatters: any = defaultDateTimeFormatters;
 
   public pageCnt: number;
   public curPage: number = 0;
@@ -83,6 +78,7 @@ export class PaginationComponent implements OnInit
   private updateCheckingInterval: number = 1000;
 
   public isTableOverflowing: boolean = false;
+  private tableScrollingSpeed: number = 50;
 
   public constructor(
     private router: Router,
@@ -90,10 +86,13 @@ export class PaginationComponent implements OnInit
 
   public ngOnInit(): void
   {
-    this.tableColumns.push({
-      labelText: "Название",
-      type: "string"
-    });
+    if (this.config.firstColumnOff == undefined
+        || this.config.firstColumnOff == false)
+      this.tableColumns.push({
+        labelText: this.config.firstColumnTitle ?? "Название",
+        type: "string"
+      });
+
     this.paginationItems.forEach((item: PaginationItem, index: number) =>
     {
       for (const key in item.attr)
@@ -122,9 +121,11 @@ export class PaginationComponent implements OnInit
         }
       }
 
-      this.paginationItems[index].attr["Название"] = item.text;
+      if (this.config.firstColumnOff == undefined
+          || this.config.firstColumnOff == false)
+        (this.paginationItems[index]
+          .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
     });
-    console.log(this.tableColumns);
     this.activePaginationItems = this.paginationItems.concat();
     this.disabledPaginationFilters = this.paginationFilters.concat();
     this.paginationItemsCount = this.paginationItems.length;
@@ -141,7 +142,10 @@ export class PaginationComponent implements OnInit
         this.paginationItemsCount = this.paginationItems.length;
         this.paginationItems.forEach((item: PaginationItem, index: number) =>
         {
-          this.paginationItems[index].attr["Название"] = item.text;
+          if (this.config.firstColumnOff == undefined
+              || this.config.firstColumnOff == false)
+            (this.paginationItems[index]
+              .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
         });
         this.refreshPages();
       }
@@ -348,7 +352,41 @@ export class PaginationComponent implements OnInit
     const modeFactor: number = this.sortChosenColumns[iter].mode +
       Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
 
-    if (( a.attr[chosenColumnName] == undefined
+    if (this.customColumnSortingFunctions.has(chosenColumnName))
+    {
+      /* eslint-disable @typescript-eslint/ban-types */
+      const func: Function | undefined =
+        this.customColumnSortingFunctions.get(chosenColumnName);
+      /* eslint-enable */
+
+      let res: number | undefined = undefined;
+      try
+      {
+        res = func == undefined
+          ? undefined
+          : func(a.attr[chosenColumnName],
+            b.attr[chosenColumnName],
+            modeFactor);
+      }
+      catch (error: any)
+      {
+        console.log(error);
+        console.log("Custom column sort function for " +
+                    `the column '${chosenColumnName}' doesn't work!`);
+      }
+
+      if (res == undefined || typeof res != "number")
+      {
+        console.log("Custom column sort function for " +
+                    `the column '${chosenColumnName}' doesn't work!`);
+        return this.sortingCondition(a, b, iter + 1);
+      }
+      else if (res == 0)
+        return this.sortingCondition(a, b, iter + 1);
+      else
+        return res;
+    }
+    else if (( a.attr[chosenColumnName] == undefined
           && b.attr[chosenColumnName] == undefined)
         || a.attr[chosenColumnName] != undefined
            && b.attr[chosenColumnName] != undefined
@@ -376,29 +414,29 @@ export class PaginationComponent implements OnInit
       return -1 * modeFactor;
     else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
              && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type != 2
-             && b.attr[chosenColumnName].type != 2
+             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
              && (a.attr[chosenColumnName].value >
                    b.attr[chosenColumnName].value))
       return 1 * modeFactor;
     else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
              && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type != 2
-             && b.attr[chosenColumnName].type != 2
+             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
              && (a.attr[chosenColumnName].value <=
                    b.attr[chosenColumnName].value))
       return -1 * modeFactor;
     else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
              && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type == 2
-             && b.attr[chosenColumnName].type == 2
+             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
              && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") >
                    b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
       return 1 * modeFactor;
     else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
              && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type == 2
-             && b.attr[chosenColumnName].type == 2
+             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
              && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") <=
                    b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
       return -1 * modeFactor;
@@ -490,7 +528,7 @@ export class PaginationComponent implements OnInit
     const elem: HTMLElement = (event.target.parentElement.parentElement
       .parentElement.getElementsByTagName("table")[0]
       .parentElement);
-    elem.scrollLeft -= 50;
+    elem.scrollLeft -= this.tableScrollingSpeed;
   }
 
   public scrollTableLeft(event: any): void
@@ -498,7 +536,6 @@ export class PaginationComponent implements OnInit
     const elem: HTMLElement = (event.target.parentElement.parentElement
       .parentElement.getElementsByTagName("table")[0]
       .parentElement);
-    elem.scrollLeft += 50;
+    elem.scrollLeft += this.tableScrollingSpeed;
   }
-
 }

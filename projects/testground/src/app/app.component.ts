@@ -12,8 +12,8 @@ import {
   PaginationItem,
   PaginationFilter,
   PaginationConfig,
-  makeConfig,
-  PaginationViewType
+  PaginationViewType,
+  PaginationDateTimeMode
 } from "ngx-minithings/pagination/models";
 
 @Component({
@@ -33,8 +33,10 @@ export class AppComponent implements OnInit
   public paginationItems: PaginationItem[] = [];
   public paginationFilters: PaginationFilter[] = [];
   public paginationConfig: PaginationConfig;
-
-  //public paginationItems$: Observable<PaginationItem[]>;
+  /* eslint-disable @typescript-eslint/ban-types */
+  public customColumnSortingFunctions: Map<string, Function> =
+    new Map<string, Function>([]);
+  /* eslint-enable */
 
   public constructor(
     private alertService: AlertService,
@@ -64,14 +66,21 @@ export class AppComponent implements OnInit
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////// Pagination settings ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    this.paginationConfig = makeConfig(
+    /*this.paginationConfig = makeConfig(
       {
         itemCntPerPage: 5,
         visiblePagesCnt: 5,
-        //noSuitableItemsTitle: "Подходящие страницы не найдены...",
-        //noAnyItemsTitle: "Страницы не найдены...",
+        //noSuitableItemsText: "Подходящие страницы не найдены...",
+        //noAnyItemsText: "Страницы не найдены...",
         viewType: PaginationViewType.Table
-      });
+      });*/
+
+    this.paginationConfig =
+    {
+      itemCntPerPage: 5,
+      visiblePagesCnt: 5,
+      viewType: PaginationViewType.Table
+    };
 
     setTimeout(() => this.paginationFilters.unshift({
       id: "1",
@@ -103,7 +112,8 @@ export class AppComponent implements OnInit
         "Размер": 200,
         "Статус": {priority: 3,
           src: "assets/ngx-minithings/info.svg",
-          animatePing: true}
+          animatePing: true},
+        "Задача": "Задача #1"
       }
     });
 
@@ -123,7 +133,7 @@ export class AppComponent implements OnInit
         },
         "Дата": {
           value: new Date(628021800000),
-          type: 1,
+          type: PaginationDateTimeMode.DATE,
           formatter: new Intl.DateTimeFormat("ru-RU",
             {
               year: "numeric",
@@ -133,8 +143,9 @@ export class AppComponent implements OnInit
         },
         "Время": {
           value: new Date(628021800000),
-          type: 2
-        }
+          type: PaginationDateTimeMode.TIME
+        },
+        "Задача": "Задача #11"
       }
     });
 
@@ -156,14 +167,15 @@ export class AppComponent implements OnInit
         },
         "Дата": {
           value: new Date(),
-          type: 1,
-          endStr: " г."
+          type: PaginationDateTimeMode.DATE,
+          endStr: " год"
         },
         "Время": {
           value: new Date(),
-          type: 2,
-          endStr: " МСК"
-        }
+          type: PaginationDateTimeMode.TIME,
+          endStr: " МСК+1"
+        },
+        "Задача": "Задача #3"
       }
     });
 
@@ -180,7 +192,8 @@ export class AppComponent implements OnInit
         "Переиздание": false,
         "Статус": {priority: 1,
           src: "assets/ngx-minithings/error.svg",
-          animatePing: false}
+          animatePing: false},
+        "Задача": "Задача #2"
       }
     });
 
@@ -199,8 +212,9 @@ export class AppComponent implements OnInit
         },
         "Дата": {
           value: new Date(2023, 10, 18),
-          type: 1
-        }
+          type: PaginationDateTimeMode.DATE
+        },
+        "Задача": "Задача #22"
       }
     });
 
@@ -219,7 +233,7 @@ export class AppComponent implements OnInit
         },
         "Дата": {
           value: new Date(2023, 10, 17),
-          type: 1
+          type: PaginationDateTimeMode.DATE
         }
       }
     });
@@ -239,7 +253,7 @@ export class AppComponent implements OnInit
         },
         "Дата": {
           value: new Date(2024, 10, 17),
-          type: 1
+          type: PaginationDateTimeMode.DATE
         }
       }
     });
@@ -261,6 +275,27 @@ export class AppComponent implements OnInit
         "Размер": 10
       }
     }), 10000 );
+
+    this.customColumnSortingFunctions.set("Задача",
+      (a: string, b: string, modeFactor: number): number =>
+      {
+        if (( a == undefined && b == undefined)
+            || (a != undefined && b != undefined && a == b))
+          return 0;
+        else if (a != undefined && b == undefined)
+          return (modeFactor == 1
+            ? -1 * modeFactor
+            : 1 * modeFactor);
+        else if (a == undefined && b != undefined)
+          return (modeFactor == 1
+            ? 1 * modeFactor
+            : -1 * modeFactor);
+        else if (parseInt(a.slice(a.indexOf("#") + 1)) >
+                   parseInt(b.slice(b.indexOf("#") + 1)))
+          return 1 * modeFactor;
+        else
+          return -1 * modeFactor;
+      });
   }
 
   public spawnAlert(level: AlertLevel, message: string): void

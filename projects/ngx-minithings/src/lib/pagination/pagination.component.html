@@ -209,7 +209,7 @@
                     >
                       {{
                         (dt.formatter
-                         ?? defaultDateTimeFormatters[(dt.type ?? 0)])
+                         ?? defaultDTFormatters[(dt.type ?? 0)])
                            .format(dt.value) +
                         (dt.endStr ?? '')
                       }}
@@ -366,13 +366,13 @@
 <ng-template #no_items>
   <ng-container *ngIf="paginationItemsCount > 0">
     <div class="no-items text-center mt-2 fst-italic">
-      {{config.noSuitableItemsTitle}}
+      {{config.noSuitableItemsText}}
     </div>
   </ng-container>
 
   <ng-container *ngIf="paginationItemsCount == 0">
     <div class="no-items text-center mt-2 fst-italic">
-      {{config.noAnyItemsTitle}}
+      {{config.noAnyItemsText}}
     </div>
   </ng-container>
 </ng-template>
