@@ -1,14 +1,18 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject } from "rxjs";
 import {
   PaginationItem,
   PaginationFilter,
   PaginationConfig,
   PaginationViewType,
+  makeConfig,
   TableColumn,
   SortTableColumn,
-  SortColumnMode
+  SortColumnMode,
+  isPaginationIcon,
+  isPaginationDateTime,
+  PaginationDateTimeMode,
+  defaultDateTimeFormatters
 } from "./models";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
@@ -22,33 +26,42 @@ import { StatusCircleMode } from "../status-circle/status-circle.component";
 export class PaginationComponent implements OnInit
 {
   // List of items for the pagination
-  @Input() public paginationItems: PaginationItem[];
+  @Input() public paginationItems: PaginationItem[] = [];
   // List of available filters for the pagination
-  @Input() public paginationFilters: PaginationFilter[];
+  @Input() public paginationFilters: PaginationFilter[] = [];
   // Configuration object for the pagination
-  @Input() public config: PaginationConfig =
-    {
-      itemCntPerPage: 1,
-      visiblePagesCnt: 5,
-      viewType: PaginationViewType.Table
-    };
+  @Input() public config: PaginationConfig = makeConfig();
+
+  // Map object with custom sorting functions (compare-like)
+  // for sorting columns of the component
+  // (in case viewType configuration of the component is Table)
+  // The keys of the Map object are names of table columns
+  // The values of the Map object are functions
+  // that must be used to sort this columns
+  // Your custom function should receive 3 arguments:
+  // a (of your expected type),
+  // b (of your expected type), and
+  // modeFactor (1 or -1) that will tell your
+  // function is that ASC or DESC sorting
+  // Your function must return a number
+  /* eslint-disable @typescript-eslint/ban-types */
+  @Input() public customColumnSortingFunctions: Map<string, Function> =
+    new Map<string, Function>([]);
+  /* eslint-enable */
 
   // Lists of items and filters that are active and on the screen
-  public paginationItems$: BehaviorSubject<PaginationItem[]> =
-    new BehaviorSubject<PaginationItem[]>([]);
-  public paginationFilters$: BehaviorSubject<PaginationFilter[]> =
-    new BehaviorSubject<PaginationFilter[]>([]);
+  public activePaginationItems: PaginationItem[] = [];
+  public activePaginationFilters: PaginationFilter[] = [];
+  public disabledPaginationFilters: PaginationFilter[] = [];
 
-  private unsortedPaginationItems: PaginationItem[];
-  private unsortedPaginationFilters: PaginationFilter[];
-
-  // Imported modules for html
+  // Imported modules, interfaces and etc for html
   public MathModule: any = Math;
   public BtnMode: any = ButtonMode;
   public CircleMode: any = StatusCircleMode;
   public PagViewType: any = PaginationViewType;
   public InpType: any = InputType;
   public SortColMode: any = SortColumnMode;
+  public defaultDTFormatters: any = defaultDateTimeFormatters;
 
   public pageCnt: number;
   public curPage: number = 0;
@@ -58,15 +71,14 @@ export class PaginationComponent implements OnInit
   private curFilterValues: Map<string, any> = new Map<string, any>([]);
 
   public tableColumns: TableColumn[] = [];
+  public sortChosenColumns: SortTableColumn[] = [];
 
-  public sortChosenColumns: SortTableColumn[] =
-    [{
-      column: {
-        labelText: "Название",
-        type: "string"
-      },
-      mode: SortColumnMode.OFF
-    }];
+  public paginationItemsCount: number;
+  public paginationFiltersCount: number;
+  private updateCheckingInterval: number = 1000;
+
+  public isTableOverflowing: boolean = false;
+  private tableScrollingSpeed: number = 50;
 
   public constructor(
     private router: Router,
@@ -74,38 +86,91 @@ export class PaginationComponent implements OnInit
 
   public ngOnInit(): void
   {
-    this.tableColumns.push({
-      labelText: "Название",
-      type: "string"
-    });
+    if (this.config.firstColumnOff == undefined
+        || this.config.firstColumnOff == false)
+      this.tableColumns.push({
+        labelText: this.config.firstColumnTitle ?? "Название",
+        type: "string"
+      });
 
     this.paginationItems.forEach((item: PaginationItem, index: number) =>
     {
       for (const key in item.attr)
       {
-        if (undefined == this.tableColumns.find(item =>
+        let attrType: string;
+        if (isPaginationIcon(item.attr[key]) == true)
+          attrType = "PaginationIcon";
+        else if (isPaginationDateTime(item.attr[key]) == true)
+          attrType = "PaginationDateTime";
+        else
+          attrType = typeof item.attr[key];
+
+        if (undefined == this.tableColumns.find(column =>
         {
-          return item.labelText == key;
+          return column.labelText == key
+                 && column.type == attrType;
         }))
         {
+          if (attrType == undefined)
+            continue;
+
           this.tableColumns.push({
             labelText: key,
-            type: typeof item.attr[key]
+            type: attrType
           });
         }
       }
 
-      this.paginationItems[index].attr["Название"] = item.text;
+      if (this.config.firstColumnOff == undefined
+          || this.config.firstColumnOff == false)
+        (this.paginationItems[index]
+          .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
     });
-
-    this.paginationItems$.next(this.paginationItems);
-    this.unsortedPaginationItems = this.paginationItems.concat();
-    this.unsortedPaginationFilters = this.paginationFilters.concat();
-
+    this.activePaginationItems = this.paginationItems.concat();
+    this.disabledPaginationFilters = this.paginationFilters.concat();
+    this.paginationItemsCount = this.paginationItems.length;
+    this.paginationFiltersCount = this.paginationFilters.length;
     this.pageCnt = this.paginationItems.length > 1
       ? Math.ceil(this.paginationItems.length /
                        this.config.itemCntPerPage)
       : 1;
+
+    setInterval(() => 
+    {
+      if (this.paginationItems.length != this.paginationItemsCount)
+      {
+        this.paginationItemsCount = this.paginationItems.length;
+        this.paginationItems.forEach((item: PaginationItem, index: number) =>
+        {
+          if (this.config.firstColumnOff == undefined
+              || this.config.firstColumnOff == false)
+            (this.paginationItems[index]
+              .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
+        });
+        this.refreshPages();
+      }
+      if (this.paginationFilters.length != this.paginationFiltersCount)
+      {
+        this.paginationFiltersCount = this.paginationFilters.length;
+        this.disabledPaginationFilters = this.disabledPaginationFilters.concat(
+          this.paginationFilters.filter( mainFilter =>
+          {
+            const activeCheck: PaginationFilter | undefined =
+              this.activePaginationFilters.find(activeFilter =>
+              {
+                return mainFilter.id == activeFilter.id;
+              });
+
+            const disabledCheck: PaginationFilter | undefined =
+              this.disabledPaginationFilters.find(disabledFilter =>
+              {
+                return mainFilter.id == disabledFilter.id;
+              });
+
+            return activeCheck == undefined && disabledCheck == undefined;
+          }));
+      }
+    }, this.updateCheckingInterval);
   }
 
   public getNextPage(): void
@@ -148,14 +213,16 @@ export class PaginationComponent implements OnInit
   public dropFilter(filterId: string): void
   {
     const filter: PaginationFilter | undefined =
-      this.unsortedPaginationFilters.find(filter=>
+      this.paginationFilters.find(filter=>
       {
         return filter.id == filterId;
       });
-    filter != undefined ? this.paginationFilters.push(filter) : null;
+    filter != undefined ? this.disabledPaginationFilters.push(filter) : null;
 
-    this.paginationFilters$.next(
-      this.paginationFilters$.value.filter(f => {return f.id !== filterId;}));
+    this.activePaginationFilters = this.activePaginationFilters.filter(f =>
+    {
+      return f.id !== filterId;
+    });
 
     this.curFilterValues.delete(filterId);
     this.refreshPages();
@@ -163,25 +230,23 @@ export class PaginationComponent implements OnInit
 
   public addFilter(filterId: string): void
   {
-    for (const filter of this.paginationFilters$.value)
+    for (const filter of this.activePaginationFilters)
     {
       if (filter.id == filterId)
         return;
     }
 
-    this.paginationFilters = this.paginationFilters.filter(filter =>
-    {
-      if (filter.id == filterId)
+    this.disabledPaginationFilters =
+      this.disabledPaginationFilters.filter(filter =>
       {
-        const newPagFilters: PaginationFilter[] =
-          this.paginationFilters$.value;
-        newPagFilters.push(filter);
-        this.paginationFilters$.next(newPagFilters);
-        return false;
-      }
-      else
-        return true;
-    });
+        if (filter.id == filterId)
+        {
+          this.activePaginationFilters.push(filter);
+          return false;
+        }
+        else
+          return true;
+      });
 
     this.isFiltersWindowShown = true;
   }
@@ -218,8 +283,9 @@ export class PaginationComponent implements OnInit
 
   private refreshPages(): void
   {
-    this.paginationItems$.next(
-      this.paginationItems.filter(item =>
+    this.sortChosenColumns = [];
+    this.activePaginationItems =
+      this.paginationItems.concat().filter(item =>
       {
         let isThereColumnFilters: boolean = false;
         let isColumnFilterApproved: boolean = false;
@@ -261,10 +327,10 @@ export class PaginationComponent implements OnInit
           return false;
         else
           return true;
-      }));
+      });
 
-    this.pageCnt = this.paginationItems$.value.length > 1
-      ? Math.ceil(this.paginationItems$.value.length /
+    this.pageCnt = this.activePaginationItems.length > 1
+      ? Math.ceil(this.activePaginationItems.length /
                        this.config.itemCntPerPage)
       : 1;
   }
@@ -286,7 +352,41 @@ export class PaginationComponent implements OnInit
     const modeFactor: number = this.sortChosenColumns[iter].mode +
       Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
 
-    if (( a.attr[chosenColumnName] == undefined
+    if (this.customColumnSortingFunctions.has(chosenColumnName))
+    {
+      /* eslint-disable @typescript-eslint/ban-types */
+      const func: Function | undefined =
+        this.customColumnSortingFunctions.get(chosenColumnName);
+      /* eslint-enable */
+
+      let res: number | undefined = undefined;
+      try
+      {
+        res = func == undefined
+          ? undefined
+          : func(a.attr[chosenColumnName],
+            b.attr[chosenColumnName],
+            modeFactor);
+      }
+      catch (error: any)
+      {
+        console.log(error);
+        console.log("Custom column sort function for " +
+                    `the column '${chosenColumnName}' doesn't work!`);
+      }
+
+      if (res == undefined || typeof res != "number")
+      {
+        console.log("Custom column sort function for " +
+                    `the column '${chosenColumnName}' doesn't work!`);
+        return this.sortingCondition(a, b, iter + 1);
+      }
+      else if (res == 0)
+        return this.sortingCondition(a, b, iter + 1);
+      else
+        return res;
+    }
+    else if (( a.attr[chosenColumnName] == undefined
           && b.attr[chosenColumnName] == undefined)
         || a.attr[chosenColumnName] != undefined
            && b.attr[chosenColumnName] != undefined
@@ -294,10 +394,52 @@ export class PaginationComponent implements OnInit
       return this.sortingCondition(a, b, iter + 1);
     else if (a.attr[chosenColumnName] != undefined
              && b.attr[chosenColumnName] == undefined)
-      return -1 * modeFactor;
+      return (modeFactor == 1
+        ? -1 * modeFactor
+        : 1 * modeFactor);
     else if (a.attr[chosenColumnName] == undefined
              && b.attr[chosenColumnName] != undefined)
+      return (modeFactor == 1
+        ? 1 * modeFactor
+        : -1 * modeFactor);
+    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
+             && isPaginationIcon(b.attr[chosenColumnName]) == true
+             && (a.attr[chosenColumnName].priority >
+                   b.attr[chosenColumnName].priority))
       return 1 * modeFactor;
+    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
+             && isPaginationIcon(b.attr[chosenColumnName]) == true
+             && (a.attr[chosenColumnName].priority <=
+                   b.attr[chosenColumnName].priority))
+      return -1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && (a.attr[chosenColumnName].value >
+                   b.attr[chosenColumnName].value))
+      return 1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
+             && (a.attr[chosenColumnName].value <=
+                   b.attr[chosenColumnName].value))
+      return -1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") >
+                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
+      return 1 * modeFactor;
+    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
+             && isPaginationDateTime(b.attr[chosenColumnName]) == true
+             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
+             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") <=
+                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
+      return -1 * modeFactor;
     else if (typeof a.attr[chosenColumnName] == "boolean"
              && typeof b.attr[chosenColumnName] == "boolean"
              && b.attr[chosenColumnName] == true)
@@ -329,14 +471,12 @@ export class PaginationComponent implements OnInit
       }];
 
       if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
-        this.paginationItems.sort((a, b) =>
+        this.activePaginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
       else
-        this.paginationItems = this.unsortedPaginationItems.concat();
-
-      this.refreshPages();
+        this.refreshPages();
     }
     else
     {
@@ -364,14 +504,12 @@ export class PaginationComponent implements OnInit
       }
 
       if (this.sortChosenColumns.length != 0)
-        this.paginationItems.sort((a, b) =>
+        this.activePaginationItems.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
       else
-        this.paginationItems = this.unsortedPaginationItems.concat();
-
-      this.refreshPages();
+        this.refreshPages();
     }
   }
 
@@ -385,4 +523,19 @@ export class PaginationComponent implements OnInit
     return sortColumn == undefined ? false : modes.includes(sortColumn.mode);
   }
 
+  public scrollTableRight(event: any): void
+  {
+    const elem: HTMLElement = (event.target.parentElement.parentElement
+      .parentElement.getElementsByTagName("table")[0]
+      .parentElement);
+    elem.scrollLeft -= this.tableScrollingSpeed;
+  }
+
+  public scrollTableLeft(event: any): void
+  {
+    const elem: HTMLElement = (event.target.parentElement.parentElement
+      .parentElement.getElementsByTagName("table")[0]
+      .parentElement);
+    elem.scrollLeft += this.tableScrollingSpeed;
+  }
 }

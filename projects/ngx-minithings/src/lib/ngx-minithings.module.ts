@@ -19,6 +19,8 @@ import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 import { CapitalizePipe } from "./str/capitalize.pipe";
 import { PaginationComponent } from "./pagination/pagination.component";
 import { IncludesPipe } from "./includes.pipe";
+import { PaginationOverflowDirective }
+  from "./pagination/pagination-overflow.directive";
 
 
 @NgModule({
@@ -38,7 +40,8 @@ import { IncludesPipe } from "./includes.pipe";
     CapitalizeEachPipe,
     CapitalizePipe,
     PaginationComponent,
-    IncludesPipe
+    IncludesPipe,
+    PaginationOverflowDirective
   ],
   imports: [
     CommonModule,

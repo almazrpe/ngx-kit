@@ -12,7 +12,8 @@ import {
   PaginationItem,
   PaginationFilter,
   PaginationConfig,
-  PaginationViewType
+  PaginationViewType,
+  PaginationDateTimeMode
 } from "ngx-minithings/pagination/models";
 
 @Component({
@@ -32,6 +33,10 @@ export class AppComponent implements OnInit
   public paginationItems: PaginationItem[] = [];
   public paginationFilters: PaginationFilter[] = [];
   public paginationConfig: PaginationConfig;
+  /* eslint-disable @typescript-eslint/ban-types */
+  public customColumnSortingFunctions: Map<string, Function> =
+    new Map<string, Function>([]);
+  /* eslint-enable */
 
   public constructor(
     private alertService: AlertService,
@@ -61,6 +66,15 @@ export class AppComponent implements OnInit
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////// Pagination settings ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
+    /*this.paginationConfig = makeConfig(
+      {
+        itemCntPerPage: 5,
+        visiblePagesCnt: 5,
+        //noSuitableItemsText: "Подходящие страницы не найдены...",
+        //noAnyItemsText: "Страницы не найдены...",
+        viewType: PaginationViewType.Table
+      });*/
+
     this.paginationConfig =
     {
       itemCntPerPage: 5,
@@ -68,7 +82,7 @@ export class AppComponent implements OnInit
       viewType: PaginationViewType.Table
     };
 
-    this.paginationFilters.push({
+    setTimeout(() => this.paginationFilters.unshift({
       id: "1",
       labelText: "Отдел",
       inputConfig: {
@@ -77,15 +91,15 @@ export class AppComponent implements OnInit
         max: 10,
         placeholder: "Введите название отдела..."
       },
-    });
+    }), 5000 );
 
-    this.paginationFilters.push({
+    setTimeout(() => this.paginationFilters.unshift({
       id: "2",
       labelText: "Количество страниц",
       inputConfig: {
         type: InputType.Number,
       },
-    });
+    }), 5000 );
 
     this.paginationItems.push({
       text: "Журнал разработки Л904",
@@ -95,7 +109,11 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 200}
       ],
       attr: {
-        "Размер": 200
+        "Размер": 200,
+        "Статус": {priority: 3,
+          src: "assets/ngx-minithings/info.svg",
+          animatePing: true},
+        "Задача": "Задача #1"
       }
     });
 
@@ -109,7 +127,25 @@ export class AppComponent implements OnInit
       attr: {
         "Тип": "Книга",
         "Размер": 200,
-        "Переиздание": true
+        "Переиздание": true,
+        "Дата & Время": {
+          value: new Date(628021800000)
+        },
+        "Дата": {
+          value: new Date(628021800000),
+          type: PaginationDateTimeMode.DATE,
+          formatter: new Intl.DateTimeFormat("ru-RU",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+        },
+        "Время": {
+          value: new Date(628021800000),
+          type: PaginationDateTimeMode.TIME
+        },
+        "Задача": "Задача #11"
       }
     });
 
@@ -122,7 +158,24 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "Руководство",
-        "Размер": 20
+        "Размер": 20,
+        "Статус": {priority: 2,
+          src: "assets/ngx-minithings/warning.svg",
+          animatePing: false},
+        "Дата & Время": {
+          value: new Date()
+        },
+        "Дата": {
+          value: new Date(),
+          type: PaginationDateTimeMode.DATE,
+          endStr: " год"
+        },
+        "Время": {
+          value: new Date(),
+          type: PaginationDateTimeMode.TIME,
+          endStr: " МСК+1"
+        },
+        "Задача": "Задача #3"
       }
     });
 
@@ -136,7 +189,11 @@ export class AppComponent implements OnInit
       attr: {
         "Тип": "Руководство",
         "Размер": 10,
-        "Переиздание": false
+        "Переиздание": false,
+        "Статус": {priority: 1,
+          src: "assets/ngx-minithings/error.svg",
+          animatePing: false},
+        "Задача": "Задача #2"
       }
     });
 
@@ -149,7 +206,15 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "Руководство",
-        "Размер": 20
+        "Размер": 20,
+        "Дата & Время": {
+          value: new Date(2023, 10, 18)
+        },
+        "Дата": {
+          value: new Date(2023, 10, 18),
+          type: PaginationDateTimeMode.DATE
+        },
+        "Задача": "Задача #22"
       }
     });
 
@@ -162,7 +227,14 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "Руководство",
-        "Размер": 10
+        "Размер": 10,
+        "Дата & Время": {
+          value: new Date(2023, 10, 17)
+        },
+        "Дата": {
+          value: new Date(2023, 10, 17),
+          type: PaginationDateTimeMode.DATE
+        }
       }
     });
 
@@ -175,9 +247,55 @@ export class AppComponent implements OnInit
       ],
       attr: {
         "Тип": "ГОСТ",
-        "Размер": 10
+        "Размер": 10,
+        "Дата & Время": {
+          value: new Date(2024, 10, 17)
+        },
+        "Дата": {
+          value: new Date(2024, 10, 17),
+          type: PaginationDateTimeMode.DATE
+        }
       }
     });
+
+    setTimeout(() => this.paginationItems.unshift({
+      text: "0000000",
+      route: "/",
+      filterValues: [],
+      attr: {
+        "Размер": 10
+      }
+    }), 5000 );
+
+    setTimeout(() => this.paginationItems.unshift({
+      text: "11111111",
+      route: "/",
+      filterValues: [],
+      attr: {
+        "Размер": 10
+      }
+    }), 10000 );
+
+    this.customColumnSortingFunctions.set("Задача",
+      (a: string, b: string, modeFactor: number): number =>
+      {
+        if (( a == undefined && b == undefined)
+            || (a != undefined && b != undefined && a == b))
+          return 0;
+        else if (a != undefined && b == undefined)
+          return (modeFactor == 1
+            ? -1 * modeFactor
+            : 1 * modeFactor);
+        else if (a == undefined && b != undefined)
+          return (modeFactor == 1
+            ? 1 * modeFactor
+            : -1 * modeFactor);
+        else if (parseInt(a.slice(a.indexOf("#") + 1)) >
+                   parseInt(b.slice(b.indexOf("#") + 1)))
+          return 1 * modeFactor;
+        else
+          return -1 * modeFactor;
+      });
   }
 
   public spawnAlert(level: AlertLevel, message: string): void
