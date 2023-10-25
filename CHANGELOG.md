@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.2
+
+### Features
+
+- Pagination minor improvements and QOL
+
 ## 0.4.1
 
 ### Fixed
