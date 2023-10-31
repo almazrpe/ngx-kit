@@ -1,4 +1,5 @@
-import { Component, Input } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
+import { ReplaySubject } from "rxjs";
 
 export enum StatusCircleMode {
   ACTIVE = 0,
@@ -11,10 +12,19 @@ export enum StatusCircleMode {
   templateUrl: "./status-circle.component.html",
   styleUrls: [],
 })
-export class StatusCircleComponent
+export class StatusCircleComponent implements OnInit
 {
   @Input() public mode: StatusCircleMode = StatusCircleMode.ACTIVE;
   @Input() public imgSrc: string = "";
+  @Input() public inputCssClasses: string[] | null = null;
 
   public CircleMode: any = StatusCircleMode;
+
+  public cssClasses$: ReplaySubject<string[]> =
+    new ReplaySubject<string[]>();
+
+  public ngOnInit(): void
+  {
+    this.cssClasses$.next(this.inputCssClasses ?? ["w-4", "h-4"]);
+  }
 }
