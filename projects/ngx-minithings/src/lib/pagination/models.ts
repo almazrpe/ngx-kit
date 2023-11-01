@@ -88,8 +88,8 @@ export function makePaginationConfig(options?: Partial<PaginationConfig>):
   const defaults: PaginationConfig = {
     itemCntPerPage: 1,
     visiblePagesCnt: 5,
-    noSuitableItemsText: "Подходящие страницы не найдены...",
-    noAnyItemsText: "Страницы не найдены...",
+    noSuitableItemsText: "Подходящие объекты не найдены...",
+    noAnyItemsText: "Объекты не найдены...",
     firstColumnOff: false,
     firstColumnTitle: "Название",
     centerAlignedColumns: [],

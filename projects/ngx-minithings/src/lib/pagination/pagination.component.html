@@ -35,6 +35,9 @@
         <ng-container *ngIf="paginationFiltersCount > 0">
           <ngx-minithings-button
             class="justify-center"
+            [mode]="isFiltersWindowShown == false
+                    ? BtnMode.DEFAULT
+                    : BtnMode.BOOKMARK_ACTIVE"
             (clickFunc)="toggleFiltersWindow()"
           >
             <img
@@ -125,13 +128,7 @@
                 >
                 <div
                   class="flex flex-col text-left"
-                  [ngClass]="(column.alignCenter ?? false) == false
-                             ? 'justify-start'
-                             : 'justify-center'"
                 >
-
-
-
                   <ng-container
                     *ngIf="chosenColumnCheck(column,
                              [SortColMode.ASC]) == true"
@@ -161,8 +158,10 @@
                   <div
                     class="w-full flex"
                     [ngClass]="{
-                      'justify-center' : chosenColumnCheck(column,
-                        [SortColMode.DESC, SortColMode.ASC]) == true
+                      'justify-center' : (column.alignCenter ?? false) == true
+                                         || chosenColumnCheck(column,
+                                              [SortColMode.DESC,
+                                               SortColMode.ASC]) == true
                     }"
                   >
                     <div>
@@ -414,7 +413,7 @@
                 <div class="mx-2">
                   <ngx-minithings-button
                     class="justify-center"
-                    [mode]="BtnMode.DIMMED"
+                    [mode]="BtnMode.BOOKMARK_ACTIVE"
                     (clickFunc)="getPage(i)"
                   >
                     {{i + 1}}
