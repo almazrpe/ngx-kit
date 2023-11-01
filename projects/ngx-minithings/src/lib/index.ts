@@ -26,11 +26,18 @@ export {
 
 export { PaginationComponent } from "./pagination/pagination.component";
 export {
-  PaginationItem,
-  PaginationFilter,
   PaginationConfig,
+  PaginationViewType,
+  makePaginationConfig,
+  PaginationItem,
   PaginationFilterValuesItem,
-  PaginationViewType
+  PaginationAttr,
+  PaginationAttrType,
+  PaginationIcon,
+  PaginationButton,
+  PaginationDateTime,
+  PaginationFilter,
+  FilterInputConfig,
 } from "./pagination/models";
 
 export { NumUtils } from "./num";

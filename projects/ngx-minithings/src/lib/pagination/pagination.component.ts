@@ -5,14 +5,16 @@ import {
   PaginationFilter,
   PaginationConfig,
   PaginationViewType,
-  makeConfig,
   TableColumn,
   SortTableColumn,
   SortColumnMode,
-  isPaginationIcon,
-  isPaginationDateTime,
-  PaginationDateTimeMode,
-  defaultDateTimeFormatters
+  defaultDateTimeFormatters,
+  PaginationIcon,
+  PaginationAttr,
+  PaginationAttrType,
+  paginationAttrTypeChecker,
+  makePaginationConfig
+
 } from "./models";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
@@ -25,25 +27,33 @@ import { StatusCircleMode } from "../status-circle/status-circle.component";
 })
 export class PaginationComponent implements OnInit
 {
-  // List of items for the pagination
+  /**
+   * List of items for the pagination
+   */
   @Input() public paginationItems: PaginationItem[] = [];
-  // List of available filters for the pagination
+  /**
+   * List of available filters for the pagination
+   */
   @Input() public paginationFilters: PaginationFilter[] = [];
-  // Configuration object for the pagination
-  @Input() public config: PaginationConfig = makeConfig();
+  /**
+   * Configuration object for the pagination
+   */
+  @Input() public config: PaginationConfig = makePaginationConfig();
 
-  // Map object with custom sorting functions (compare-like)
-  // for sorting columns of the component
-  // (in case viewType configuration of the component is Table)
-  // The keys of the Map object are names of table columns
-  // The values of the Map object are functions
-  // that must be used to sort this columns
-  // Your custom function should receive 3 arguments:
-  // a (of your expected type),
-  // b (of your expected type), and
-  // modeFactor (1 or -1) that will tell your
-  // function is that ASC or DESC sorting
-  // Your function must return a number
+  /**
+   * Map object with custom sorting functions (compare-like)
+   * for sorting columns of the component
+   * (in case viewType configuration of the component is Table)
+   * The keys of the Map object are names of table columns
+   * The values of the Map object are functions
+   * that must be used to sort this columns
+   * Your custom function should receive 3 arguments:
+   * a (of your expected type),
+   * b (of your expected type), and
+   * modeFactor (1 or -1) that will tell your
+   * function is that ASC or DESC sorting
+   * Your function must return a number
+   */
   /* eslint-disable @typescript-eslint/ban-types */
   @Input() public customColumnSortingFunctions: Map<string, Function> =
     new Map<string, Function>([]);
@@ -62,6 +72,7 @@ export class PaginationComponent implements OnInit
   public InpType: any = InputType;
   public SortColMode: any = SortColumnMode;
   public defaultDTFormatters: any = defaultDateTimeFormatters;
+  public PagAttrType: any = PaginationAttrType;
 
   public pageCnt: number;
   public curPage: number = 0;
@@ -89,42 +100,41 @@ export class PaginationComponent implements OnInit
     if (this.config.firstColumnOff == undefined
         || this.config.firstColumnOff == false)
       this.tableColumns.push({
-        labelText: this.config.firstColumnTitle ?? "Название",
-        type: "string"
+        name: this.config.firstColumnTitle ?? "Название",
+        type: PaginationAttrType.STRING
       });
 
     this.paginationItems.forEach((item: PaginationItem, index: number) =>
     {
       for (const key in item.attr)
       {
-        let attrType: string;
-        if (isPaginationIcon(item.attr[key]) == true)
-          attrType = "PaginationIcon";
-        else if (isPaginationDateTime(item.attr[key]) == true)
-          attrType = "PaginationDateTime";
+        if (item.attr[key] == null
+            || item.attr[key] == undefined
+            || paginationAttrTypeChecker(item.attr[key]) == false)
+          continue;
         else
-          attrType = typeof item.attr[key];
-
-        if (undefined == this.tableColumns.find(column =>
-        {
-          return column.labelText == key
-                 && column.type == attrType;
-        }))
-        {
-          if (attrType == undefined)
-            continue;
-
-          this.tableColumns.push({
-            labelText: key,
-            type: attrType
-          });
-        }
+          if (undefined == this.tableColumns.find(column =>
+          {
+            return column.name == key
+                   && column.type == item.attr[key].type;
+          }))
+          {
+            this.tableColumns.push({
+              name: key,
+              type: item.attr[key].type,
+              alignCenter: this.config.centerAlignedColumns.includes(key)
+            });
+          }
       }
 
       if (this.config.firstColumnOff == undefined
           || this.config.firstColumnOff == false)
         (this.paginationItems[index]
-          .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
+          .attr[this.config.firstColumnTitle ?? "Название"]) =
+        {
+          type: PaginationAttrType.STRING,
+          body: item.text
+        };
     });
     this.activePaginationItems = this.paginationItems.concat();
     this.disabledPaginationFilters = this.paginationFilters.concat();
@@ -145,7 +155,11 @@ export class PaginationComponent implements OnInit
           if (this.config.firstColumnOff == undefined
               || this.config.firstColumnOff == false)
             (this.paginationItems[index]
-              .attr[this.config.firstColumnTitle ?? "Название"]) = item.text;
+              .attr[this.config.firstColumnTitle ?? "Название"]) =
+            {
+              type: PaginationAttrType.STRING,
+              body: item.text
+            };
         });
         this.refreshPages();
       }
@@ -265,7 +279,7 @@ export class PaginationComponent implements OnInit
     {
       this.tableColumns.forEach(column =>
       {
-        this.curFilterValues.set("__" + column.labelText, value);
+        this.curFilterValues.set("__" + column.name, value);
       });
     }
     this.refreshPages();
@@ -298,10 +312,34 @@ export class PaginationComponent implements OnInit
 
             for (const key in item.attr)
             {
-              if (key == fid.slice(2)
-                  && String(item.attr[key]).toLowerCase().includes(
-                    String(this.curFilterValues.get(fid)).toLowerCase()))
-                isColumnFilterApproved = true;
+              if (key == fid.slice(2))
+              {
+                let attrStr: string;
+                switch(item.attr[key].type)
+                {
+                  case PaginationAttrType.DATETIME:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.DATETIME)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  case PaginationAttrType.DATE:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.DATE)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  case PaginationAttrType.TIME:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.TIME)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  default:
+                    attrStr = String(item.attr[key].body).toLowerCase();
+                }
+
+                if (attrStr.includes(
+                  String(this.curFilterValues.get(fid)).toLowerCase()))
+                  isColumnFilterApproved = true;
+              }
             }
           }
           else
@@ -335,9 +373,10 @@ export class PaginationComponent implements OnInit
       : 1;
   }
 
-  public goLink(route: string): void
+  public goLink(route: string | null): void
   {
-    this.router.navigate([route]);
+    if (route != null)
+      this.router.navigate([route]);
   }
 
   private sortingCondition(a: PaginationItem,
@@ -348,9 +387,14 @@ export class PaginationComponent implements OnInit
       return 0;
 
     const chosenColumnName: string =
-      this.sortChosenColumns[iter].column.labelText;
+      this.sortChosenColumns[iter].column.name;
+    const chosenColumnType: PaginationAttrType =
+      this.sortChosenColumns[iter].column.type;
     const modeFactor: number = this.sortChosenColumns[iter].mode +
       Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
+
+    const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
+    const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
 
     if (this.customColumnSortingFunctions.has(chosenColumnName))
     {
@@ -364,9 +408,7 @@ export class PaginationComponent implements OnInit
       {
         res = func == undefined
           ? undefined
-          : func(a.attr[chosenColumnName],
-            b.attr[chosenColumnName],
-            modeFactor);
+          : func(aAttr, bAttr, modeFactor);
       }
       catch (error: any)
       {
@@ -386,72 +428,130 @@ export class PaginationComponent implements OnInit
       else
         return res;
     }
-    else if (( a.attr[chosenColumnName] == undefined
-          && b.attr[chosenColumnName] == undefined)
-        || a.attr[chosenColumnName] != undefined
-           && b.attr[chosenColumnName] != undefined
-           && a.attr[chosenColumnName] == b.attr[chosenColumnName])
+    else if (aAttr == undefined && bAttr == undefined)
       return this.sortingCondition(a, b, iter + 1);
-    else if (a.attr[chosenColumnName] != undefined
-             && b.attr[chosenColumnName] == undefined)
+    else if (aAttr != undefined && bAttr == undefined)
       return (modeFactor == 1
         ? -1 * modeFactor
         : 1 * modeFactor);
-    else if (a.attr[chosenColumnName] == undefined
-             && b.attr[chosenColumnName] != undefined)
+    else if (aAttr == undefined && bAttr != undefined)
       return (modeFactor == 1
         ? 1 * modeFactor
         : -1 * modeFactor);
-    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
-             && isPaginationIcon(b.attr[chosenColumnName]) == true
-             && (a.attr[chosenColumnName].priority >
-                   b.attr[chosenColumnName].priority))
-      return 1 * modeFactor;
-    else if (isPaginationIcon(a.attr[chosenColumnName]) == true
-             && isPaginationIcon(b.attr[chosenColumnName]) == true
-             && (a.attr[chosenColumnName].priority <=
-                   b.attr[chosenColumnName].priority))
-      return -1 * modeFactor;
-    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
-             && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
-             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
-             && (a.attr[chosenColumnName].value >
-                   b.attr[chosenColumnName].value))
-      return 1 * modeFactor;
-    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
-             && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
-             && b.attr[chosenColumnName].type != PaginationDateTimeMode.TIME
-             && (a.attr[chosenColumnName].value <=
-                   b.attr[chosenColumnName].value))
-      return -1 * modeFactor;
-    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
-             && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
-             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
-             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") >
-                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
-      return 1 * modeFactor;
-    else if (isPaginationDateTime(a.attr[chosenColumnName]) == true
-             && isPaginationDateTime(b.attr[chosenColumnName]) == true
-             && a.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
-             && b.attr[chosenColumnName].type == PaginationDateTimeMode.TIME
-             && (a.attr[chosenColumnName].value.toLocaleTimeString("ru-RU") <=
-                   b.attr[chosenColumnName].value.toLocaleTimeString("ru-RU")))
-      return -1 * modeFactor;
-    else if (typeof a.attr[chosenColumnName] == "boolean"
-             && typeof b.attr[chosenColumnName] == "boolean"
-             && b.attr[chosenColumnName] == true)
-      return 1 * modeFactor;
-    else if (typeof a.attr[chosenColumnName] == "boolean"
-             && typeof b.attr[chosenColumnName] == "boolean"
-             && a.attr[chosenColumnName] == true)
-      return -1 * modeFactor;
-    else if (a.attr[chosenColumnName] > b.attr[chosenColumnName])
-      return 1 * modeFactor;
     else
-      return -1 * modeFactor;
+    {
+      const aCheck: boolean = paginationAttrTypeChecker(aAttr!);
+      const bCheck: boolean = paginationAttrTypeChecker(bAttr!);
+      if (aCheck == false && bCheck == false
+          || aAttr!.type != chosenColumnType
+             && bAttr!.type != chosenColumnType)
+        return this.sortingCondition(a, b, iter + 1);
+      else if (bCheck == false
+               || aAttr!.type == chosenColumnType
+                  && bAttr!.type != chosenColumnType)
+        return (modeFactor == 1
+          ? -1 * modeFactor
+          : 1 * modeFactor);
+      else if (aCheck == false
+               || aAttr!.type != chosenColumnType
+                  && bAttr!.type == chosenColumnType)
+        return (modeFactor == 1
+          ? 1 * modeFactor
+          : -1 * modeFactor);
+      else
+      {
+        switch(chosenColumnType)
+        {
+          case PaginationAttrType.BUTTON:
+          case PaginationAttrType.ICON: {
+            if (aAttr!.body.priority == bAttr!.body.priority)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (aAttr!.body.priority > bAttr!.body.priority)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+            break;
+          }
+          case PaginationAttrType.ICONS: {
+            if (modeFactor > 0)
+            {
+              const aBest: number = Math.max(...aAttr!.body.map(
+                (item: PaginationIcon): number => item.priority));
+              const bBest: number = Math.max(...bAttr!.body.map(
+                (item: PaginationIcon): number => item.priority));
+              if (aBest == bBest)
+                return this.sortingCondition(a, b, iter + 1);
+              else if (aBest > bBest)
+                return 1;
+              else
+                return -1;
+            }
+            else
+            {
+              const aWorst: number = Math.min(...aAttr!.body.map(
+                (item: PaginationIcon): number => item.priority));
+              const bWorst: number = Math.min(...bAttr!.body.map(
+                (item: PaginationIcon): number => item.priority));
+              if (aWorst == bWorst)
+                return this.sortingCondition(a, b, iter + 1);
+              else if (aWorst < bWorst)
+                return 1;
+              else
+                return -1;
+            }
+            break;
+          }
+          case PaginationAttrType.DATETIME: {
+            if (aAttr!.body.value == bAttr!.body.value)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (aAttr!.body.value > bAttr!.body.value)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+            break;
+          }
+          case PaginationAttrType.DATE: {
+            const aDate: Date = new Date(aAttr!.body.value.toDateString());
+            const bDate: Date = new Date(bAttr!.body.value.toDateString());
+            if (aDate == bDate)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (aDate > bDate)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+            break;
+          }
+          case PaginationAttrType.TIME: {
+            const aTime: string = aAttr!.body.value.toTimeString();
+            const bTime: string = aAttr!.body.value.toTimeString();
+            if (aTime == bTime)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (aTime > bTime)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+            break;
+          }
+          case PaginationAttrType.BOOLEAN: {
+            if (aAttr!.body == bAttr!.body)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (bAttr!.body == true)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+            break;
+          }
+          default: {
+            if (aAttr!.body == bAttr!.body)
+              return this.sortingCondition(a, b, iter + 1);
+            else if (aAttr!.body > bAttr!.body)
+              return 1 * modeFactor;
+            else
+              return -1 * modeFactor;
+          }
+        }
+      }
+    }
   }
 
   public sortPaginationItems(chosenColumn: TableColumn, event: any): void
@@ -460,7 +560,7 @@ export class PaginationComponent implements OnInit
     {
       const oldSortColumn: SortTableColumn | undefined =
         this.sortChosenColumns.find(scolumn =>
-          scolumn.column.labelText == chosenColumn.labelText);
+          scolumn.column.name == chosenColumn.name);
 
       this.sortChosenColumns =
       [{
@@ -483,7 +583,7 @@ export class PaginationComponent implements OnInit
       const oldSortColumnIndex: number =
         this.sortChosenColumns.findIndex(scolumn =>
         {
-          return scolumn.column.labelText == chosenColumn.labelText;
+          return scolumn.column.name == chosenColumn.name;
         });
 
       if (oldSortColumnIndex != -1)
@@ -518,7 +618,7 @@ export class PaginationComponent implements OnInit
   {
     const sortColumn: SortTableColumn | undefined =
       this.sortChosenColumns.find(scolumn =>
-        scolumn.column.labelText == column.labelText);
+        scolumn.column.name == column.name);
 
     return sortColumn == undefined ? false : modes.includes(sortColumn.mode);
   }

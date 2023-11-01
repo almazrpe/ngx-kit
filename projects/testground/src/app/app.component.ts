@@ -8,12 +8,15 @@ import { AlertUtils } from "ngx-minithings/alert/utils";
 import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
 import { DatalistUtils } from "ngx-minithings/datalist/utils";
 import { InputType } from "ngx-minithings/input/input-type";
+import { ButtonMode } from "ngx-minithings/button/button.component";
 import {
   PaginationItem,
   PaginationFilter,
   PaginationConfig,
   PaginationViewType,
-  PaginationDateTimeMode
+  PaginationAttrType,
+  PaginationAttr,
+  makePaginationConfig
 } from "ngx-minithings/pagination/models";
 
 @Component({
@@ -66,21 +69,18 @@ export class AppComponent implements OnInit
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////// Pagination settings ////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    /*this.paginationConfig = makeConfig(
+    this.paginationConfig = makePaginationConfig(
       {
-        itemCntPerPage: 5,
+        itemCntPerPage: 15,
         visiblePagesCnt: 5,
         //noSuitableItemsText: "Подходящие страницы не найдены...",
         //noAnyItemsText: "Страницы не найдены...",
+        centerAlignedColumns: ["Переиздание", "Статус", "Размер"],
+        filterIconPath: "assets/ngx-minithings/filter-icon.png",
+        ascSortIconPath: "assets/ngx-minithings/asc-sort.png",
+        descSortIconPath: "assets/ngx-minithings/desc-sort.png",
         viewType: PaginationViewType.Table
-      });*/
-
-    this.paginationConfig =
-    {
-      itemCntPerPage: 5,
-      visiblePagesCnt: 5,
-      viewType: PaginationViewType.Table
-    };
+      });
 
     setTimeout(() => this.paginationFilters.unshift({
       id: "1",
@@ -109,11 +109,47 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 200}
       ],
       attr: {
-        "Размер": 200,
-        "Статус": {priority: 3,
-          src: "assets/ngx-minithings/info.svg",
-          animatePing: true},
-        "Задача": "Задача #1"
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 200
+        },
+        "Статус": {
+          type: PaginationAttrType.ICON,
+          body: {
+            priority: 3,
+            src: "assets/ngx-minithings/info.svg",
+            animatePing: true,
+            cssClasses: ["w-6, h-6"]
+          }
+        },
+        "Задача": {
+          type: PaginationAttrType.STRING,
+          body: "Задача #1"
+        },
+        "Метки": {
+          type: PaginationAttrType.ICONS,
+          body:
+          [
+            {
+              priority: 3,
+              src: "assets/ngx-minithings/keyboard.svg",
+              animatePing: false,
+              cssClasses: ["w-8", "h-8"]
+            },
+            {
+              priority: 3,
+              src: "assets/ngx-minithings/keyboard.svg",
+              animatePing: true,
+              cssClasses: ["w-8", "h-8"]
+            },
+            {
+              priority: 3,
+              src: "assets/ngx-minithings/keyboard.svg",
+              animatePing: false,
+              cssClasses: ["w-8", "h-8"]
+            }
+          ]
+        },
       }
     });
 
@@ -125,27 +161,58 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 200}
       ],
       attr: {
-        "Тип": "Книга",
-        "Размер": 200,
-        "Переиздание": true,
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "Книга"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 200
+        },
+        "Переиздание": {
+          type: PaginationAttrType.BOOLEAN,
+          body: true
+        },
         "Дата & Время": {
-          value: new Date(628021800000)
+          type: PaginationAttrType.DATETIME,
+          body: {
+            value: new Date(628021800000)
+          }
         },
         "Дата": {
-          value: new Date(628021800000),
-          type: PaginationDateTimeMode.DATE,
-          formatter: new Intl.DateTimeFormat("ru-RU",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
+          type: PaginationAttrType.DATE,
+          body: {
+            value: new Date(628021800000),
+            formatter: new Intl.DateTimeFormat("ru-RU",
+              {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+          }
         },
         "Время": {
-          value: new Date(628021800000),
-          type: PaginationDateTimeMode.TIME
+          type: PaginationAttrType.TIME,
+          body: {
+            value: new Date(628021800000)
+          }
         },
-        "Задача": "Задача #11"
+        "Задача": {
+          type: PaginationAttrType.STRING,
+          body: "Задача #11"
+        },
+        "Кнопка": {
+          type: PaginationAttrType.BUTTON,
+          body: {
+            priority: 1,
+            labelText: "Alert",
+            clickFunc: () =>
+            {this.spawnAlert(AlertLevel.Info, "Pagination Alert");},
+
+            mode: ButtonMode.WARNING,
+            imageSrc: "assets/ngx-minithings/warning.svg"
+          }
+        },
       }
     });
 
@@ -157,25 +224,79 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 20}
       ],
       attr: {
-        "Тип": "Руководство",
-        "Размер": 20,
-        "Статус": {priority: 2,
-          src: "assets/ngx-minithings/warning.svg",
-          animatePing: false},
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "Руководство"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 20
+        },
+        "Статус": {
+          type: PaginationAttrType.ICON,
+          body: {
+            priority: 2,
+            src: "assets/ngx-minithings/warning.svg",
+            animatePing: false,
+            cssClasses: ["w-6, h-6"]
+          }
+        },
         "Дата & Время": {
-          value: new Date()
+          type: PaginationAttrType.DATETIME,
+          body: {
+            value: new Date()
+          }
         },
         "Дата": {
-          value: new Date(),
-          type: PaginationDateTimeMode.DATE,
-          endStr: " год"
+          type: PaginationAttrType.DATE,
+          body: {
+            value: new Date(),
+            endStr: " год"
+          }
         },
         "Время": {
-          value: new Date(),
-          type: PaginationDateTimeMode.TIME,
-          endStr: " МСК+1"
+          type: PaginationAttrType.TIME,
+          body: {
+            value: new Date(),
+            endStr: " МСК+1"
+          }
         },
-        "Задача": "Задача #3"
+        "Задача": {
+          type: PaginationAttrType.STRING,
+          body: "Задача #3"
+        },
+        "Метки": {
+          type: PaginationAttrType.ICONS,
+          body:
+          [
+            {
+              priority: 3,
+              src: "assets/ngx-minithings/info.svg",
+              animatePing: false
+            },
+            {
+              priority: 2,
+              src: "assets/ngx-minithings/warning.svg",
+              animatePing: false
+            },
+            {
+              priority: 3,
+              src: "assets/ngx-minithings/info.svg",
+              animatePing: false
+            }
+          ]
+        },
+        "Кнопка": {
+          type: PaginationAttrType.BUTTON,
+          body: {
+            priority: 2,
+            labelText: "Error",
+            clickFunc: () =>
+            {this.spawnAlert(AlertLevel.Error, "Pagination Alert");},
+
+            mode: ButtonMode.DANGER
+          }
+        },
       }
     });
 
@@ -187,13 +308,51 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 10}
       ],
       attr: {
-        "Тип": "Руководство",
-        "Размер": 10,
-        "Переиздание": false,
-        "Статус": {priority: 1,
-          src: "assets/ngx-minithings/error.svg",
-          animatePing: false},
-        "Задача": "Задача #2"
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "Руководство"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 10
+        },
+        "Переиздание": {
+          type: PaginationAttrType.BOOLEAN,
+          body: false
+        },
+        "Статус": {
+          type: PaginationAttrType.ICON,
+          body: {
+            priority: 1,
+            src: "assets/ngx-minithings/error.svg",
+            animatePing: false
+          }
+        },
+        "Задача": {
+          type: PaginationAttrType.STRING,
+          body: "Задача #2"
+        },
+        "Метки": {
+          type: PaginationAttrType.ICONS,
+          body:
+          [
+            {
+              priority: 1,
+              src: "assets/ngx-minithings/error.svg",
+              animatePing: false
+            },
+            {
+              priority: 1,
+              src: "assets/ngx-minithings/error.svg",
+              animatePing: false
+            },
+            {
+              priority: 1,
+              src: "assets/ngx-minithings/error.svg",
+              animatePing: false
+            }
+          ]
+        },
       }
     });
 
@@ -205,16 +364,30 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 20}
       ],
       attr: {
-        "Тип": "Руководство",
-        "Размер": 20,
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "Руководство"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 20
+        },
         "Дата & Время": {
-          value: new Date(2023, 10, 18)
+          type: PaginationAttrType.DATETIME,
+          body: {
+            value: new Date(2023, 10, 18)
+          }
         },
         "Дата": {
-          value: new Date(2023, 10, 18),
-          type: PaginationDateTimeMode.DATE
+          type: PaginationAttrType.DATE,
+          body: {
+            value: new Date(2023, 10, 18)
+          }
         },
-        "Задача": "Задача #22"
+        "Задача": {
+          type: PaginationAttrType.STRING,
+          body: "Задача #22"
+        }
       }
     });
 
@@ -226,14 +399,25 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 10}
       ],
       attr: {
-        "Тип": "Руководство",
-        "Размер": 10,
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "Руководство"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 10
+        },
         "Дата & Время": {
-          value: new Date(2023, 10, 17)
+          type: PaginationAttrType.DATETIME,
+          body: {
+            value: new Date(2023, 10, 17)
+          }
         },
         "Дата": {
-          value: new Date(2023, 10, 17),
-          type: PaginationDateTimeMode.DATE
+          type: PaginationAttrType.DATE,
+          body: {
+            value: new Date(2023, 10, 17)
+          }
         }
       }
     });
@@ -246,41 +430,59 @@ export class AppComponent implements OnInit
         {filterId: "2", filterValue: 10}
       ],
       attr: {
-        "Тип": "ГОСТ",
-        "Размер": 10,
+        "Тип": {
+          type: PaginationAttrType.STRING,
+          body: "ГОСТ"
+        },
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 10
+        },
         "Дата & Время": {
-          value: new Date(2024, 10, 17)
+          type: PaginationAttrType.DATETIME,
+          body: {
+            value: new Date(2024, 10, 17)
+          }
         },
         "Дата": {
-          value: new Date(2024, 10, 17),
-          type: PaginationDateTimeMode.DATE
+          type: PaginationAttrType.DATE,
+          body: {
+            value: new Date(2024, 10, 17)
+          }
         }
       }
     });
 
     setTimeout(() => this.paginationItems.unshift({
       text: "0000000",
-      route: "/",
+      route: null,
       filterValues: [],
       attr: {
-        "Размер": 10
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 10
+        }
       }
     }), 5000 );
 
     setTimeout(() => this.paginationItems.unshift({
       text: "11111111",
-      route: "/",
+      route: null,
       filterValues: [],
       attr: {
-        "Размер": 10
+        "Размер": {
+          type: PaginationAttrType.NUMBER,
+          body: 10
+        }
       }
     }), 10000 );
 
     this.customColumnSortingFunctions.set("Задача",
-      (a: string, b: string, modeFactor: number): number =>
+      (a: PaginationAttr | undefined,
+        b: PaginationAttr | undefined,
+        modeFactor: number): number =>
       {
-        if (( a == undefined && b == undefined)
-            || (a != undefined && b != undefined && a == b))
+        if (a == undefined && b == undefined)
           return 0;
         else if (a != undefined && b == undefined)
           return (modeFactor == 1
@@ -290,8 +492,10 @@ export class AppComponent implements OnInit
           return (modeFactor == 1
             ? 1 * modeFactor
             : -1 * modeFactor);
-        else if (parseInt(a.slice(a.indexOf("#") + 1)) >
-                   parseInt(b.slice(b.indexOf("#") + 1)))
+        else if (a!.body == b!.body)
+          return 0;
+        else if (parseInt(a!.body.slice(a!.body.indexOf("#") + 1)) >
+                   parseInt(b!.body.slice(b!.body.indexOf("#") + 1)))
           return 1 * modeFactor;
         else
           return -1 * modeFactor;

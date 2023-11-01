@@ -37,7 +37,11 @@
             class="justify-center"
             (clickFunc)="toggleFiltersWindow()"
           >
-            👁️
+            <img
+              class="w-6 h-6"
+              [src]="config.filterIconPath"
+              [alt]="'👁️'"
+            >
           </ngx-minithings-button>
         </ng-container>
       </div>
@@ -95,7 +99,7 @@
         paginationOverflowDetect [curPage]="curPage"
       >
         <table
-          class="overflow-auto max-h-[60vh] w-full"
+          class="overflow-auto w-full"
           [ngClass]="{
               'flex' : config.viewType == PagViewType.List
                        || config.viewType == PagViewType.Tiles,
@@ -120,30 +124,51 @@
                 (click)="sortPaginationItems(column, $event)"
                 >
                 <div
-                  class="flex flex-row gap-1 text-left"
-                  [ngClass]="{
-                    'justify-center': ['boolean',
-                                       'PaginationIcon'].includes(column.type),
-                    'justify-start': !(['boolean',
-                                        'PaginationIcon'].includes(column.type))
-                  }"
+                  class="flex flex-col text-left"
+                  [ngClass]="(column.alignCenter ?? false) == false
+                             ? 'justify-start'
+                             : 'justify-center'"
                 >
 
-                  <div>{{column.labelText}}</div>
+
 
                   <ng-container
                     *ngIf="chosenColumnCheck(column,
                              [SortColMode.ASC]) == true"
                   >
-                    <div>⬇️</div>
+                    <div class="w-full flex justify-center">
+                      <img
+                        class="w-4 h-4"
+                        [src]="config.ascSortIconPath"
+                        [alt]="'⬇️'"
+                      >
+                    </div>
                   </ng-container>
 
                   <ng-container
                     *ngIf="chosenColumnCheck(column,
                              [SortColMode.DESC]) == true"
                   >
-                    <div>⬆️</div>
+                    <div class="w-full flex justify-center">
+                      <img
+                        class="w-4 h-4"
+                        [src]="config.descSortIconPath"
+                        [alt]="'⬆️'"
+                      >
+                    </div>
                   </ng-container>
+
+                  <div
+                    class="w-full flex"
+                    [ngClass]="{
+                      'justify-center' : chosenColumnCheck(column,
+                        [SortColMode.DESC, SortColMode.ASC]) == true
+                    }"
+                  >
+                    <div>
+                      {{column.name}}
+                    </div>
+                  </div>
                 </div>
               </th>
             </tr>
@@ -153,10 +178,14 @@
               let item of items;
                 index as i;
             "
+            class="select-none"
             [ngClass]="{
               'bg-white/25': i % 2 == 1 && config.viewType == PagViewType.Table,
               'hover:bg-c10/75
-               cursor-pointer' : config.viewType == PagViewType.Table,
+               cursor-pointer' : config.viewType == PagViewType.Table
+                                 && item.route != null,
+              'cursor-default' : config.viewType == PagViewType.Table
+                                 && item.route == null,
               'mt-1' : MathModule.floor(i / config.itemCntPerPage) == curPage
             }"
             (click)="goLink(item.route)"
@@ -164,8 +193,9 @@
             <ng-container
               *ngIf="MathModule.floor(i / config.itemCntPerPage) == curPage"
             >
+              <!-- NO TABLE VIEW -->
               <ng-container
-                *ngIf="config.viewType != PagViewType.Table; else show_table"
+                *ngIf="config.viewType != PagViewType.Table"
               >
                 <ngx-minithings-button
                   [ngClass]="{
@@ -176,86 +206,159 @@
                 >
                   {{item.text}}
                 </ngx-minithings-button>
-
               </ng-container>
 
-              <ng-template #show_table>
+              <!-- TABLE VIEW -->
+              <ng-container
+                *ngIf="config.viewType == PagViewType.Table"
+              >
                 <td
                   *ngFor="let column of tableColumns;"
                   class="px-3 py-1.5"
-                  [ngClass]="{
-                    'text-left': !(['boolean',
-                                    'PaginationIcon'].includes(column.type)),
-                    'text-center': ['boolean',
-                                    'PaginationIcon'].includes(column.type),
-                  }"
+                  [ngClass]="(column.alignCenter ?? false) == false
+                             ? 'text-left'
+                             : 'text-center'"
+                  [ngSwitch]="true"
                   >
 
                   <ng-container
-                    *ngIf="
-                      !(['boolean',
-                         'PaginationIcon',
-                         'PaginationDateTime'].includes(column.type))
-                      || item.attr[column.labelText] == undefined;
-                        else decorated_output
-                    "
-                    >
-                    {{item.attr[column.labelText]}}
-                  </ng-container>
-                  <ng-template #decorated_output>
-                    <ng-container
-                      *ngIf="column.type == 'PaginationDateTime'
-                             && item.attr[column.labelText] as dt"
+                    *ngIf="item.attr[column.name] != undefined"
+                  >
+                    <!-- DATETIME | DATE | TIME -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.DATETIME
+                                     || column.type === PagAttrType.DATE
+                                     || column.type === PagAttrType.TIME"
                     >
                       {{
-                        (dt.formatter
-                         ?? defaultDTFormatters[(dt.type ?? 0)])
-                           .format(dt.value) +
-                        (dt.endStr ?? '')
+                        (item.attr[column.name].body.formatter
+                         ?? defaultDTFormatters.get(column.type))
+                           .format(item.attr[column.name].body.value) +
+                        (item.attr[column.name].body.endStr ?? '')
                       }}
-                    </ng-container>
+                    </div>
 
-                    <ng-container *ngIf="column.type == 'boolean'">
-                      <ngx-minithings-status-circle
-                        class="inline-block"
-                        [mode]="item.attr[column.labelText] == true
-                                ? CircleMode.ACTIVE
-                                : CircleMode.NONACTIVE"
-                      >
-                      </ngx-minithings-status-circle>
-                    </ng-container>
-
-                    <ng-container *ngIf="column.type == 'PaginationIcon'">
-
+                    <!-- ICON -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.ICON"
+                    >
                       <ng-container
-                        *ngIf="item.attr[column.labelText].animatePing == true"
+                        *ngIf="item.attr[column.name].body
+                                 .animatePing == true"
                       >
                         <ngx-minithings-status-circle
                           class="inline-block"
                           [mode]="CircleMode.IMAGE"
-                          [imgSrc]="item.attr[column.labelText].src"
+                          [imgSrc]="item.attr[column.name].body.src"
+                          [inputCssClasses]=
+                            "item.attr[column.name].body.cssClasses ?? null"
                         >
                         </ngx-minithings-status-circle>
                       </ng-container>
 
                       <ng-container
-                        *ngIf="item.attr[column.labelText].animatePing == false"
+                        *ngIf="item.attr[column.name].body
+                                 .animatePing == false"
                       >
                         <span
-                        class="inline-block rounded-full w-4 h-4"
+                        class="inline-block"
+                        [ngClass]=
+                          "item.attr[column.name].body.cssClasses
+                           ?? ['w-4', 'h-4']"
                         >
                           <img
-                            class="w-4 h-4"
-                            [src]="item.attr[column.labelText].src"
+                            [ngClass]=
+                              "item.attr[column.name].body.cssClasses
+                               ?? ['w-4', 'h-4']"
+                            [src]="item.attr[column.name].body.src"
                           >
                         </span>
                       </ng-container>
-                    </ng-container>
-                  </ng-template>
+                    </div>
 
+                    <!-- ICONS -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.ICONS"
+                      class="flex flex-row flex-wrap gap-1.5"
+                    >
+                      <div
+                        *ngFor="let icon of item.attr[column.name].body"
+                      >
+                        <ng-container
+                          *ngIf="icon.animatePing == true"
+                        >
+                          <ngx-minithings-status-circle
+                            class="inline-block"
+                            [mode]="CircleMode.IMAGE"
+                            [imgSrc]="icon.src"
+                            [inputCssClasses]="icon.cssClasses ?? null"
+                          >
+                          </ngx-minithings-status-circle>
+                        </ng-container>
+
+                        <ng-container
+                          *ngIf="icon.animatePing == false"
+                        >
+                          <span
+                          class="inline-block"
+                          [ngClass]="icon.cssClasses ?? ['w-4', 'h-4']"
+                          >
+                            <img
+                              [ngClass]="icon.cssClasses ?? ['w-4', 'h-4']"
+                              [src]="icon.src"
+                            >
+                          </span>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.BUTTON"
+                    >
+                      <ngx-minithings-button
+                        [ngClass]= "item.attr[column.name].body.cssClasses ?? []"
+                        (clickFunc)="item.attr[column.name].body.clickFunc()"
+                        [mode]="item.attr[column.name].body.mode ?? BtnMode.DEFAULT"
+                        [isEnabled]="item.attr[column.name].body.isEnabled ?? true"
+                      >
+                        <ng-container
+                          *ngIf="item.attr[column.name].body.imageSrc != undefined"
+                        >
+                          <img
+                            [ngClass]="item.attr[column.name].body.cssClasses ?? ['w-4', 'h-4']"
+                            [src]="item.attr[column.name].body.imageSrc"
+                          >
+                        </ng-container>
+
+                        <ng-container
+                          *ngIf="item.attr[column.name].body.imageSrc == undefined"
+                        >
+                          {{item.attr[column.name].body.labelText}}
+                        </ng-container>
+                      </ngx-minithings-button>
+                    </div>
+
+                    <!-- BOOLEAN -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.BOOLEAN"
+                    >
+                      <ngx-minithings-status-circle
+                        class="inline-block"
+                        [mode]="item.attr[column.name].body == true
+                                ? CircleMode.ACTIVE
+                                : CircleMode.NONACTIVE"
+                      >
+                      </ngx-minithings-status-circle>
+                    </div>
+
+                    <!-- DEFAULT -->
+                    <div *ngSwitchDefault>
+                      {{item.attr[column.name].body}}
+                    </div>
+                  </ng-container>
                 </td>
-              </ng-template>
-
+              </ng-container>
             </ng-container>
           </tr>
         </table>
