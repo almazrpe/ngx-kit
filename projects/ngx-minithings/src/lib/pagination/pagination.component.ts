@@ -312,10 +312,34 @@ export class PaginationComponent implements OnInit
 
             for (const key in item.attr)
             {
-              if (key == fid.slice(2)
-                  && String(item.attr[key]).toLowerCase().includes(
-                    String(this.curFilterValues.get(fid)).toLowerCase()))
-                isColumnFilterApproved = true;
+              if (key == fid.slice(2))
+              {
+                let attrStr: string;
+                switch(item.attr[key].type)
+                {
+                  case PaginationAttrType.DATETIME:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.DATETIME)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  case PaginationAttrType.DATE:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.DATE)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  case PaginationAttrType.TIME:
+                    attrStr = defaultDateTimeFormatters.get(
+                      PaginationAttrType.TIME)!.format(
+                        item.attr[key].body.value);
+                    break;
+                  default:
+                    attrStr = String(item.attr[key].body).toLowerCase();
+                }
+
+                if (attrStr.includes(
+                  String(this.curFilterValues.get(fid)).toLowerCase()))
+                  isColumnFilterApproved = true;
+              }
             }
           }
           else
