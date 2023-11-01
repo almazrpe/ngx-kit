@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.0
+
+### Features
+
+- Big paginations update - extended icons, configuration and more
+
 ## 0.4.2
 
 ### Features
