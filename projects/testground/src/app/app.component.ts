@@ -75,7 +75,7 @@ export class AppComponent implements OnInit
         visiblePagesCnt: 5,
         //noSuitableItemsText: "Подходящие страницы не найдены...",
         //noAnyItemsText: "Страницы не найдены...",
-        centerAlignedColumns: ["Переиздание", "Статус", "Размер"],
+        centerAlignedColumns: ["Переиздание", "Статус", "Размер", "Дата"],
         filterIconPath: "assets/ngx-minithings/filter-icon.png",
         ascSortIconPath: "assets/ngx-minithings/asc-sort.png",
         descSortIconPath: "assets/ngx-minithings/desc-sort.png",
