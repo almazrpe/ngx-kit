@@ -1,6 +1,6 @@
 {
   "name": "@slimebones/ngx-minithings",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "watch": {
     "tailwind-build": {
       "patterns": [

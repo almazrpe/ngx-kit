@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.1
+
+### Fixed
+
+- Pagination QOL.
+
 ## 0.5.0
 
 ### Features
