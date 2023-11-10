@@ -13,5 +13,7 @@ export enum InputType {
   URL = "url",
   Tel = "tel",
   Email = "email",
-  Number = "number"
+  Number = "number",
+
+  Date = "date"
 }

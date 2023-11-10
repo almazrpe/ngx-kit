@@ -22,6 +22,18 @@ import { IncludesPipe } from "./includes.pipe";
 import { PaginationOverflowDirective }
   from "./pagination/pagination-overflow.directive";
 
+import { BrowserAnimationsModule }
+  from "@angular/platform-browser/animations";
+import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS }
+  from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatInputModule } from "@angular/material/input";
+
+//import { MatDatepickerModule } from "@angular/material/datepicker";
+//import { MatNativeDateModule, MAT_DATE_LOCALE }
+//  from '@angular/material/core';
+
+import { MatInputComponent } from "./input/mat-input/mat-input.component";
 
 @NgModule({
   declarations: [
@@ -41,11 +53,28 @@ import { PaginationOverflowDirective }
     CapitalizePipe,
     PaginationComponent,
     IncludesPipe,
-    PaginationOverflowDirective
+    PaginationOverflowDirective,
+    MatInputComponent
+  ],
+  providers: [
+    //{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {appearance: "outline"}
+    }
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
+    BrowserAnimationsModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+
+    //MatDatepickerModule,
+    //MatNativeDateModule,
+
   ],
   exports: [
     IncludesPipe,
@@ -62,7 +91,8 @@ import { PaginationOverflowDirective }
     UnixTimestampToDatePipe,
     CapitalizeEachPipe,
     CapitalizePipe,
-    PaginationComponent
+    PaginationComponent,
+    MatInputComponent
   ]
 })
 export class NgxMinithingsModule { }

@@ -1,0 +1,42 @@
+@use '@angular/material' as mat;
+
+::ng-deep .dense-5 {
+  //@include mat.all-component-densities(3);
+  @include mat.form-field-density(-5);
+
+  .mat-mdc-text-field-wrapper {
+    @apply bg-white;
+    @apply rounded;
+  }
+}
+
+::ng-deep .mdc-notched-outline__leading {
+  @apply border-black;
+  //color: white;
+}
+
+::ng-deep .mdc-notched-outline__trailing {
+  @apply border-black;
+  //color: white;
+}
+
+
+/*
+::ng-deep .mat-mdc-form-field-appearance-outline:not(.mat-form-field-disabled) .mat-mdc-form-field-flex:hover .mat-mdc-form-field-outline {
+    opacity: 1!important;
+}*/
+
+//::ng-deep .mat-form-field-underline {
+  /*change color of underline*/
+ // background-color: green !important;
+//}
+
+//::ng-deep .mdc-line-ripple--active {
+ /*change color of underline when focused*/
+  //background-color: green !important;
+  //@apply bg-c60;
+//}
+
+//::ng-deep .mdc-text-field--filled .mdc-line-ripple::after {
+  //@apply border-b-c10;
+//}

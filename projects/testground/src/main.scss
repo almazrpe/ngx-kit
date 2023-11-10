@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+@import '~simple-keyboard/build/css/index.css';
+//@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@config "../tailwind.config.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@include mat.core();
+$my-primary: mat.define-palette(mat.$deep-orange-palette);
+$my-accent: mat.define-palette(mat.$light-blue-palette);
+$my-warn: mat.define-palette(mat.$red-palette);
+$my-light-theme: mat-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn
+  )));
+
+@include angular-material-theme($my-light-theme);

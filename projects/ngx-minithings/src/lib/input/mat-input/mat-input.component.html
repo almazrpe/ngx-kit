@@ -1,0 +1,82 @@
+<form
+  novalidate
+  [formGroup]="inputForm"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)"
+
+  class="mat-input-comp-container"
+
+  [ngSwitch]="true"
+>
+  <!--
+  [attr.aria-labelledby]="_formField.getLabelId()"
+  <div
+    *ngSwitchCase="type == IType.Date"
+    class="flex flex-col"
+  >
+    <mat-slide-toggle>Toggle me!</mat-slide-toggle>
+
+    <mat-radio-group>
+      <mat-radio-button value="auto">Auto</mat-radio-button>
+      <mat-radio-button value="always">Always</mat-radio-button>
+    </mat-radio-group>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Outline form field</mat-label>
+      <input matInput placeholder="Placeholder">
+      <mat-hint>Hint</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Выберите дату</mat-label>
+      <input matInput [matDatepicker]="picker">
+      <mat-hint>ДД.ММ.ГГГГ</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>-->
+  <mat-form-field *ngSwitchDefault class="w-full dense-5">
+    <!--<mat-label>Input</mat-label>-->
+    <input
+      matInput
+      formControlName="main"
+      class="w-full"
+
+      [id]="id"
+      [type]="type"
+      [placeholder]="_placeholder"
+      [required]="_required"
+      [attr.list]="attrList"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+      #main
+    >
+  </mat-form-field>
+  <!--
+      [id]="id"
+      [name]="name"
+      [type]="type"
+      [ngClass]="cssClasses"
+      [placeholder]="placeholder"
+      [required]="required"
+      [attr.list]="attrList"
+      [min]="min"
+      [max]="max"
+      [value]="value$ | async"
+      (input)="onInput($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      [disabled]="!(isEnabled$ | async)"
+
+
+
+
+      [formControl]="formControl"
+      formControlName='formControlName'
+
+
+
+
+  -->
+</form>

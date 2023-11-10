@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col gap-6 relative">
+<div class="flex flex-col gap-12 relative">
   <div>
     <p class="text-2xl">💁 Minithings Showcase</p>
   </div>
@@ -63,6 +63,44 @@
   </div>
 
   <div class="flex flex-col gap-2 max-h-[30vh]">
+    <p class="text-xl">⌨ Input</p>
+
+
+    <ngx-minithings-block class="w-screen text-center" extraClass="flex flex-col gap-2">
+      <ng-template>
+        <ngx-minithings-input
+          [type]="InputType.Text"
+          localizedName="Message"
+          [isFormRequired]="false"
+          [cssClasses]="['w-full']"
+        />
+
+        <form [formGroup]="appForm" (ngSubmit)="sendAppForm()">
+          <!--<mat-form-field>-->
+          <ngx-minithings-mat-input
+            formControlName="comment"
+            [type]="InputType.Number"
+            [placeholder]="'Ваше число'"
+            [validators]="validatorsForAppForm"
+            required
+          />
+            <!--<mat-hint>Write something</mat-hint>
+          </mat-form-field>-->
+
+          <ngx-minithings-button
+            type="submit"
+            i18n
+          >
+            Отправить
+          </ngx-minithings-button>
+        </form>
+      </ng-template>
+    </ngx-minithings-block>
+
+  </div>
+
+
+  <div class="flex flex-col gap-2 max-h-[30vh] mt-20">
     <p class="text-xl">🔎 Pagination</p>
     <p>Доступны отделы IT и Кухня, а также количество страниц: 10, 20 и 200.</p>
     <div class="max-h-[30vh]">

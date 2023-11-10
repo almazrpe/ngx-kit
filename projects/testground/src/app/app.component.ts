@@ -18,6 +18,8 @@ import {
   PaginationAttr,
   makePaginationConfig
 } from "ngx-minithings/pagination/models";
+import { FormGroup, FormControl, Validators, ValidatorFn }
+  from "@angular/forms";
 
 @Component({
   selector: "app-root",
@@ -40,10 +42,17 @@ export class AppComponent implements OnInit
   public customColumnSortingFunctions: Map<string, Function> =
     new Map<string, Function>([]);
   /* eslint-enable */
+  public appForm: FormGroup;
+  public validatorsForAppForm: ValidatorFn[];
 
   public constructor(
     private alertService: AlertService,
   ) {}
+
+  public sendAppForm(): void
+  {
+    console.log(this.appForm);
+  }
 
   public ngOnInit(): void
   {
@@ -64,6 +73,15 @@ export class AppComponent implements OnInit
           obj: index
         });
       }
+    });
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////// Angular Material FormGroup settings /////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    this.validatorsForAppForm = [Validators.min(10)];
+    this.appForm = new FormGroup({
+      comment: new FormControl(""),
     });
 
     //////////////////////////////////////////////////////////////////////////
