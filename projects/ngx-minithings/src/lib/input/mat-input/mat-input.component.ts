@@ -20,10 +20,11 @@ import { SelectedInputEvent, ValueHost}
 import { InputType } from "../input-type";
 import {
   FormControl,
-  FormGroup,
   ControlValueAccessor,
   NgControl,
-  ValidatorFn
+  ValidatorFn,
+  NgForm,
+  FormGroupDirective
 } from "@angular/forms";
 import { FocusMonitor } from "@angular/cdk/a11y";
 import { BooleanInput, coerceBooleanProperty } from "@angular/cdk/coercion";
@@ -32,9 +33,19 @@ import {
   MatFormField,
   MatFormFieldControl,
 } from "@angular/material/form-field";
-
+import { ErrorStateMatcher } from "@angular/material/core";
+import { getDefaultErrorMessage } from "./error-messages";
 //import { MatSelect } from '@angular/material/select';
 //import { MatRadioGroup } from '@angular/material/radio';
+
+export class InputErrorStateMatcher implements ErrorStateMatcher
+{
+  public errorState: boolean = false;
+  public isErrorState(): boolean
+  {
+    return this.errorState;
+  }
+}
 
 @Component({
   selector: "ngx-minithings-mat-input",
@@ -51,13 +62,18 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   @Input() public id: string = `mat-input-${MatInputComponent.nextId++}`;
   @Input() public localizedName: string = "noname";
   @Input() public type: InputType = InputType.Text;
-  @Input() public validators: ValidatorFn[];
+  @Input() public validators: ValidatorFn[] = [];
   @Input() public attrList: string[] = [];
 
-  @ViewChild("main") public mainInput: HTMLInputElement;
+  @Input() public showErrors: boolean = true;
+  @Input() public customErrorMessages: Map<string, string> = new Map();
 
-  public inputForm: FormGroup;
+  @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
+
+  public formControl: FormControl = new FormControl("", {nonNullable: true});
   public stateChanges: Subject<void> = new Subject<void>();
+  public matcher = new InputErrorStateMatcher();
+  public errorState: boolean = false;
   public focused: boolean = false;
   public touched: boolean = false;
   public controlType: string = "mat-input-comp";
@@ -68,15 +84,14 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 
   private selectedInputEventSubscription: Subscription;
 
-  //public IType: any = InputType;
+  //public InputType: any = InputType;
 
   public get empty(): boolean
   {
-    const {
-      value: {main},
-    } = this.inputForm;
-
-    return main == null || (typeof main == "string" && main == "");
+    // TODO: check empty for different types
+    return this.formControl.value == null
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+           || !!this.formControl.value == false;
   }
 
   @HostBinding("class.floating")
@@ -119,7 +134,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   public set disabled(value: BooleanInput)
   {
     this._disabled = coerceBooleanProperty(value);
-    this._disabled ? this.inputForm.disable() : this.inputForm.enable();
+    this._disabled ? this.formControl.disable() : this.formControl.enable();
     this.stateChanges.next();
   }
   private _disabled = false;
@@ -127,25 +142,15 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   @Input()
   public get value(): T | null
   {
-    if (this.inputForm.valid) 
-    {
-      const {
-        value: {main},
-      } = this.inputForm;
-      return main!;
-    }
-    return null;
+    return this.formControl.value;
   }
   public set value(val: T | null)
   {
-    const main: any = val ?? "";
-    this.inputForm.setValue({main});
+    if (val == null)
+      this.formControl.reset();
+    else
+      this.formControl.setValue(val);
     this.stateChanges.next();
-  }
-
-  public get errorState(): boolean
-  {
-    return this.inputForm.invalid && this.touched;
   }
 
   public constructor(
@@ -154,23 +159,49 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     private _elementRef: ElementRef<HTMLElement>,
     @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl,
+
+    @Optional() private _parentForm: NgForm,
+    @Optional() private _parentFormGroup: FormGroupDirective,
   ) 
   {
     if (this.ngControl != null) 
     {
       this.ngControl.valueAccessor = this;
     }
+  }
 
-    this.inputForm = new FormGroup({
-      main: new FormControl(""),
-    });
+  public ngDoCheck(): void
+  {
+    if (this.ngControl != null)
+    {
+      this.updateErrorState();
+    }
+  }
+
+  private updateErrorState(): void
+  {
+    const parent: NgForm | FormGroupDirective | null =
+      this._parentFormGroup != null
+        ? this._parentFormGroup
+        : (this._parentForm != null
+          ? this._parentForm
+          : null);
+
+    const oldState: boolean = this.errorState;
+    const newState: boolean =
+      (this.ngControl == null ? false : (this.ngControl.invalid ?? false))
+        && (this.touched || (parent != null && parent.submitted));
+
+    if (oldState !== newState) 
+    {
+      this.errorState = newState;
+      this.matcher.errorState = newState;
+      this.stateChanges.next();
+    }
   }
 
   public ngOnInit(): void
   {
-    this.inputForm.controls["main"].setValidators(this.validators);
-    this.inputForm.controls["main"].updateValueAndValidity();
-
     if (this.localizedName == "" || this.localizedName == undefined)
     {
       this.localizedName = "noname";
@@ -192,10 +223,10 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
               target: {
                 value: event.value !== ValueValidatorEvent.Clear
                   ? event.value
-                  : ""
+                  : null
               }
             };
-            this.onInput(mockEvent, false);
+            this.onInput(mockEvent, true);
           }
         }
       });
@@ -225,8 +256,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       event.relatedTarget as Element))
     {
       // TODO: check working for inputs with suggested options
-
-      // TODO: use selectedInputService.deselect() ???
+      // if it doesn't then add virtual keyboard interaction
 
       this.touched = true;
       this.focused = false;
@@ -246,7 +276,11 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 
   public onContainerClick(): void
   {
-    this._focusMonitor.focusVia(this.mainInput, "program");
+    // TODO: check this function works with big containers
+    // if it doesn't return back
+    // @ViewChild("main") public mainInput: HTMLInputElement;
+    // and use mainInput instead of mainElementRef.nativeElement
+    this._focusMonitor.focusVia(this.mainElementRef.nativeElement, "program");
   }
 
   public writeValue(val: T | null): void 
@@ -273,55 +307,54 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   public setDisabledState(isDisabled: boolean): void 
   {
     this.disabled = isDisabled;
-    if (isDisabled) 
-    {
-      this.inputForm.disable();
-    }
-    else 
-    {
-      this.inputForm.enable();
-    }
   }
 
-  public onInput(event: any, shouldSendEvent?: boolean): void 
+  public onInput(event: any, virtualKeyboardInput: boolean = false): void
   {
     const val: any = event.target.value;
-    const _shouldSendEvent: boolean =
-      shouldSendEvent === undefined ? true : shouldSendEvent;
-    let isValueChanged: boolean = false;
-    let altValue: any = ValueValidatorEvent.Clear;
-
-    if (this.type == InputType.Number)
+    if (virtualKeyboardInput == true)
     {
-      if (Number.isNaN(Number(val)) == false)
+      switch(this.type)
       {
-        const old_value: T | null = this.value;
-        altValue = Number(val);
-        this.value = altValue as T;
-        isValueChanged = old_value === this.value;
-      }
-      else
-      {
-        // TODO: bug with null in this.value (because validators),
-        // number in the field and trying to add letter into the field
-        if (_shouldSendEvent == false)
-          isValueChanged = true;
+        case InputType.Number:
+          this.mainElementRef.nativeElement.value = val;
+          this.mainElementRef.nativeElement.dispatchEvent(
+            new Event("input", { bubbles: true }));
+          return;
+        default:
+          this.value = val;
       }
     }
     else
       this.value = val;
 
-    if (
-      // if the origin value is changed by validators, an event should be fired
-      // even if it was disabled to notify the other recipients (mainly a
-      // keyboard) about the change
-      (_shouldSendEvent || isValueChanged)
-      && this.selectedInputService.isSelected(this.id)
-    )
+    if (this.selectedInputService.isSelected(this.id)
+        && virtualKeyboardInput == false)
     {
-      this.selectedInputService.sendInputValue(this.value ?? altValue);
+      this.selectedInputService.sendInputValue(
+        (this.value == null || this.value === "")
+          ? ValueValidatorEvent.Clear
+          : this.value
+      );
     }
     this.onChange(this.value);
+  }
+
+  public getErrorMessage(): string
+  {
+    if (this.ngControl != null)
+    {
+      const { errors } = this.ngControl;
+      if (errors != null)
+      {
+        const errorName: string = Object.keys(errors)[0];
+        if (this.customErrorMessages.has(errorName))
+          return this.customErrorMessages.get(errorName) ?? "";
+        else
+          return getDefaultErrorMessage(errorName, errors[errorName]);
+      }
+    }
+    return "UNKNOWN ERROR";
   }
 
   public ngOnDestroy(): void
@@ -329,5 +362,4 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     this.stateChanges.complete();
     this._focusMonitor.stopMonitoring(this._elementRef);
   }
-
 }

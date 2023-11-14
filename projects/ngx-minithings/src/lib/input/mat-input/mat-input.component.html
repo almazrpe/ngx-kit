@@ -1,14 +1,13 @@
 <form
   novalidate
-  [formGroup]="inputForm"
+  class="mat-input-comp-container"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
-
-  class="mat-input-comp-container"
 
   [ngSwitch]="true"
 >
   <!--
+  [formGroup]="inputForm"
   [attr.aria-labelledby]="_formField.getLabelId()"
   <div
     *ngSwitchCase="type == IType.Date"
@@ -40,8 +39,10 @@
     <!--<mat-label>Input</mat-label>-->
     <input
       matInput
-      formControlName="main"
       class="w-full"
+
+      [formControl]="formControl"
+      [errorStateMatcher]="matcher"
 
       [id]="id"
       [type]="type"
@@ -52,31 +53,8 @@
       (blur)="onTouched()"
       #main
     >
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
   </mat-form-field>
-  <!--
-      [id]="id"
-      [name]="name"
-      [type]="type"
-      [ngClass]="cssClasses"
-      [placeholder]="placeholder"
-      [required]="required"
-      [attr.list]="attrList"
-      [min]="min"
-      [max]="max"
-      [value]="value$ | async"
-      (input)="onInput($event)"
-      (focus)="onFocus($event)"
-      (blur)="onBlur($event)"
-      [disabled]="!(isEnabled$ | async)"
-
-
-
-
-      [formControl]="formControl"
-      formControlName='formControlName'
-
-
-
-
-  -->
 </form>

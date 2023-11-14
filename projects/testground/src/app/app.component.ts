@@ -18,7 +18,7 @@ import {
   PaginationAttr,
   makePaginationConfig
 } from "ngx-minithings/pagination/models";
-import { FormGroup, FormControl, Validators, ValidatorFn }
+import { FormGroup, FormControl, Validators }
   from "@angular/forms";
 
 @Component({
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit
     new Map<string, Function>([]);
   /* eslint-enable */
   public appForm: FormGroup;
-  public validatorsForAppForm: ValidatorFn[];
+  public customErrorMessages: Map<string, string>;
 
   public constructor(
     private alertService: AlertService,
@@ -79,10 +79,17 @@ export class AppComponent implements OnInit
     //////////////////////////////////////////////////////////////////////////
     //////////////// Angular Material FormGroup settings /////////////////////
     //////////////////////////////////////////////////////////////////////////
-    this.validatorsForAppForm = [Validators.min(10)];
     this.appForm = new FormGroup({
-      comment: new FormControl(""),
+      text: new FormControl(null),
+      password: new FormControl(null, [Validators.required]),
+      search: new FormControl(null, [Validators.required]),
+      url: new FormControl(null, [Validators.minLength(10)]),
+      tel: new FormControl(null),
+      email: new FormControl(null, [Validators.email]),
+      number: new FormControl(null, [Validators.max(10)]),
     });
+
+    this.customErrorMessages = new Map([["email", "Введите всё правильно!"]]);
 
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////// Pagination settings ////////////////////////////

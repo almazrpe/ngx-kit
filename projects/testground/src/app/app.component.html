@@ -78,14 +78,57 @@
         <form [formGroup]="appForm" (ngSubmit)="sendAppForm()">
           <!--<mat-form-field>-->
           <ngx-minithings-mat-input
-            formControlName="comment"
-            [type]="InputType.Number"
-            [placeholder]="'Ваше число'"
-            [validators]="validatorsForAppForm"
-            required
+            formControlName="text"
+            [type]="InputType.Text"
+            [placeholder]="'Ваш текст'"
           />
             <!--<mat-hint>Write something</mat-hint>
           </mat-form-field>-->
+
+          <!-- Пример формы с валидатором required -->
+          <ngx-minithings-mat-input
+            formControlName="password"
+            [type]="InputType.Password"
+            [placeholder]="'Ваш пароль'"
+          />
+
+          <!-- Пример формы с валидатором required и
+               выключенным отображением ошибок -->
+          <ngx-minithings-mat-input
+            formControlName="search"
+            [type]="InputType.Search"
+            [placeholder]="'Ваш поиск'"
+            [showErrors]="false"
+          />
+
+          <!-- Пример формы с валидатором minLength(10) -->
+          <ngx-minithings-mat-input
+            formControlName="url"
+            [type]="InputType.URL"
+            [placeholder]="'Ваш url'"
+          />
+
+          <ngx-minithings-mat-input
+            formControlName="tel"
+            [type]="InputType.Tel"
+            [placeholder]="'Ваш телефон'"
+          />
+
+          <!-- Пример формы с валидатором email и
+               кастомным сообщением об ошибке -->
+          <ngx-minithings-mat-input
+            formControlName="email"
+            [type]="InputType.Email"
+            [placeholder]="'Ваша почта'"
+            [customErrorMessages]="customErrorMessages"
+          />
+
+          <!-- Пример формы с валидатором max(10) -->
+          <ngx-minithings-mat-input
+            formControlName="number"
+            [type]="InputType.Number"
+            [placeholder]="'Ваше число'"
+          />
 
           <ngx-minithings-button
             type="submit"
@@ -100,6 +143,7 @@
   </div>
 
 
+  <!--
   <div class="flex flex-col gap-2 max-h-[30vh] mt-20">
     <p class="text-xl">🔎 Pagination</p>
     <p>Доступны отделы IT и Кухня, а также количество страниц: 10, 20 и 200.</p>
@@ -113,6 +157,7 @@
       />
     </div>
   </div>
+  -->
 
   <ngx-minithings-keyboard/>
 </div>
