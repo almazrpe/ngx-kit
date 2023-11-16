@@ -130,6 +130,24 @@
             [placeholder]="'Ваше число'"
           />
 
+          <ngx-minithings-mat-input
+            formControlName="textarea"
+            [type]="InputType.TextArea"
+            [placeholder]="'Ваш развёрнутый текст'"
+          />
+
+          <ngx-minithings-mat-input
+            formControlName="date"
+            [type]="InputType.Date"
+            [placeholder]="'Ваша дата'"
+          />
+
+          <ngx-minithings-mat-input
+            formControlName="daterange"
+            [type]="InputType.DateRange"
+            [placeholder]="'Ваш временной\nотрезок'"
+          />
+
           <ngx-minithings-button
             type="submit"
             i18n

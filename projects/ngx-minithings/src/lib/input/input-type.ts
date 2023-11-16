@@ -14,6 +14,8 @@ export enum InputType {
   Tel = "tel",
   Email = "email",
   Number = "number",
-
-  Date = "date"
+  // Types for mat-input component only:
+  TextArea = "textarea",
+  Date = "date",
+  DateRange = "daterange"
 }

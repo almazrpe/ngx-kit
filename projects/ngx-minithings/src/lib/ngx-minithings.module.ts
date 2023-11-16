@@ -29,9 +29,11 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS }
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 
-//import { MatDatepickerModule } from "@angular/material/datepicker";
-//import { MatNativeDateModule, MAT_DATE_LOCALE }
-//  from '@angular/material/core';
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule, MAT_DATE_LOCALE }
+  from "@angular/material/core";
+
+import { MatButtonModule } from "@angular/material/button";
 
 import { MatInputComponent } from "./input/mat-input/mat-input.component";
 
@@ -57,7 +59,7 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     MatInputComponent
   ],
   providers: [
-    //{ provide: MAT_DATE_LOCALE, useValue: 'ru-RU' },
+    { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {appearance: "outline"}
@@ -72,8 +74,10 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     MatInputModule,
     MatFormFieldModule,
 
-    //MatDatepickerModule,
-    //MatNativeDateModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+
+    MatButtonModule,
 
   ],
   exports: [

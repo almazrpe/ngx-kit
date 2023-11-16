@@ -20,9 +20,9 @@ import { SelectedInputEvent, ValueHost}
 import { InputType } from "../input-type";
 import {
   FormControl,
+  FormGroup,
   ControlValueAccessor,
   NgControl,
-  ValidatorFn,
   NgForm,
   FormGroupDirective
 } from "@angular/forms";
@@ -62,7 +62,6 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   @Input() public id: string = `mat-input-${MatInputComponent.nextId++}`;
   @Input() public localizedName: string = "noname";
   @Input() public type: InputType = InputType.Text;
-  @Input() public validators: ValidatorFn[] = [];
   @Input() public attrList: string[] = [];
 
   @Input() public showErrors: boolean = true;
@@ -84,7 +83,13 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 
   private selectedInputEventSubscription: Subscription;
 
-  //public InputType: any = InputType;
+  public InputType: any = InputType;
+
+  public supportFormGroup: FormGroup = new FormGroup({
+    first: new FormControl(null),
+    second: new FormControl(null),
+  });
+  private valFromViewFlag: boolean = false;
 
   public get empty(): boolean
   {
@@ -135,6 +140,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   {
     this._disabled = coerceBooleanProperty(value);
     this._disabled ? this.formControl.disable() : this.formControl.enable();
+    this._disabled ? this.supportFormGroup.disable()
+      : this.supportFormGroup.enable();
     this.stateChanges.next();
   }
   private _disabled = false;
@@ -146,10 +153,24 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   }
   public set value(val: T | null)
   {
-    if (val == null)
-      this.formControl.reset();
-    else
-      this.formControl.setValue(val);
+    val = val === "" ? null : val;
+    if (this.type == InputType.DateRange)
+    {
+      if (this.valFromViewFlag == true)
+        this.valFromViewFlag = false;
+      else
+      {
+        const arrVal: Array<Date | null> = val != null
+          ? val as Array<Date | null>
+          : [null, null];
+        this.supportFormGroup.setValue({
+          first: arrVal[0],
+          second: arrVal[1]
+        });
+      }
+    }
+    this.formControl.setValue(val);
+
     this.stateChanges.next();
   }
 
@@ -219,14 +240,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
           {
             // don't resend an input change event back to keyboard, because
             // here the keyboard initiated the change
-            const mockEvent: any = {
-              target: {
-                value: event.value !== ValueValidatorEvent.Clear
-                  ? event.value
-                  : null
-              }
-            };
-            this.onInput(mockEvent, true);
+            this.sendInputMockEvent(event.value, true);
           }
         }
       });
@@ -309,9 +323,22 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     this.disabled = isDisabled;
   }
 
+  public sendInputMockEvent(val: any, virtualKeyboard: boolean = false): void
+  {
+    const mockEvent: any = {
+      target: {
+        value: val !== ValueValidatorEvent.Clear
+          ? val
+          : null
+      }
+    };
+    this.onInput(mockEvent, virtualKeyboard);
+  }
+
   public onInput(event: any, virtualKeyboardInput: boolean = false): void
   {
     const val: any = event.target.value;
+    //console.log(val)
     if (virtualKeyboardInput == true)
     {
       switch(this.type)
@@ -321,12 +348,24 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
           this.mainElementRef.nativeElement.dispatchEvent(
             new Event("input", { bubbles: true }));
           return;
+        case InputType.Date:
+        case InputType.DateRange:
+          this.value = "" as T;
+          virtualKeyboardInput = false;
+          break;
         default:
           this.value = val;
       }
     }
     else
+    {
+      if (this.type == InputType.DateRange)
+      {
+        if (val != null)
+          this.valFromViewFlag = true;
+      }
       this.value = val;
+    }
 
     if (this.selectedInputService.isSelected(this.id)
         && virtualKeyboardInput == false)

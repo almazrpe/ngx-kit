@@ -87,6 +87,9 @@ export class AppComponent implements OnInit
       tel: new FormControl(null),
       email: new FormControl(null, [Validators.email]),
       number: new FormControl(null, [Validators.max(10)]),
+      textarea: new FormControl(null, [Validators.required]),
+      date: new FormControl(null, [Validators.required]),
+      daterange: new FormControl([null, null], [Validators.required]),
     });
 
     this.customErrorMessages = new Map([["email", "Введите всё правильно!"]]);

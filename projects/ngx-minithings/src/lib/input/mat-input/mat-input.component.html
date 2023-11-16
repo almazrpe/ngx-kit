@@ -6,48 +6,163 @@
 
   [ngSwitch]="true"
 >
-  <!--
-  [formGroup]="inputForm"
-  [attr.aria-labelledby]="_formField.getLabelId()"
-  <div
-    *ngSwitchCase="type == IType.Date"
-    class="flex flex-col"
+  <mat-form-field
+    *ngSwitchCase="type == InputType.DateRange"
+    class="w-full dense-2"
   >
-    <mat-slide-toggle>Toggle me!</mat-slide-toggle>
+    <mat-date-range-input
+      [rangePicker]="picker"
+      [formGroup]="supportFormGroup"
+      [id]="id"
+      (click)="picker.open()"
+      #main
+    >
+      <input
+        matStartDate
+        formControlName="first"
+        [errorStateMatcher]="matcher"
+        [placeholder]="_placeholder ? _placeholder.split('\n')[0] : ''"
+        [attr.list]="attrList"
+        (focusin)="extra_1.blur()"
+        #extra_1
+      >
+      <input
+        matEndDate
+        formControlName="second"
+        [errorStateMatcher]="matcher"
+        [placeholder]="
+          _placeholder
+          ? (_placeholder.split('\n').length > 1
+             ? _placeholder.split('\n')[1]
+             : '')
+          : ''
+        "
+        [attr.list]="attrList"
+        (dateInput)="sendInputMockEvent([main.value?.start, main.value?.end])"
+        (dateChange)="onTouched()"
+        (focusin)="extra_2.blur()"
+        #extra_2
+      >
+    </mat-date-range-input>
 
-    <mat-radio-group>
-      <mat-radio-button value="auto">Auto</mat-radio-button>
-      <mat-radio-button value="always">Always</mat-radio-button>
-    </mat-radio-group>
+    <mat-date-range-picker touchUi #picker>
+      <mat-date-range-picker-actions>
+        <button
+          mat-raised-button
+          matDateRangePickerCancel
+          color="warn"
+        >
+          Отменить
+        </button>
+        <button
+          mat-raised-button
+          matDateRangePickerCancel
+          (click)="sendInputMockEvent(null)"
+          color="accent"
+        >
+          Очистить
+        </button>
+        <button
+          mat-raised-button
+          matDateRangePickerApply
+          color="primary"
+        >
+          Сохранить
+        </button>
+      </mat-date-range-picker-actions>
+    </mat-date-range-picker>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Outline form field</mat-label>
-      <input matInput placeholder="Placeholder">
-      <mat-hint>Hint</mat-hint>
-    </mat-form-field>
+  <mat-form-field
+    *ngSwitchCase="type == InputType.Date"
+    class="w-full dense-2"
+  >
+    <input
+      matInput
+      class="w-full"
+      [matDatepicker]="picker"
+      [formControl]="formControl"
+      [errorStateMatcher]="matcher"
+      [id]="id"
+      [placeholder]="_placeholder"
+      [attr.list]="attrList"
+      (dateInput)="onInput($event)"
+      (dateChange)="onTouched()"
+      (focusin)="main.blur()"
+      (click)="picker.open()"
+      #main
+    >
+    <mat-datepicker touchUi #picker>
+      <mat-datepicker-actions>
+        <button
+          mat-raised-button
+          matDatepickerCancel
+          color="warn"
+        >
+          Отменить
+        </button>
+        <button
+          mat-raised-button
+          matDatepickerCancel
+          (click)="sendInputMockEvent(null)"
+          color="accent"
+        >
+          Очистить
+        </button>
+        <button
+          mat-raised-button
+          matDatepickerApply
+          color="primary"
+        >
+          Сохранить
+        </button>
+      </mat-datepicker-actions>
+    </mat-datepicker>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
 
-    <mat-form-field class="example-full-width">
-      <mat-label>Выберите дату</mat-label>
-      <input matInput [matDatepicker]="picker">
-      <mat-hint>ДД.ММ.ГГГГ</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker">
-      </mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>-->
-  <mat-form-field *ngSwitchDefault class="w-full dense-5">
+  <mat-form-field
+    *ngSwitchCase="type == InputType.TextArea"
+    class="w-full dense-5"
+  >
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      cdkAutosizeMinRows="2"
+      class="w-full"
+      [formControl]="formControl"
+      [errorStateMatcher]="matcher"
+      [id]="id"
+      [placeholder]="_placeholder"
+      [attr.list]="attrList"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+      #main
+    >
+    </textarea>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngSwitchDefault
+    class="w-full dense-5"
+  >
     <!--<mat-label>Input</mat-label>-->
     <input
       matInput
       class="w-full"
-
       [formControl]="formControl"
       [errorStateMatcher]="matcher"
-
       [id]="id"
       [type]="type"
       [placeholder]="_placeholder"
-      [required]="_required"
       [attr.list]="attrList"
       (input)="onInput($event)"
       (blur)="onTouched()"
