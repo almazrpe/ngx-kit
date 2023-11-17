@@ -90,6 +90,7 @@ export class AppComponent implements OnInit
       textarea: new FormControl(null, [Validators.required]),
       date: new FormControl(null, [Validators.required]),
       daterange: new FormControl([null, null], [Validators.required]),
+      time: new FormControl(null, [Validators.required]),
     });
 
     this.customErrorMessages = new Map([["email", "Введите всё правильно!"]]);

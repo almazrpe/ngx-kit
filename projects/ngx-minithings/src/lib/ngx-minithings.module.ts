@@ -33,6 +33,8 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule, MAT_DATE_LOCALE }
   from "@angular/material/core";
 
+import { NgxMatTimepickerModule } from "ngx-mat-timepicker";
+
 import { MatButtonModule } from "@angular/material/button";
 
 import { MatInputComponent } from "./input/mat-input/mat-input.component";
@@ -76,6 +78,8 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
 
     MatDatepickerModule,
     MatNativeDateModule,
+
+    NgxMatTimepickerModule,
 
     MatButtonModule,
 

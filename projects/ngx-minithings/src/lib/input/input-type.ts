@@ -17,5 +17,6 @@ export enum InputType {
   // Types for mat-input component only:
   TextArea = "textarea",
   Date = "date",
-  DateRange = "daterange"
+  DateRange = "daterange",
+  Time = "time"
 }

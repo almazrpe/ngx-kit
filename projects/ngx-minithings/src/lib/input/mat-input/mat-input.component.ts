@@ -350,6 +350,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
           return;
         case InputType.Date:
         case InputType.DateRange:
+        case InputType.Time:
           this.value = "" as T;
           virtualKeyboardInput = false;
           break;

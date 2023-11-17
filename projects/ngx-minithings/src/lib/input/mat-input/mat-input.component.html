@@ -7,8 +7,55 @@
   [ngSwitch]="true"
 >
   <mat-form-field
+    *ngSwitchCase="type == InputType.Time"
+    class="w-full dense-5"
+  >
+    <input
+      matInput
+      readonly
+      class="w-full"
+      [ngxMatTimepicker]="picker"
+      [formControl]="formControl"
+      [errorStateMatcher]="matcher"
+      [format]="24"
+      [id]="id"
+      [placeholder]="_placeholder"
+      [attr.list]="attrList"
+      (focusin)="main.blur()"
+      #main
+    >
+    <ngx-mat-timepicker
+      [cancelBtnTmpl]="cancel"
+      [confirmBtnTmpl]="apply"
+      (timeChanged)="sendInputMockEvent($event); onTouched()"
+      #picker
+    >
+    </ngx-mat-timepicker>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+
+    <ng-template #cancel>
+      <button
+        mat-raised-button
+        color="warn"
+      >
+        Отменить
+      </button>
+    </ng-template>
+    <ng-template #apply>
+      <button
+        mat-raised-button
+        color="primary"
+      >
+        Сохранить
+      </button>
+    </ng-template>
+  </mat-form-field>
+
+  <mat-form-field
     *ngSwitchCase="type == InputType.DateRange"
-    class="w-full dense-2"
+    class="w-full dense-5"
   >
     <mat-date-range-input
       [rangePicker]="picker"
@@ -78,7 +125,7 @@
 
   <mat-form-field
     *ngSwitchCase="type == InputType.Date"
-    class="w-full dense-2"
+    class="w-full dense-5"
   >
     <input
       matInput
