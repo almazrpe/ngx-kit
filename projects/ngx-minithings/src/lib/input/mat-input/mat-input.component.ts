@@ -1,8 +1,10 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
   Input,
+  Output,
   OnInit,
   OnDestroy,
   Optional,
@@ -33,19 +35,10 @@ import {
   MatFormField,
   MatFormFieldControl,
 } from "@angular/material/form-field";
-import { ErrorStateMatcher } from "@angular/material/core";
-import { getDefaultErrorMessage } from "./error-messages";
-//import { MatSelect } from '@angular/material/select';
-//import { MatRadioGroup } from '@angular/material/radio';
-
-export class InputErrorStateMatcher implements ErrorStateMatcher
-{
-  public errorState: boolean = false;
-  public isErrorState(): boolean
-  {
-    return this.errorState;
-  }
-}
+import {
+  InputErrorStateMatcher,
+  getDefaultErrorMessage
+} from "./error-content";
 
 @Component({
   selector: "ngx-minithings-mat-input",
@@ -59,53 +52,19 @@ export class MatInputComponent<T>
 implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 {
   public static nextId: number = 0;
+  @Input() public type: InputType = InputType.Text;
   @Input() public id: string = `mat-input-${MatInputComponent.nextId++}`;
   @Input() public localizedName: string = "noname";
-  @Input() public type: InputType = InputType.Text;
   @Input() public attrList: string[] = [];
 
   @Input() public showErrors: boolean = true;
   @Input() public customErrorMessages: Map<string, string> = new Map();
 
-  @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
-
-  public formControl: FormControl = new FormControl("", {nonNullable: true});
-  public stateChanges: Subject<void> = new Subject<void>();
-  public matcher = new InputErrorStateMatcher();
-  public errorState: boolean = false;
-  public focused: boolean = false;
-  public touched: boolean = false;
-  public controlType: string = "mat-input-comp";
-  /* eslint-disable */
-  public onChange: (value: any) => void = (_: any) => {};
-  public onTouched: () => void = () => {};
-  /* eslint-enable */
-
-  private selectedInputEventSubscription: Subscription;
-
-  public InputType: any = InputType;
-
-  public supportFormGroup: FormGroup = new FormGroup({
-    first: new FormControl(null),
-    second: new FormControl(null),
-  });
-  private valFromViewFlag: boolean = false;
-
-  public get empty(): boolean
-  {
-    // TODO: check empty for different types
-    return this.formControl.value == null
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-           || !!this.formControl.value == false;
-  }
-
-  @HostBinding("class.floating")
-  public get shouldLabelFloat(): boolean
-  {
-    return this.focused || !this.empty;
-  }
+  @Input() public autocompleteRequired: boolean = false;
+  @Input() public fillingOptions: Array<T> = [];
 
   @Input("aria-describedby") public userAriaDescribedBy: string;
+  @Input() public required: boolean = false;
 
   @Input()
   public get placeholder(): string
@@ -117,19 +76,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     this._placeholder = value;
     this.stateChanges.next();
   }
-  public _placeholder: string;
-
-  @Input()
-  public get required(): boolean
-  {
-    return this._required;
-  }
-  public set required(value: BooleanInput)
-  {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-  public _required: boolean = false;
+  private _placeholder: string = "";
 
   @Input()
   public get disabled(): boolean
@@ -142,9 +89,11 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     this._disabled ? this.formControl.disable() : this.formControl.enable();
     this._disabled ? this.supportFormGroup.disable()
       : this.supportFormGroup.enable();
+    this._disabled ? this.fictiveFormControl.disable()
+      : this.fictiveFormControl.enable();
     this.stateChanges.next();
   }
-  private _disabled = false;
+  private _disabled: boolean = false;
 
   @Input()
   public get value(): T | null
@@ -170,9 +119,38 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       }
     }
     this.formControl.setValue(val);
-
+    this.inputValue.emit(val);
     this.stateChanges.next();
   }
+
+  @Output() public inputValue: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
+
+  public formControl: FormControl = new FormControl("", {nonNullable: true});
+  public stateChanges: Subject<void> = new Subject<void>();
+  public matcher: InputErrorStateMatcher = new InputErrorStateMatcher();
+  public errorState: boolean = false;
+  public focused: boolean = false;
+  public touched: boolean = false;
+  public controlType: string = "mat-input-comp";
+  /* eslint-disable */
+  public onChange: (value: any) => void = (_: any) => {};
+  public onTouched: () => void = () => {};
+  /* eslint-enable */
+
+  private selectedInputEventSubscription: Subscription;
+
+  public InputType: any = InputType;
+
+  public supportFormGroup: FormGroup = new FormGroup({
+    first: new FormControl(null),
+    second: new FormControl(null),
+  });
+  private valFromViewFlag: boolean = false;
+  public fictiveFormControl: FormControl = new FormControl(null);
+
+  public filteredAutocompleteOptions: Array<T>;
 
   public constructor(
     private selectedInputService: SelectedInputService,
@@ -189,36 +167,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     {
       this.ngControl.valueAccessor = this;
     }
-  }
 
-  public ngDoCheck(): void
-  {
-    if (this.ngControl != null)
-    {
-      this.updateErrorState();
-    }
-  }
-
-  private updateErrorState(): void
-  {
-    const parent: NgForm | FormGroupDirective | null =
-      this._parentFormGroup != null
-        ? this._parentFormGroup
-        : (this._parentForm != null
-          ? this._parentForm
-          : null);
-
-    const oldState: boolean = this.errorState;
-    const newState: boolean =
-      (this.ngControl == null ? false : (this.ngControl.invalid ?? false))
-        && (this.touched || (parent != null && parent.submitted));
-
-    if (oldState !== newState) 
-    {
-      this.errorState = newState;
-      this.matcher.errorState = newState;
-      this.stateChanges.next();
-    }
+    this.filteredAutocompleteOptions = this.fillingOptions.slice();
   }
 
   public ngOnInit(): void
@@ -246,6 +196,61 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       });
   }
 
+  @HostBinding("class.floating")
+  public get shouldLabelFloat(): boolean
+  {
+    return this.focused || !this.empty;
+  }
+
+  public get empty(): boolean
+  {
+    return this.formControl.value == null
+      || this.formControl.value === ""
+      || (this.type == InputType.DateRange
+          && this.formControl.value instanceof Array
+          && this.formControl.value.length == 2
+          && this.formControl.value[0] == null
+          && this.formControl.value[1] == null);
+  }
+
+  public filterAutocomplete(event: any): void 
+  {
+    const val: any = event.target.value;
+    this.filteredAutocompleteOptions =
+      this.fillingOptions.filter(
+        opt => String(opt).toLowerCase().includes(String(val)));
+  }
+
+  public ngDoCheck(): void
+  {
+    if (this.ngControl != null)
+    {
+      this.updateErrorState();
+    }
+  }
+
+  private updateErrorState(): void
+  {
+    const parent: NgForm | FormGroupDirective | null =
+      this._parentFormGroup != null
+        ? this._parentFormGroup
+        : (this._parentForm != null
+          ? this._parentForm
+          : null);
+
+    const oldState: boolean = this.errorState;
+    const newState: boolean =
+      (this.ngControl == null ? false : (this.ngControl.invalid ?? false))
+        && (this.touched || (parent != null && parent.submitted));
+
+    if (oldState !== newState)
+    {
+      this.errorState = newState;
+      this.matcher.errorState = newState;
+      this.stateChanges.next();
+    }
+  }
+
   public onFocusIn(): void
   {
     if (!this.focused) 
@@ -258,7 +263,6 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
         },
         this.value
       );
-
       this.focused = true;
       this.stateChanges.next();
     }
@@ -269,9 +273,6 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     if (!this._elementRef.nativeElement.contains(
       event.relatedTarget as Element))
     {
-      // TODO: check working for inputs with suggested options
-      // if it doesn't then add virtual keyboard interaction
-
       this.touched = true;
       this.focused = false;
       this.onTouched();
@@ -323,6 +324,11 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     this.disabled = isDisabled;
   }
 
+  public sendListChangeEvent(changes: any): void
+  {
+    this.sendInputMockEvent(changes.map((item: any) => item.value));
+  }
+
   public sendInputMockEvent(val: any, virtualKeyboard: boolean = false): void
   {
     const mockEvent: any = {
@@ -337,8 +343,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 
   public onInput(event: any, virtualKeyboardInput: boolean = false): void
   {
-    const val: any = event.target.value;
-    //console.log(val)
+    let val: any = event.target.value;
     if (virtualKeyboardInput == true)
     {
       switch(this.type)
@@ -351,11 +356,21 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
         case InputType.Date:
         case InputType.DateRange:
         case InputType.Time:
-          this.value = "" as T;
+        case InputType.Select:
+          val = "";
+          virtualKeyboardInput = false;
+          break;
+        case InputType.Check:
+          val = false;
+          virtualKeyboardInput = false;
+          break;
+        case InputType.RadioList:
+        case InputType.CheckList:
+          val = [];
           virtualKeyboardInput = false;
           break;
         default:
-          this.value = val;
+          break;
       }
     }
     else
@@ -365,8 +380,17 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
         if (val != null)
           this.valFromViewFlag = true;
       }
-      this.value = val;
     }
+
+    if (this.autocompleteRequired == true)
+    {
+      if (this.fillingOptions.includes(val) == false)
+        this.matcher.errorState = true;
+      else
+        this.matcher.errorState = false;
+    }
+
+    this.value = val;
 
     if (this.selectedInputService.isSelected(this.id)
         && virtualKeyboardInput == false)

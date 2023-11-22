@@ -44,6 +44,7 @@ export class AppComponent implements OnInit
   /* eslint-enable */
   public appForm: FormGroup;
   public customErrorMessages: Map<string, string>;
+  public Console: any = console;
 
   public constructor(
     private alertService: AlertService,
@@ -88,9 +89,13 @@ export class AppComponent implements OnInit
       email: new FormControl(null, [Validators.email]),
       number: new FormControl(null, [Validators.max(10)]),
       textarea: new FormControl(null, [Validators.required]),
+      select: new FormControl(null, [Validators.required]),
       date: new FormControl(null, [Validators.required]),
-      daterange: new FormControl([null, null], [Validators.required]),
+      daterange: new FormControl(null, [Validators.required]),
       time: new FormControl(null, [Validators.required]),
+      check: new FormControl(null),
+      radiolist: new FormControl(null, [Validators.required]),
+      checklist: new FormControl(null, [Validators.required]),
     });
 
     this.customErrorMessages = new Map([["email", "Введите всё правильно!"]]);

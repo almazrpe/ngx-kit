@@ -7,8 +7,103 @@
   [ngSwitch]="true"
 >
   <mat-form-field
+    *ngSwitchCase="type == InputType.CheckList"
+    class="w-full dense-5"
+  >
+    <label
+      class="mat-list-label"
+      [ngClass]="{'opacity-50': disabled == true}"
+    >
+      {{placeholder}}
+    </label>
+    <input
+      matInput
+      [formControl]="fictiveFormControl"
+      [errorStateMatcher]="matcher"
+      class="!h-0 !absolute"
+    >
+    <mat-selection-list
+      class="w-full select-none"
+      [formControl]="formControl"
+      [id]="id"
+      [attr.list]="attrList"
+      (selectionChange)=
+        "sendListChangeEvent(main.selectedOptions.selected); onTouched()"
+      #main
+    >
+      <mat-list-option
+        *ngFor="let option of fillingOptions"
+        [value]="option"
+        [togglePosition]="'before'"
+      >
+        {{option}}
+      </mat-list-option>
+    </mat-selection-list>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngSwitchCase="type == InputType.RadioList"
+    class="w-full dense-5"
+  >
+    <label
+      class="mat-list-label"
+      [ngClass]="{'opacity-50': disabled == true}"
+    >
+      {{placeholder}}
+    </label>
+    <input
+      matInput
+      [formControl]="fictiveFormControl"
+      [errorStateMatcher]="matcher"
+      class="!h-0 !absolute"
+    >
+    <mat-selection-list
+      class="w-full select-none"
+      [formControl]="formControl"
+      [multiple]="false"
+      [id]="id"
+      [attr.list]="attrList"
+      (selectionChange)=
+        "sendListChangeEvent(main.selectedOptions.selected); onTouched()"
+      #main
+    >
+      <mat-list-option
+        *ngFor="let option of fillingOptions"
+        [value]="option"
+        [togglePosition]="'before'"
+      >
+        {{option}}
+      </mat-list-option>
+    </mat-selection-list>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngSwitchCase="type == InputType.Check"
+    class="w-full dense-5"
+  >
+    <input matInput class="!h-0 !absolute" [formControl]="fictiveFormControl">
+    <mat-checkbox
+      class="w-full select-none"
+      [formControl]="formControl"
+      [id]="id"
+      [attr.list]="attrList"
+      (change)="sendInputMockEvent($event.checked); onTouched()"
+      #main
+    >
+      {{placeholder}}
+    </mat-checkbox>
+  </mat-form-field>
+
+  <mat-form-field
     *ngSwitchCase="type == InputType.Time"
     class="w-full dense-5"
+    (click)="picker.open()"
   >
     <input
       matInput
@@ -19,15 +114,14 @@
       [errorStateMatcher]="matcher"
       [format]="24"
       [id]="id"
-      [placeholder]="_placeholder"
+      [placeholder]="placeholder"
       [attr.list]="attrList"
-      (focusin)="main.blur()"
       #main
     >
     <ngx-mat-timepicker
       [cancelBtnTmpl]="cancel"
       [confirmBtnTmpl]="apply"
-      (timeChanged)="sendInputMockEvent($event); onTouched()"
+      (timeSet)="sendInputMockEvent($event); onTouched()"
       #picker
     >
     </ngx-mat-timepicker>
@@ -56,21 +150,20 @@
   <mat-form-field
     *ngSwitchCase="type == InputType.DateRange"
     class="w-full dense-5"
+    (click)="picker.open()"
   >
     <mat-date-range-input
       [rangePicker]="picker"
       [formGroup]="supportFormGroup"
       [id]="id"
-      (click)="picker.open()"
       #main
     >
       <input
         matStartDate
         formControlName="first"
         [errorStateMatcher]="matcher"
-        [placeholder]="_placeholder ? _placeholder.split('\n')[0] : ''"
+        [placeholder]="placeholder ? placeholder.split('\n')[0] : ''"
         [attr.list]="attrList"
-        (focusin)="extra_1.blur()"
         #extra_1
       >
       <input
@@ -78,21 +171,20 @@
         formControlName="second"
         [errorStateMatcher]="matcher"
         [placeholder]="
-          _placeholder
-          ? (_placeholder.split('\n').length > 1
-             ? _placeholder.split('\n')[1]
+          placeholder
+          ? (placeholder.split('\n').length > 1
+             ? placeholder.split('\n')[1]
              : '')
           : ''
         "
         [attr.list]="attrList"
         (dateInput)="sendInputMockEvent([main.value?.start, main.value?.end])"
         (dateChange)="onTouched()"
-        (focusin)="extra_2.blur()"
         #extra_2
       >
     </mat-date-range-input>
 
-    <mat-date-range-picker touchUi #picker>
+    <mat-date-range-picker touchUi [restoreFocus]="false" #picker>
       <mat-date-range-picker-actions>
         <button
           mat-raised-button
@@ -126,6 +218,7 @@
   <mat-form-field
     *ngSwitchCase="type == InputType.Date"
     class="w-full dense-5"
+    (click)="picker.open()"
   >
     <input
       matInput
@@ -134,15 +227,13 @@
       [formControl]="formControl"
       [errorStateMatcher]="matcher"
       [id]="id"
-      [placeholder]="_placeholder"
+      [placeholder]="placeholder"
       [attr.list]="attrList"
       (dateInput)="onInput($event)"
       (dateChange)="onTouched()"
-      (focusin)="main.blur()"
-      (click)="picker.open()"
       #main
     >
-    <mat-datepicker touchUi #picker>
+    <mat-datepicker touchUi [restoreFocus]="false" #picker>
       <mat-datepicker-actions>
         <button
           mat-raised-button
@@ -174,6 +265,34 @@
   </mat-form-field>
 
   <mat-form-field
+    *ngSwitchCase="type == InputType.Select"
+    class="w-full dense-5"
+  >
+    <mat-select
+      class="w-full select-none"
+      [formControl]="formControl"
+      [errorStateMatcher]="matcher"
+      [placeholder]="placeholder"
+      [id]="id"
+      [attr.list]="attrList"
+      (selectionChange)="sendInputMockEvent($event.value)"
+      (openedChange)="onTouched()"
+      #main
+    >
+      <mat-option [value]="null">...</mat-option>
+      <mat-option
+        *ngFor="let option of fillingOptions"
+        [value]="option"
+      >
+        {{option}}
+      </mat-option>
+    </mat-select>
+    <ng-container *ngIf="showErrors && errorState">
+      <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
+    </ng-container>
+  </mat-form-field>
+
+  <mat-form-field
     *ngSwitchCase="type == InputType.TextArea"
     class="w-full dense-5"
   >
@@ -185,7 +304,7 @@
       [formControl]="formControl"
       [errorStateMatcher]="matcher"
       [id]="id"
-      [placeholder]="_placeholder"
+      [placeholder]="placeholder"
       [attr.list]="attrList"
       (input)="onInput($event)"
       (blur)="onTouched()"
@@ -201,20 +320,34 @@
     *ngSwitchDefault
     class="w-full dense-5"
   >
-    <!--<mat-label>Input</mat-label>-->
     <input
       matInput
       class="w-full"
       [formControl]="formControl"
+      [matAutocomplete]="auto"
       [errorStateMatcher]="matcher"
       [id]="id"
       [type]="type"
-      [placeholder]="_placeholder"
+      [placeholder]="placeholder"
       [attr.list]="attrList"
-      (input)="onInput($event)"
+      (input)="filterAutocomplete($event); onInput($event)"
+      (focus)="filterAutocomplete($event)"
       (blur)="onTouched()"
       #main
     >
+    <mat-autocomplete
+      requireSelection
+      hideSingleSelectionIndicator
+      (optionSelected)="sendInputMockEvent($event.option.value)"
+      #auto="matAutocomplete"
+    >
+      <mat-option
+        *ngFor="let option of filteredAutocompleteOptions"
+        [value]="option"
+      >
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
     <ng-container *ngIf="showErrors && errorState">
       <mat-error class="text-xs">{{ getErrorMessage() }}</mat-error>
     </ng-container>

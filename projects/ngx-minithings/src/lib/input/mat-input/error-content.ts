@@ -1,3 +1,14 @@
+import { ErrorStateMatcher } from "@angular/material/core";
+
+export class InputErrorStateMatcher implements ErrorStateMatcher
+{
+  public errorState: boolean = false;
+  public isErrorState(): boolean
+  {
+    return this.errorState;
+  }
+}
+
 export enum ErrorType {
   Required = "required",
   RequiredTrue = "requiredtrue",

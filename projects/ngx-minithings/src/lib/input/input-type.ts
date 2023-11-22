@@ -16,7 +16,11 @@ export enum InputType {
   Number = "number",
   // Types for mat-input component only:
   TextArea = "textarea",
+  Select = "select",
   Date = "date",
   DateRange = "daterange",
-  Time = "time"
+  Time = "time",
+  Check = "check",
+  RadioList = "radiolist",
+  CheckList = "checklist"
 }

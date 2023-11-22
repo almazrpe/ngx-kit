@@ -7,14 +7,34 @@
   @include mat.form-field-density(-5);
 }
 
-::ng-deep .dense-2 {
-  @include mat.form-field-density(-2);
+::ng-deep .mat-list-label {
+  display: inline-block !important;
+  margin-left: 1.25rem !important;
+  margin-top: 0.625rem !important;
+}
+
+::ng-deep mat-selection-list {
+  mat-list-option {
+    border-bottom: 1px black solid !important;
+  }
+  mat-list-option:last-child {
+    border-bottom: none !important;
+  }
 }
 
 ::ng-deep mat-form-field {
   .mat-mdc-text-field-wrapper {
     @apply bg-white;
     @apply rounded;
+  }
+}
+
+::ng-deep mat-checkbox {
+  .mdc-form-field {
+    width: 100% !important;
+    label {
+      width: 100% !important;
+    }
   }
 }
 

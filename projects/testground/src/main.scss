@@ -9,7 +9,41 @@
 
 
 @include mat.core();
-$my-primary: mat.define-palette(mat.$deep-orange-palette, 300);
+
+$orange-cyber: (
+    50 : #fef7f3,
+    100 : #fbece0,
+    200 : #f9dfcc,
+    300 : #f7d2b7,
+    400 : #f5c8a7,
+    500 : #f3be98,
+    600 : #f1b890,
+    700 : #efaf85,
+    800 : #eda77b,
+    900 : #ea996a,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #fffaf7,
+    A700 : #e67d24,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$my-primary: mat-palette($orange-cyber, A700);
 $my-accent: mat.define-palette(mat.$light-blue-palette);
 $my-warn: mat.define-palette(mat.$red-palette, A400);
 $my-light-theme: mat-light-theme((
@@ -20,3 +54,7 @@ $my-light-theme: mat-light-theme((
   )));
 
 @include angular-material-theme($my-light-theme);
+
+.mat-mdc-raised-button:not(:disabled) {
+  color: white !important;
+}
