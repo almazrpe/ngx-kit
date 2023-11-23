@@ -1,8 +1,5 @@
 @use '@angular/material' as mat;
 
-// TODO: setup angular/material components with
-// @include mat.all-component-densities(3);
-
 ::ng-deep .dense-5 {
   @include mat.form-field-density(-5);
 }

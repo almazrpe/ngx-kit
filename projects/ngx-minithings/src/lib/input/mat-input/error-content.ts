@@ -1,14 +1,8 @@
 import { ErrorStateMatcher } from "@angular/material/core";
 
-export class InputErrorStateMatcher implements ErrorStateMatcher
-{
-  public errorState: boolean = false;
-  public isErrorState(): boolean
-  {
-    return this.errorState;
-  }
-}
-
+/**
+ * Accessible types of validation errors
+ */
 export enum ErrorType {
   Required = "required",
   RequiredTrue = "requiredtrue",
@@ -20,6 +14,9 @@ export enum ErrorType {
   Pattern = "pattern"
 }
 
+/**
+ * Default error messages for validation errors
+ */
 export function getDefaultErrorMessage(errorName: string, error: any): string
 {
   switch(errorName as ErrorType)
@@ -44,5 +41,17 @@ export function getDefaultErrorMessage(errorName: string, error: any): string
       return "Поле заполнено неверно";
     default:
       return "Поле содержит ошибку";
+  }
+}
+
+/**
+ * Custom class for proper error state detection in mat-form-field
+ */
+export class InputErrorStateMatcher implements ErrorStateMatcher
+{
+  public errorState: boolean = false;
+  public isErrorState(): boolean
+  {
+    return this.errorState;
   }
 }

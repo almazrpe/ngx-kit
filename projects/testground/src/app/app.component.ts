@@ -8,6 +8,8 @@ import { AlertUtils } from "ngx-minithings/alert/utils";
 import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
 import { DatalistUtils } from "ngx-minithings/datalist/utils";
 import { InputType } from "ngx-minithings/input/input-type";
+import { ErrorType } from "ngx-minithings/input/mat-input/error-content";
+import { SelectionElement } from "ngx-minithings/input/mat-input/utils";
 import { ButtonMode } from "ngx-minithings/button/button.component";
 import {
   PaginationItem,
@@ -35,6 +37,19 @@ export class AppComponent implements OnInit
   public message: string;
   public livingTime: number = 5;
 
+  public levelControl: FormControl =
+    new FormControl(null, [Validators.required]);
+  public messageControl: FormControl =
+    new FormControl(null);
+  public livingTimeControl: FormControl =
+    new FormControl(5,
+      [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(99)
+      ]);
+  public levelOptionsForControl: SelectionElement[] = [];
+
   public paginationItems: PaginationItem[] = [];
   public paginationFilters: PaginationFilter[] = [];
   public paginationConfig: PaginationConfig;
@@ -43,8 +58,14 @@ export class AppComponent implements OnInit
     new Map<string, Function>([]);
   /* eslint-enable */
   public appForm: FormGroup;
-  public customErrorMessages: Map<string, string>;
+  public customErrorMessages: Map<ErrorType, string>;
   public Console: any = console;
+  public tstList: any =
+    [
+      new SelectionElement(0, "test-0"),
+      new SelectionElement(1, "test-0"),
+      new SelectionElement(2, "test-0")
+    ];
 
   public constructor(
     private alertService: AlertService,
@@ -73,9 +94,11 @@ export class AppComponent implements OnInit
           value: level as string,
           obj: index
         });
+
+        this.levelOptionsForControl.push(
+          new SelectionElement(index, level as string));
       }
     });
-
 
     //////////////////////////////////////////////////////////////////////////
     //////////////// Angular Material FormGroup settings /////////////////////
@@ -98,7 +121,8 @@ export class AppComponent implements OnInit
       checklist: new FormControl(null, [Validators.required]),
     });
 
-    this.customErrorMessages = new Map([["email", "Введите всё правильно!"]]);
+    this.customErrorMessages =
+      new Map([[ErrorType.Email, "Введите всё правильно!"]]);
 
     //////////////////////////////////////////////////////////////////////////
     ///////////////////////// Pagination settings ////////////////////////////
@@ -121,8 +145,6 @@ export class AppComponent implements OnInit
       labelText: "Отдел",
       inputConfig: {
         type: InputType.Text,
-        min: 1,
-        max: 10,
         placeholder: "Введите название отдела..."
       },
     }), 5000 );
@@ -595,5 +617,31 @@ export class AppComponent implements OnInit
       default:
         throw new UnsupportedError("input type", type);
     }
+  }
+
+  public checkControlsAndSpawnAlert(): void
+  {
+    if (this.livingTimeControl.invalid)
+    {
+      throw new LogicError(
+        "Alert living time must be defined correctly for an alert spawn!"
+      );
+      return;
+    }
+    else
+    {
+      this.livingTime = this.livingTimeControl.value;
+    }
+
+    if (this.levelControl.value == null)
+    {
+      throw new LogicError(
+        "Alert level must be defined for an alert spawn!"
+      );
+      return;
+    }
+    else
+      this.spawnAlert(this.levelControl.value.value,
+        this.messageControl.value ?? "");
   }
 }

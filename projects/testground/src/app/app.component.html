@@ -20,7 +20,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <p class="text-xl">⚠️ Alert + ⌨️ Input</p>
+    <p class="text-xl">⚠️ Alert + ⌨️ Input | ⌨ Angular Material Input</p>
     <div class="flex flex-col justify-center items-center gap-4">
       <div class="flex flex-col gap-2 items-end">
         <div class="flex flex-row gap-2">
@@ -30,6 +30,12 @@
             [isFormRequired]="false"
             (select)="onInputValue('level', $event)"
           />
+
+          <ngx-minithings-mat-input
+            [formControl]="levelControl"
+            [type]="InputType.Select"
+            [fillingOptions]="levelOptionsForControl"
+          />
         </div>
         <div class="flex flex-row gap-2">
           <label>Message</label>
@@ -38,6 +44,11 @@
             localizedName="Message"
             [isFormRequired]="false"
             (inputValue)="onInputValue('message', $event)"
+          />
+
+          <ngx-minithings-mat-input
+            [formControl]="messageControl"
+            [type]="InputType.Text"
           />
         </div>
         <div class="flex flex-row gap-2">
@@ -51,11 +62,20 @@
             [isFormRequired]="false"
             (inputValue)="onInputValue('livingTime', $event)"
           />
+          <ngx-minithings-mat-input
+            [formControl]="livingTimeControl"
+            [type]="InputType.Number"
+          />
         </div>
       </div>
-      <ngx-minithings-button (click)="spawnAlert(level, message)">
-        Spawn Alert
-      </ngx-minithings-button>
+      <div class="flex flex-row gap-4">
+        <ngx-minithings-button (click)="spawnAlert(level, message)">
+          Spawn Alert (old)
+        </ngx-minithings-button>
+        <ngx-minithings-button (click)="checkControlsAndSpawnAlert()">
+          Spawn Alert (new)
+        </ngx-minithings-button>
+      </div>
       <ngx-minithings-alert-stack
         class="fixed bottom-10 z-50"
         [alertLivingTime]="livingTime"
@@ -77,41 +97,40 @@
           <ngx-minithings-mat-input
             formControlName="text"
             [type]="InputType.Text"
-            [placeholder]="'Ваш текст'"
+            [placeholder]="'Your regular text'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required -->
+          <!-- Example with validator required -->
           <ngx-minithings-mat-input
             formControlName="password"
             [type]="InputType.Password"
-            [placeholder]="'Ваш пароль'"
+            [placeholder]="'Your password'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required и
-               выключенным отображением ошибок -->
+          <!-- Example with validator required and showErrors = false -->
           <ngx-minithings-mat-input
             formControlName="search"
             [type]="InputType.Search"
-            [placeholder]="'Ваш поиск'"
+            [placeholder]="'Your search'"
             [showErrors]="false"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором minLength(10) -->
+          <!-- Example with validator minLength(10) -->
           <ngx-minithings-mat-input
             formControlName="url"
             [type]="InputType.URL"
-            [placeholder]="'Ваш url'"
+            [placeholder]="'Your url'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с автозаполнением -->
+          <!-- Example with autocompletion -->
           <ngx-minithings-mat-input
             formControlName="tel"
             [type]="InputType.Tel"
-            [placeholder]="'Ваш телефон'"
+            [placeholder]="'Your phone number'"
             [fillingOptions]=
               "[
                 '+7(777)7777-77-77', '+7(777)7777-77-75',
@@ -123,107 +142,104 @@
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором email и
-               кастомным сообщением об ошибке -->
+          <!-- Example with validator email and custom error message -->
           <ngx-minithings-mat-input
             formControlName="email"
             [type]="InputType.Email"
-            [placeholder]="'Ваша почта'"
+            [placeholder]="'Your email'"
             [customErrorMessages]="customErrorMessages"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором max(10) -->
+          <!-- Example with validator max(10) -->
           <ngx-minithings-mat-input
             formControlName="number"
             [type]="InputType.Number"
-            [placeholder]="'Ваше число'"
+            [placeholder]="'Your number'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и расширяющимся по высоте текстовым полем -->
+          <!-- Example with validator required and
+               height increasing textarea -->
           <ngx-minithings-mat-input
             formControlName="textarea"
             [type]="InputType.TextArea"
-            [placeholder]="'Ваш развёрнутый текст'"
+            [placeholder]="'Your endless text'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором одного из предложенных вариантов из списка -->
+          <!-- Example with validator required
+               and single variant selection -->
           <ngx-minithings-mat-input
             formControlName="select"
             [type]="InputType.Select"
             [fillingOptions]=
               "[
-                'Саратов', 'Москва', 'Санкт-Петербург',
-                'Воронеж', 'Самара', 'Екатеринбург',
-                'Омск', 'Курск', 'Хабаровск', 'Чита', 'Норильск'
+                'Saratov', 'Moscow', 'Saint Petersburg',
+                'Voronezh', 'Samara', 'Yekaterinburg',
+                'Omsk', 'Kursk', 'Khabarovsk', 'Chita', 'Norilsk'
               ]"
-            [placeholder]="'Ваш выбор из списка'"
+            [placeholder]="'Your selection from the list'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором даты -->
+          <!-- Example with validator required
+               and date choosing -->
           <ngx-minithings-mat-input
             formControlName="date"
             [type]="InputType.Date"
-            [placeholder]="'Ваша дата'"
+            [placeholder]="'Your date'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором календарного отрезка -->
+          <!-- Example with validator required
+               and date range choosing -->
           <ngx-minithings-mat-input
             formControlName="daterange"
             [type]="InputType.DateRange"
-            [placeholder]="'Ваш календарный\nотрезок'"
+            [placeholder]="'Your\ndate range'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором времени -->
+          <!-- Example with validator required
+               and time choosing -->
           <ngx-minithings-mat-input
             formControlName="time"
             [type]="InputType.Time"
-            [placeholder]="'Ваше время'"
+            [placeholder]="'Your time'"
             (inputValue)="Console.log($event)"
           />
 
+          <!-- Example with single check option -->
           <ngx-minithings-mat-input
             formControlName="check"
             [type]="InputType.Check"
-            [placeholder]="'Ваша проверка'"
+            [placeholder]="'Your check'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором одного варианта из предложенных -->
+          <!-- Example with validator required and radio list -->
           <ngx-minithings-mat-input
             formControlName="radiolist"
             [type]="InputType.RadioList"
-            [fillingOptions]="['Саратов', 'Москва', 'Санкт-Петербург']"
-            [placeholder]="'Ваш единичный выбор'"
+            [fillingOptions]="['Saratov', 'Moscow', 'Saint Petersburg']"
+            [placeholder]="'Your single choice'"
             (inputValue)="Console.log($event)"
           />
 
-          <!-- Пример формы с валидатором required
-               и выбором подходящих вариантов из предложенных -->
+          <!-- Example with validator required and checklist -->
           <ngx-minithings-mat-input
             formControlName="checklist"
             [type]="InputType.CheckList"
-            [fillingOptions]="['Саратов', 'Москва', 'Санкт-Петербург']"
-            [placeholder]="'Ваш множественный выбор'"
+            [fillingOptions]="tstList"
+            [placeholder]="'Your multiple choice'"
             (inputValue)="Console.log($event)"
           />
 
           <ngx-minithings-button
             type="submit"
-            i18n
           >
-            Отправить
+            Send form (console)
           </ngx-minithings-button>
         </form>
       </ng-template>
@@ -246,5 +262,5 @@
     </div>
   </div>
 
-  <ngx-minithings-keyboard/>
+  <ngx-minithings-keyboard class="fixed w-full bottom-10 z-50"/>
 </div>

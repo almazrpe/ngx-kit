@@ -6,6 +6,9 @@
 
   [ngSwitch]="true"
 >
+  <!------------------------------------------------------------------------->
+  <!------------------------------ CheckList -------------------------------->
+  <!------ (value: Array<T>, where T could be converted with toString) ------>
   <mat-form-field
     *ngSwitchCase="type == InputType.CheckList"
     class="w-full dense-5"
@@ -18,7 +21,7 @@
     </label>
     <input
       matInput
-      [formControl]="fictiveFormControl"
+      [formControl]="getFirstSupportFormControl()"
       [errorStateMatcher]="matcher"
       class="!h-0 !absolute"
     >
@@ -44,6 +47,9 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!------------------------------ RadioList -------------------------------->
+  <!---- (value: Array<T>(1), where T could be converted with toString) ----->
   <mat-form-field
     *ngSwitchCase="type == InputType.RadioList"
     class="w-full dense-5"
@@ -56,7 +62,7 @@
     </label>
     <input
       matInput
-      [formControl]="fictiveFormControl"
+      [formControl]="getFirstSupportFormControl()"
       [errorStateMatcher]="matcher"
       class="!h-0 !absolute"
     >
@@ -83,11 +89,18 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!-------------------------------- Check ---------------------------------->
+  <!-------------------------- (value: boolean) ----------------------------->
   <mat-form-field
     *ngSwitchCase="type == InputType.Check"
     class="w-full dense-5"
   >
-    <input matInput class="!h-0 !absolute" [formControl]="fictiveFormControl">
+    <input
+      matInput
+      class="!h-0 !absolute"
+      [formControl]="getFirstSupportFormControl()"
+    >
     <mat-checkbox
       class="w-full select-none"
       [formControl]="formControl"
@@ -100,6 +113,9 @@
     </mat-checkbox>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!--------------------------------- Time ---------------------------------->
+  <!--------------------- (value: format string 'HH:MM') -------------------->
   <mat-form-field
     *ngSwitchCase="type == InputType.Time"
     class="w-full dense-5"
@@ -147,6 +163,9 @@
     </ng-template>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!------------------------------ DateRange -------------------------------->
+  <!----------------------- (value: Array<Date>(2)) ------------------------->
   <mat-form-field
     *ngSwitchCase="type == InputType.DateRange"
     class="w-full dense-5"
@@ -215,6 +234,9 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!--------------------------------- Date ---------------------------------->
+  <!---------------------------- (value: Date) ------------------------------>
   <mat-form-field
     *ngSwitchCase="type == InputType.Date"
     class="w-full dense-5"
@@ -264,6 +286,9 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!-------------------------------- Select --------------------------------->
+  <!--------- (value: T, where T could be converted with toString) ---------->
   <mat-form-field
     *ngSwitchCase="type == InputType.Select"
     class="w-full dense-5"
@@ -292,6 +317,9 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!------------------------------- TextArea -------------------------------->
+  <!--------------------------- (value: string) ----------------------------->
   <mat-form-field
     *ngSwitchCase="type == InputType.TextArea"
     class="w-full dense-5"
@@ -316,6 +344,10 @@
     </ng-container>
   </mat-form-field>
 
+  <!------------------------------------------------------------------------->
+  <!------------------------------- REGULAR --------------------------------->
+  <!---------------------- (value: string | number) ------------------------->
+  <!--- (autocomplete value: T, where T could be converted with toString) --->
   <mat-form-field
     *ngSwitchDefault
     class="w-full dense-5"

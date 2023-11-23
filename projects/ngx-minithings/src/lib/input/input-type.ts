@@ -7,6 +7,7 @@
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist
  */
 export enum InputType {
+  // REGULAR
   Text = "text",
   Password = "password",
   Search = "search",
@@ -14,7 +15,7 @@ export enum InputType {
   Tel = "tel",
   Email = "email",
   Number = "number",
-  // Types for mat-input component only:
+  // ONLY mat-input COMPONENT:
   TextArea = "textarea",
   Select = "select",
   Date = "date",
