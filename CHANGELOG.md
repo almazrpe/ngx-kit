@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.6.0
+
+### Features
+
+- Integrated Angular Material with forms.
+- UI QOL.
+
 ## 0.5.1
 
 ### Fixed
