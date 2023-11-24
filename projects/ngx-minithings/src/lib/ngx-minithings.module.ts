@@ -21,7 +21,21 @@ import { PaginationComponent } from "./pagination/pagination.component";
 import { IncludesPipe } from "./includes.pipe";
 import { PaginationOverflowDirective }
   from "./pagination/pagination-overflow.directive";
-
+import { BrowserAnimationsModule }
+  from "@angular/platform-browser/animations";
+import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS }
+  from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatInputModule } from "@angular/material/input";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule, MAT_DATE_LOCALE }
+  from "@angular/material/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatListModule } from "@angular/material/list";
+import { NgxMatTimepickerModule } from "ngx-mat-timepicker";
+import { MatInputComponent } from "./input/mat-input/mat-input.component";
 
 @NgModule({
   declarations: [
@@ -41,11 +55,30 @@ import { PaginationOverflowDirective }
     CapitalizePipe,
     PaginationComponent,
     IncludesPipe,
-    PaginationOverflowDirective
+    PaginationOverflowDirective,
+    MatInputComponent
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {appearance: "outline", subscriptSizing: "dynamic"}
+    }
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatListModule,
+    NgxMatTimepickerModule,
   ],
   exports: [
     IncludesPipe,
@@ -62,7 +95,8 @@ import { PaginationOverflowDirective }
     UnixTimestampToDatePipe,
     CapitalizeEachPipe,
     CapitalizePipe,
-    PaginationComponent
+    PaginationComponent,
+    MatInputComponent
   ]
 })
 export class NgxMinithingsModule { }

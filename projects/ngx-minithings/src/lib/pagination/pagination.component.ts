@@ -267,7 +267,7 @@ export class PaginationComponent implements OnInit
 
   public columnFilterChange(value: any): void
   {
-    if (value.length == 0)
+    if (value == null || value.length == 0)
     {
       for (const fid of this.curFilterValues.keys())
       {
@@ -289,6 +289,7 @@ export class PaginationComponent implements OnInit
 
   public filterChange(filterId: string, value: any): void
   {
+    value = value ?? "";
     this.curFilterValues.set(filterId, value);
     this.refreshPages();
     this.curPage = 0;

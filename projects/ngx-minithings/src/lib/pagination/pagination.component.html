@@ -9,11 +9,9 @@
           class="w-full flex flex-col gap-2 pb-3 overflow-x-auto"
           [ngClass]="{'mr-2': paginationFiltersCount > 0}"
         >
-          <ngx-minithings-input
+          <ngx-minithings-mat-input
             [type]="InpType.Text"
             [placeholder]="'Поиск по словам...'"
-            [isFormRequired]="false"
-            [cssClasses]="['w-full', 'h-7', 'px-2', 'rounded-sm']"
             (inputValue)="columnFilterChange($event)"
           />
 
@@ -56,15 +54,11 @@
               <div class="mb-1 text-left">
                 {{filter.labelText}}
               </div>
-              <ngx-minithings-input
+              <ngx-minithings-mat-input
                 [type]="filter.inputConfig.type"
-                [min]="filter.inputConfig['min']"
-                [max]="filter.inputConfig['max']"
                 [placeholder]="filter.inputConfig['placeholder'] != undefined
                                ? filter.inputConfig['placeholder']
                                : 'Введите что-нибудь...'"
-                [isFormRequired]="false"
-                [cssClasses]="['w-full', 'px-2', 'h-7']"
                 (inputValue)="filterChange(filter.id, $event)"
               />
             </div>
