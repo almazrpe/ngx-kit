@@ -1,11 +1,13 @@
 import { AssertException } from "./exc";
 
-const IsOptimized: boolean =
-  process.env["NGXKIT_OPTIMIZE"] === "1" ? true : false;
-
-export default function assert(condition: boolean, message?: string): void
+export abstract class AssertConfig
 {
-  if (IsOptimized)
+  public static IsOptimized: boolean = false;
+}
+
+export function assert(condition: boolean, message?: string): void
+{
+  if (AssertConfig.IsOptimized)
   {
     return;
   }
