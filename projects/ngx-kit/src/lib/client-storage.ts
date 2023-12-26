@@ -2,9 +2,9 @@
  * Extended functionality for client-side browser storages.
  */
 
-import { NotFoundError, TypeExpectError } from "@slimebones/ngx-antievil";
+import { NotFoundException, TypeExpectException } from "./exc";
 
-// SUGGESTION(ryzhovalex):
+// TODO(ryzhovalex):
 //    in order to implement the session storage utils, consider creating a
 //    base class with base functionality, since API of local and session
 //    storages should be similar.
@@ -22,14 +22,14 @@ export abstract class LocalStorageUtils
 
     if (rawobj === null)
     {
-      throw new NotFoundError("object with key", key);
+      throw new NotFoundException("object with key", key);
     }
 
     const result: object = JSON.parse(rawobj);
 
     if (typeof result !== "object")
     {
-      throw new TypeExpectError(result, "object", typeof result);
+      throw new TypeExpectException("result", "object", typeof result);
     }
 
     return result;
@@ -44,7 +44,7 @@ export abstract class LocalStorageUtils
 
     if (!Array.isArray(result))
     {
-      throw new TypeExpectError(result, "array");
+      throw new TypeExpectException("result", "array", typeof result);
     }
 
     return result;
@@ -59,7 +59,7 @@ export abstract class LocalStorageUtils
 
     if (Array.isArray(result))
     {
-      throw new TypeExpectError(result, "base object");
+      throw new TypeExpectException("result", "base object", typeof result);
     }
 
     return result;
