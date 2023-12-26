@@ -45,7 +45,7 @@
 ### Refactor
 
 - FormUtils
-- dps -> ngx-minithings-dps
+- dps -> ngx-kit-dps
 
 ### Docs
 

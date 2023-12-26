@@ -6,7 +6,7 @@
   <div class="flex flex-col gap-2">
     <p class="text-xl">💪 Block</p>
     <div>
-      <ngx-minithings-block class="w-screen text-center">
+      <ngx-kit-block class="w-screen text-center">
         <ng-template>
           <div class="overflow-y-scroll">
             Block Content
@@ -15,7 +15,7 @@
             Technically this is the most used parent construction unit.
           </div>
         </ng-template>
-      </ngx-minithings-block>
+      </ngx-kit-block>
     </div>
   </div>
 
@@ -25,13 +25,13 @@
       <div class="flex flex-col gap-2 items-end">
         <div class="flex flex-row gap-2">
           <label>Level</label>
-          <ngx-minithings-datalist
+          <ngx-kit-datalist
             [options]="levelOptions"
             [isFormRequired]="false"
             (select)="onInputValue('level', $event)"
           />
 
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             [formControl]="levelControl"
             [type]="InputType.Select"
             [fillingOptions]="levelOptionsForControl"
@@ -39,21 +39,21 @@
         </div>
         <div class="flex flex-row gap-2">
           <label>Message</label>
-          <ngx-minithings-input
+          <ngx-kit-input
             [type]="InputType.Text"
             localizedName="Message"
             [isFormRequired]="false"
             (inputValue)="onInputValue('message', $event)"
           />
 
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             [formControl]="messageControl"
             [type]="InputType.Text"
           />
         </div>
         <div class="flex flex-row gap-2">
           <label>Living Time</label>
-          <ngx-minithings-input
+          <ngx-kit-input
             [type]="InputType.Number"
             localizedName="Living Time"
             [min]="1"
@@ -62,21 +62,21 @@
             [isFormRequired]="false"
             (inputValue)="onInputValue('livingTime', $event)"
           />
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             [formControl]="livingTimeControl"
             [type]="InputType.Number"
           />
         </div>
       </div>
       <div class="flex flex-row gap-4">
-        <ngx-minithings-button (click)="spawnAlert(level, message)">
+        <ngx-kit-button (click)="spawnAlert(level, message)">
           Spawn Alert (old)
-        </ngx-minithings-button>
-        <ngx-minithings-button (click)="checkControlsAndSpawnAlert()">
+        </ngx-kit-button>
+        <ngx-kit-button (click)="checkControlsAndSpawnAlert()">
           Spawn Alert (new)
-        </ngx-minithings-button>
+        </ngx-kit-button>
       </div>
-      <ngx-minithings-alert-stack
+      <ngx-kit-alert-stack
         class="fixed bottom-10 z-50"
         [alertLivingTime]="livingTime"
       />
@@ -87,14 +87,14 @@
     <p class="text-xl">⌨ Angular Material Input</p>
 
 
-    <ngx-minithings-block class="w-screen text-center" extraClass="flex flex-col gap-2">
+    <ngx-kit-block class="w-screen text-center" extraClass="flex flex-col gap-2">
       <ng-template>
         <form
           class="flex flex-col gap-4"
           [formGroup]="appForm"
           (ngSubmit)="sendAppForm()"
         >
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="text"
             [type]="InputType.Text"
             [placeholder]="'Your regular text'"
@@ -102,7 +102,7 @@
           />
 
           <!-- Example with validator required -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="password"
             [type]="InputType.Password"
             [placeholder]="'Your password'"
@@ -110,7 +110,7 @@
           />
 
           <!-- Example with validator required and showErrors = false -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="search"
             [type]="InputType.Search"
             [placeholder]="'Your search'"
@@ -119,7 +119,7 @@
           />
 
           <!-- Example with validator minLength(10) -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="url"
             [type]="InputType.URL"
             [placeholder]="'Your url'"
@@ -127,7 +127,7 @@
           />
 
           <!-- Example with autocompletion -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="tel"
             [type]="InputType.Tel"
             [placeholder]="'Your phone number'"
@@ -143,7 +143,7 @@
           />
 
           <!-- Example with validator email and custom error message -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="email"
             [type]="InputType.Email"
             [placeholder]="'Your email'"
@@ -152,7 +152,7 @@
           />
 
           <!-- Example with validator max(10) -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="number"
             [type]="InputType.Number"
             [placeholder]="'Your number'"
@@ -161,7 +161,7 @@
 
           <!-- Example with validator required and
                height increasing textarea -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="textarea"
             [type]="InputType.TextArea"
             [placeholder]="'Your endless text'"
@@ -170,7 +170,7 @@
 
           <!-- Example with validator required
                and single variant selection -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="select"
             [type]="InputType.Select"
             [fillingOptions]=
@@ -185,7 +185,7 @@
 
           <!-- Example with validator required
                and date choosing -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="date"
             [type]="InputType.Date"
             [placeholder]="'Your date'"
@@ -194,7 +194,7 @@
 
           <!-- Example with validator required
                and date range choosing -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="daterange"
             [type]="InputType.DateRange"
             [placeholder]="'Your\ndate range'"
@@ -203,7 +203,7 @@
 
           <!-- Example with validator required
                and time choosing -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="time"
             [type]="InputType.Time"
             [placeholder]="'Your time'"
@@ -211,7 +211,7 @@
           />
 
           <!-- Example with single check option -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="check"
             [type]="InputType.Check"
             [placeholder]="'Your check'"
@@ -219,7 +219,7 @@
           />
 
           <!-- Example with validator required and radio list -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="radiolist"
             [type]="InputType.RadioList"
             [fillingOptions]="['Saratov', 'Moscow', 'Saint Petersburg']"
@@ -228,7 +228,7 @@
           />
 
           <!-- Example with validator required and checklist -->
-          <ngx-minithings-mat-input
+          <ngx-kit-mat-input
             formControlName="checklist"
             [type]="InputType.CheckList"
             [fillingOptions]="tstList"
@@ -236,14 +236,14 @@
             (inputValue)="Console.log($event)"
           />
 
-          <ngx-minithings-button
+          <ngx-kit-button
             type="submit"
           >
             Send form (console)
-          </ngx-minithings-button>
+          </ngx-kit-button>
         </form>
       </ng-template>
-    </ngx-minithings-block>
+    </ngx-kit-block>
 
   </div>
 
@@ -252,7 +252,7 @@
     <p class="text-xl">🔎 Pagination</p>
     <p>Доступны отделы IT и Кухня, а также количество страниц: 10, 20 и 200.</p>
     <div class="max-h-[30vh]">
-      <ngx-minithings-pagination
+      <ngx-kit-pagination
         class="w-screen text-center"
         [paginationItems]="paginationItems"
         [paginationFilters]="paginationFilters"
@@ -262,5 +262,5 @@
     </div>
   </div>
 
-  <ngx-minithings-keyboard class="fixed w-full bottom-10 z-50"/>
+  <ngx-kit-keyboard class="fixed w-full bottom-10 z-50"/>
 </div>

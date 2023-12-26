@@ -2574,12 +2574,6 @@
     "@sigstore/protobuf-specs" "^0.2.0"
     tuf-js "^1.1.7"
 
-"@slimebones/ngx-antievil@file:lib/slimebones-ngx-antievil-v0.1.1.tgz":
-  version "0.1.1"
-  resolved "file:lib/slimebones-ngx-antievil-v0.1.1.tgz#c86950c96174e234c6e4ef3ea612e3f1d515dc78"
-  dependencies:
-    tslib "^2.3.0"
-
 "@socket.io/component-emitter@~3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"

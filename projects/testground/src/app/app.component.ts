@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import {
   LogicError, TypeExpectError, UnsupportedError
-} from "@slimebones/ngx-antievil";
-import { AlertService } from "ngx-minithings/alert/alert.service";
-import { AlertLevel } from "ngx-minithings/alert/models";
-import { AlertUtils } from "ngx-minithings/alert/utils";
-import { DatalistOption } from "ngx-minithings/datalist/datalist-option";
-import { DatalistUtils } from "ngx-minithings/datalist/utils";
-import { InputType } from "ngx-minithings/input/input-type";
-import { ErrorType } from "ngx-minithings/input/mat-input/error-content";
-import { SelectionElement } from "ngx-minithings/input/mat-input/utils";
-import { ButtonMode } from "ngx-minithings/button/button.component";
+} from "@almazrpe/ngx-kit";
+import { AlertService } from "ngx-kit/alert/alert.service";
+import { AlertLevel } from "ngx-kit/alert/models";
+import { AlertUtils } from "ngx-kit/alert/utils";
+import { DatalistOption } from "ngx-kit/datalist/datalist-option";
+import { DatalistUtils } from "ngx-kit/datalist/utils";
+import { InputType } from "ngx-kit/input/input-type";
+import { ErrorType } from "ngx-kit/input/mat-input/error-content";
+import { SelectionElement } from "ngx-kit/input/mat-input/utils";
+import { ButtonMode } from "ngx-kit/button/button.component";
 import {
   PaginationItem,
   PaginationFilter,
@@ -19,7 +19,7 @@ import {
   PaginationAttrType,
   PaginationAttr,
   makePaginationConfig
-} from "ngx-minithings/pagination/models";
+} from "ngx-kit/pagination/models";
 import { FormGroup, FormControl, Validators }
   from "@angular/forms";
 
@@ -134,9 +134,9 @@ export class AppComponent implements OnInit
         //noSuitableItemsText: "Подходящие страницы не найдены...",
         //noAnyItemsText: "Страницы не найдены...",
         centerAlignedColumns: ["Переиздание", "Статус", "Размер", "Дата"],
-        filterIconPath: "assets/ngx-minithings/filter-icon.png",
-        ascSortIconPath: "assets/ngx-minithings/asc-sort.png",
-        descSortIconPath: "assets/ngx-minithings/desc-sort.png",
+        filterIconPath: "assets/ngx-kit/filter-icon.png",
+        ascSortIconPath: "assets/ngx-kit/asc-sort.png",
+        descSortIconPath: "assets/ngx-kit/desc-sort.png",
         viewType: PaginationViewType.Table
       });
 
@@ -173,7 +173,7 @@ export class AppComponent implements OnInit
           type: PaginationAttrType.ICON,
           body: {
             priority: 3,
-            src: "assets/ngx-minithings/info.svg",
+            src: "assets/ngx-kit/info.svg",
             animatePing: true,
             cssClasses: ["w-6, h-6"]
           }
@@ -188,19 +188,19 @@ export class AppComponent implements OnInit
           [
             {
               priority: 3,
-              src: "assets/ngx-minithings/keyboard.svg",
+              src: "assets/ngx-kit/keyboard.svg",
               animatePing: false,
               cssClasses: ["w-8", "h-8"]
             },
             {
               priority: 3,
-              src: "assets/ngx-minithings/keyboard.svg",
+              src: "assets/ngx-kit/keyboard.svg",
               animatePing: true,
               cssClasses: ["w-8", "h-8"]
             },
             {
               priority: 3,
-              src: "assets/ngx-minithings/keyboard.svg",
+              src: "assets/ngx-kit/keyboard.svg",
               animatePing: false,
               cssClasses: ["w-8", "h-8"]
             }
@@ -266,7 +266,7 @@ export class AppComponent implements OnInit
             {this.spawnAlert(AlertLevel.Info, "Pagination Alert");},
 
             mode: ButtonMode.WARNING,
-            imageSrc: "assets/ngx-minithings/warning.svg"
+            imageSrc: "assets/ngx-kit/warning.svg"
           }
         },
       }
@@ -292,7 +292,7 @@ export class AppComponent implements OnInit
           type: PaginationAttrType.ICON,
           body: {
             priority: 2,
-            src: "assets/ngx-minithings/warning.svg",
+            src: "assets/ngx-kit/warning.svg",
             animatePing: false,
             cssClasses: ["w-6, h-6"]
           }
@@ -327,17 +327,17 @@ export class AppComponent implements OnInit
           [
             {
               priority: 3,
-              src: "assets/ngx-minithings/info.svg",
+              src: "assets/ngx-kit/info.svg",
               animatePing: false
             },
             {
               priority: 2,
-              src: "assets/ngx-minithings/warning.svg",
+              src: "assets/ngx-kit/warning.svg",
               animatePing: false
             },
             {
               priority: 3,
-              src: "assets/ngx-minithings/info.svg",
+              src: "assets/ngx-kit/info.svg",
               animatePing: false
             }
           ]
@@ -380,7 +380,7 @@ export class AppComponent implements OnInit
           type: PaginationAttrType.ICON,
           body: {
             priority: 1,
-            src: "assets/ngx-minithings/error.svg",
+            src: "assets/ngx-kit/error.svg",
             animatePing: false
           }
         },
@@ -394,17 +394,17 @@ export class AppComponent implements OnInit
           [
             {
               priority: 1,
-              src: "assets/ngx-minithings/error.svg",
+              src: "assets/ngx-kit/error.svg",
               animatePing: false
             },
             {
               priority: 1,
-              src: "assets/ngx-minithings/error.svg",
+              src: "assets/ngx-kit/error.svg",
               animatePing: false
             },
             {
               priority: 1,
-              src: "assets/ngx-minithings/error.svg",
+              src: "assets/ngx-kit/error.svg",
               animatePing: false
             }
           ]

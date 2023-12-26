@@ -5,3 +5,4 @@ e2e/**
 karma.conf.js
 commitlint.config.js*
 tailwind.config.js
+codes.ts

@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/ngx-kit",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  },
+  "assets": [
+    "src/assets/**/*.svg",
+    "src/assets/**/*.css"
+  ],
+  "allowedNonPeerDependencies": [
+    "."
+  ]
+}

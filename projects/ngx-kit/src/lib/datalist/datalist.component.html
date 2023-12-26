@@ -1,0 +1,33 @@
+<div class="w-full" *ngIf="options">
+  <form class="flex flex-col" [formGroup]="form">
+    <label class="mb-1">
+      {{ labelText }}
+    </label>
+    <ng-container
+      *ngIf="(isEnabled$ | async) as isEnabled"
+    >
+      <!--
+        Don't use an ID for the input element or the browsers will save
+        previously selected options as a history for the same input in case
+        if the parent component send different options via the observable source.
+
+        https://stackoverflow.com/a/29829002/14748231
+      -->
+      <ngx-kit-input
+        [localizedName]="labelText"
+        formControlName="main"
+        [cssClasses]="['w-full']"
+        [type]="inputType"
+        [attrList]="[datalistId]"
+        [isFormRequired]="isFormRequired"
+        (inputValue)="onInputValue($event)"
+        (blur)="onBlur($event)"
+      />
+    </ng-container>
+    <datalist [id]="datalistId">
+      <ng-container *ngIf="(options$ | async) as _options">
+        <option *ngFor="let option of _options" [value]="option.value"></option>
+      </ng-container>
+    </datalist>
+  </form>
+</div>

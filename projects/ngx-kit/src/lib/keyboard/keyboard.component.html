@@ -1,0 +1,40 @@
+<div class="absolute left-2 bottom-10 z-10">
+  <ngx-kit-button
+    class="flex justify-center"
+    [mode]="keyboardButtonMode"
+    (clickFunc)="toggleKeyboard()"
+  >
+    <img src="assets/ngx-kit/keyboard.svg" alt="keyboard" class="w-8">
+  </ngx-kit-button>
+</div>
+<div
+  [ngClass]="cssSelectors$ | async"
+  class="flex-col items-center justify-center w-screen absolute bottom-5"
+>
+  <div
+      class="flex flex-col gap-2"
+      *ngIf="selectedInputEvent$ | async as selectedInputEvent"
+  >
+    <ng-container
+        *ngIf="selectedInputEvent.isSelected"
+    >
+      <div
+          class="flex gap-2 italic"
+      >
+        <span i18n>поле ввода:</span>
+        <span>"{{selectedInputEvent.selectedInput.name}}"</span>
+      </div>
+
+      <div
+          class="flex gap-2"
+      >
+        <span i18n>значение:</span>
+        <span>"{{selectedInputEvent.value}}"</span>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="w-2/3">
+      <div class="simple-keyboard"></div>
+  </div>
+</div>

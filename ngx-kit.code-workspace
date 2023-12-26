@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": "."
+		},
+		{
+			"name": "ngx-kit",
+			"path": "projects/ngx-kit"
+		},
+		{
+			"name": "testground",
+			"path": "projects/testground"
+		}
+	],
+	"settings": {
+		"eslint.workingDirectories": [
+			// search in the root folder for angular projects
+			"../../"
+		]
+	}
+}

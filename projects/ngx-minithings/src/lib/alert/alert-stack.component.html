@@ -1,8 +1,0 @@
-<div
-  class="flex flex-col z-10 gap-2"
-  *ngIf="alertQueue.length > 0"
->
-  <div *ngFor="let alert of alertQueue.toArray().reverse()">
-    <ngx-minithings-alert [alert]="alert" [iconURL]="getAlertIconURL(alert)" />
-  </div>
-</div>
