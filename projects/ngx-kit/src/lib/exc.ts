@@ -62,23 +62,36 @@ export class DuplicateNameException extends Exception
 export class PleaseDefineException extends Exception
 {
   public constructor(
-    s?: string,
     cannotDo?: string,
     pleaseDefine?: string
   )
   {
-    let msg: string | undefined;
-    msg = s;
-    if (s === undefined)
-    {
-      msg = `cannot do ${cannotDo}: please define ${pleaseDefine}`;
-    }
+    const msg: string =
+      `cannot do ${cannotDo}: please define ${pleaseDefine}`;
     super(msg);
   }
 }
 
 @code("almaz.ngx-kit.exc.exception.expect")
 export class ExpectException extends Exception {}
+
+@code("almaz.ngx-kit.exc.exception.type-expect")
+export class TypeExpectException extends Exception
+{
+  public constructor(s?: string, expected?: string, actual?: string)
+  {
+    let msg: string = s + " type";
+    if (expected !== undefined)
+    {
+      msg += ", expected " + expected;
+    }
+    if (actual !== undefined)
+    {
+      msg += ", got " + actual;
+    }
+    super(msg);
+  }
+}
 
 @code("almaz.ngx-kit.exc.exception.unsupported")
 export class UnsupportedException extends Exception

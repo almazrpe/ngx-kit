@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  LogicError, TypeExpectError, UnsupportedError
-} from "@almazrpe/ngx-kit";
+
+
 import { AlertService } from "ngx-kit/alert/alert.service";
 import { AlertLevel } from "ngx-kit/alert/models";
 import { AlertUtils } from "ngx-kit/alert/utils";
@@ -22,6 +21,8 @@ import {
 } from "ngx-kit/pagination/models";
 import { FormGroup, FormControl, Validators }
   from "@angular/forms";
+import { TypeExpectException, UnsupportedException } from "ngx-kit/exc";
+import {assert} from "ngx-kit";
 
 @Component({
   selector: "app-root",
@@ -578,20 +579,20 @@ export class AppComponent implements OnInit
       case "level":
         if (!DatalistUtils.isDatalistOption(value))
         {
-          throw new TypeExpectError(
-            {"title": "value"}, "DatalistOption", typeof value
+          throw new TypeExpectException(
+            "value", "DatalistOption", typeof value
           );
         }
         if (!AlertUtils.isAlertLevel(value.value))
         {
-          throw new TypeExpectError(
-            {"title": "value"}, "AlertLevel", typeof value
+          throw new TypeExpectException(
+            "value", "AlertLevel", typeof value
           );
         }
         if (value.obj === undefined)
         {
-          throw new LogicError(
-            "datalist option's obj field should be defined for the AlertLevel"
+          throw new TypeExpectException(
+            value.obj, "AlertLevel", typeof value.obj
           );
         }
         this.level = value.obj;
@@ -599,8 +600,8 @@ export class AppComponent implements OnInit
       case "message":
         if (typeof value !== "string")
         {
-          throw new TypeExpectError(
-            {"title": "value"}, "string", typeof value
+          throw new TypeExpectException(
+            "value", "string", typeof value
           );
         }
         this.message = value;
@@ -608,40 +609,30 @@ export class AppComponent implements OnInit
       case "livingTime":
         if (isNaN(numValue))
         {
-          throw new TypeExpectError(
-            {"title": "value"}, "number", typeof value
+          throw new TypeExpectException(
+            "value", "number", typeof value
           );
         }
         this.livingTime = numValue;
         break;
       default:
-        throw new UnsupportedError("input type", type);
+        throw new UnsupportedException("input type " + type);
     }
   }
 
   public checkControlsAndSpawnAlert(): void
   {
-    if (this.livingTimeControl.invalid)
-    {
-      throw new LogicError(
-        "Alert living time must be defined correctly for an alert spawn!"
-      );
-      return;
-    }
-    else
-    {
-      this.livingTime = this.livingTimeControl.value;
-    }
+    assert(
+      !this.livingTimeControl.invalid,
+      "Alert living time must be defined correctly for an alert spawn!"
+    );
+    this.livingTime = this.livingTimeControl.value;
 
-    if (this.levelControl.value == null)
-    {
-      throw new LogicError(
-        "Alert level must be defined for an alert spawn!"
-      );
-      return;
-    }
-    else
-      this.spawnAlert(this.levelControl.value.value,
-        this.messageControl.value ?? "");
+    assert(
+      this.levelControl.value != null,
+      "Alert level must be defined for an alert spawn!"
+    );
+    this.spawnAlert(this.levelControl.value.value,
+      this.messageControl.value ?? "");
   }
 }

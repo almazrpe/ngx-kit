@@ -1,3 +1,4 @@
+export {default as assert} from "./assert";
 export { ErrorType } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
