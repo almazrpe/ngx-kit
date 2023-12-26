@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SelectedInput } from "../input/selected-input/selected-input";
-import { NoKeyboardFocusError } from "./errors";
 import Keyboard from "simple-keyboard";
 import englishLayout from "simple-keyboard-layouts/build/layouts/english";
 import russianLayout from "simple-keyboard-layouts/build/layouts/russian";
@@ -12,9 +11,9 @@ import { ValueHost } from "../input/selected-input/selected-input";
 import { ValueValidatorEvent }
   from "../input/selected-input/value-validator-event";
 import { LayoutItem } from "simple-keyboard-layouts/build/interfaces";
-import { BaseError } from "@slimebones/ngx-antievil";
 import { NavigationEnd, Router } from "@angular/router";
 import { Event as GeneralRouterEvent } from "@angular/router";
+import { Exception } from "ngx-kit/exc";
 
 @Injectable({
   providedIn: "root"
@@ -72,7 +71,7 @@ export class KeyboardService
   {
     if (this.isInitialized)
     {
-      throw new BaseError("already initialized");
+      throw new Exception("already initialized");
     }
     else
     {
@@ -150,7 +149,7 @@ export class KeyboardService
     }
     else if (event.host !== ValueHost.KEYBOARD)
     {
-      throw new BaseError(`unrecognized input value event host=${event.host}`);
+      throw new Exception(`unrecognized input value event host=${event.host}`);
     }
   }
 
@@ -187,7 +186,7 @@ export class KeyboardService
   {
     if (this.selectedInput === null)
     {
-      throw new NoKeyboardFocusError("no input focused to type into");
+      throw new Exception("no input focused to type into");
     }
 
     this.selectedInputService.sendKeyboardValue(value);

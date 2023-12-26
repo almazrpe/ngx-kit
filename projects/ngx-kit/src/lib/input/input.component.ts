@@ -6,7 +6,7 @@ import { InputType } from "./input-type";
 import { SelectedInputEvent, ValueHost} from "./selected-input/selected-input";
 import { SelectedInputService } from "./selected-input/selected-input.service";
 import { ValueValidator } from "./selected-input/value-validator";
-import { checkValueAgainstValidators } from "./selected-input/helpers";
+import { checkValueAgainstValidators } from "./selected-input/utils";
 import { ValueValidatorEvent } from "./selected-input/value-validator-event";
 import { StringUtils } from "../str/utils";
 import { NumUtils } from "../num";

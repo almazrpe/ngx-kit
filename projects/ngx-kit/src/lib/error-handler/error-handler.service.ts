@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable, NgZone } from "@angular/core";
-import { BaseError, CoreErrorCode } from "@slimebones/ngx-antievil";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { HostDTO } from "../dto";
@@ -9,6 +8,8 @@ import { TranslationOptions } from "../translation/options";
 import {
   TranslationService
 } from "../translation/translation.service";
+import Codes from "ngx-kit/_auto_codes";
+import { Exception } from "ngx-kit/exc";
 
 @Injectable({
   providedIn: "root"
@@ -26,9 +27,7 @@ export class ErrorHandlerService
   public handle(error: Error): void
   {
     let errorCode: string;
-    let translationOptions: TranslationOptions = {};
-    let isAlertSpawned: boolean = true;
-    let isLogged: boolean  = true;
+    const translationOptions: TranslationOptions = {};
 
     if (error instanceof HttpErrorResponse)
     {
@@ -40,46 +39,35 @@ export class ErrorHandlerService
         || dto.value.code === null
       )
       {
-        errorCode = CoreErrorCode.SystemServer;
+        errorCode = Codes.almaz.ngx_kit.exc.exception.server;
       }
       else
       {
         errorCode = dto.value.code as string;
       }
     }
-    else if (error instanceof BaseError)
+    else if (error instanceof Exception)
     {
-      errorCode = error.getCode();
-      isAlertSpawned = error.IsAlertSpawned;
-      isLogged = error.IsLogged;
-
-      translationOptions = error.getTranslationOptions() as TranslationOptions;
+      // errorCode = CodeStorage.getCode<>();
+      errorCode = "stub";
     }
     else
     {
-      errorCode = CoreErrorCode.SystemClient;
+      errorCode = Codes.almaz.ngx_kit.exc.exception.client;
     }
 
-    if (isAlertSpawned)
+    this.translation.get(
+      errorCode,
+      translationOptions
+    ).subscribe((res: string) =>
     {
-      this.translation.get(
-        errorCode,
-        translationOptions
-      ).subscribe((res: string) =>
-      {
-        this.ngZone.runTask(() => this.alertService.spawn({
-          level: AlertLevel.Error,
-          // the result is already capitalized if the according translation
-          // option given (or by default)
-          message: res + ` (${errorCode})`
-        })
-        );
-      });
-    }
-
-    if (isLogged)
-    {
-      this.log.error(error);
-    }
+      this.ngZone.runTask(() => this.alertService.spawn({
+        level: AlertLevel.Error,
+        // the result is already capitalized if the according translation
+        // option given (or by default)
+        message: res + ` (${errorCode})`
+      })
+      );
+    });
   }
 }

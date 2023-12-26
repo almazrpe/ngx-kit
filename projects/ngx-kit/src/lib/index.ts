@@ -20,7 +20,6 @@ export {
 export {
   ValueValidator
 } from "./input/selected-input/value-validator";
-export { NoSelectedInputError } from "./input/selected-input/errors";
 export {
   SelectedInput, SelectedInputEvent, ValueHost
 } from "./input/selected-input/selected-input";
@@ -69,7 +68,6 @@ export {
   GetFromCodesMapArgs
 } from "./translation/models";
 
-export { NoKeyboardFocusError } from "./keyboard/errors";
 export { KeyboardComponent } from "./keyboard/keyboard.component";
 export { LoadingComponent } from "./loading/loading.component";
 export { LogService } from "./log/log.service";

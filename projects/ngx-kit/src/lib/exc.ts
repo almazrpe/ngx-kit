@@ -58,7 +58,7 @@ export class DuplicateNameException extends Exception
   }
 }
 
-@code("almaz.ngx-kit.exc.exceptions.please-define")
+@code("almaz.ngx-kit.exc.exception.please-define")
 export class PleaseDefineException extends Exception
 {
   public constructor(

@@ -4,7 +4,7 @@ import { Observable, map, of, take } from "rxjs";
 import { GetFromCodesMapArgs, TranslationModifier } from "./models";
 import { TranslationOptions } from "./options";
 import { StringUtils } from "../str/utils";
-import { NotFoundError, PleaseDefineError } from "@slimebones/ngx-antievil";
+import { NotFoundException, PleaseDefineException } from "../exc";
 
 @Injectable({
   providedIn: "root"
@@ -54,16 +54,15 @@ export class TranslationService
       map((res: string) =>
       {
         // due to special design, ngx-translate returns the key passed, if the
-        // according value is not found, so here we throw an error instead for
-        // such cases, but only if a fallback translation is not specified
+        // according value is not found, so here we throw an Exception instead
+        // for such cases, but only if a fallback translation is not specified
         if (
           res === finalTranslationKey
           && finalOptions.fallbackTranslation === undefined
         )
         {
-          throw new NotFoundError(
-            "a translation for a key",
-            finalTranslationKey,
+          throw new NotFoundException(
+            "a translation for a key " + finalTranslationKey,
             options
           );
         }
@@ -89,7 +88,7 @@ export class TranslationService
    * @param key code key to search for
    * @param codes code map to search in
    * @param fallback fallback translations to pick from using the key
-   * @throws NotFoundError no code is found for given key in code maps and
+   * @throws NotFoundException no code is found for given key in code maps and
    *   fallback translations
    * @returns translated string either using code from the code maps or ready
    *   translation from the fallback map
@@ -100,7 +99,7 @@ export class TranslationService
   {
     if (args.codes === undefined && args.fallback === undefined)
     {
-      throw new PleaseDefineError(
+      throw new PleaseDefineException(
         "getting translation from code map",
         "either codes or/and fallback translations"
       );
@@ -121,9 +120,8 @@ export class TranslationService
       return of(args.fallback[args.key]);
     }
 
-    throw new NotFoundError(
-      "code value for key",
-      args.key,
+    throw new NotFoundException(
+      "code value for key " + args.key,
       {
         codes: args.codes,
         fallback: args.fallback
