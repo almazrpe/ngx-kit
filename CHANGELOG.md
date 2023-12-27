@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.1
+
+- Adjust exports.
+
 ## 0.7.0
 
 - Rebranded to ngx-kit.

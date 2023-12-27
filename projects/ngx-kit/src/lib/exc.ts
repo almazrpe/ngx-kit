@@ -103,14 +103,3 @@ export class UnsupportedException extends Exception
     super(s);
   }
 }
-
-@code("almaz.ngx-kit.exc.exception.assert")
-export class AssertException extends Exception
-{
-  public constructor(
-    s?: string
-  )
-  {
-    super(s);
-  }
-}
