@@ -1,28 +1,29 @@
 import { Component, OnInit } from "@angular/core";
 
 
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AlertService } from "ngx-kit/alert/alert.service";
 import { AlertLevel } from "ngx-kit/alert/models";
 import { AlertUtils } from "ngx-kit/alert/utils";
+import { ButtonMode } from "ngx-kit/button/button.component";
 import { DatalistOption } from "ngx-kit/datalist/datalist-option";
 import { DatalistUtils } from "ngx-kit/datalist/utils";
+import {
+  Exception, TypeExpectException, UnsupportedException
+} from "ngx-kit/exc";
 import { InputType } from "ngx-kit/input/input-type";
 import { ErrorType } from "ngx-kit/input/mat-input/error-content";
 import { SelectionElement } from "ngx-kit/input/mat-input/utils";
-import { ButtonMode } from "ngx-kit/button/button.component";
-import {
-  PaginationItem,
-  PaginationFilter,
-  PaginationConfig,
-  PaginationViewType,
-  PaginationAttrType,
+import
+{
   PaginationAttr,
+  PaginationAttrType,
+  PaginationConfig,
+  PaginationFilter,
+  PaginationItem,
+  PaginationViewType,
   makePaginationConfig
 } from "ngx-kit/pagination/models";
-import { FormGroup, FormControl, Validators }
-  from "@angular/forms";
-import { TypeExpectException, UnsupportedException } from "ngx-kit/exc";
-import {assert} from "ngx-kit";
 
 @Component({
   selector: "app-root",
@@ -622,16 +623,19 @@ export class AppComponent implements OnInit
 
   public checkControlsAndSpawnAlert(): void
   {
-    assert(
-      !this.livingTimeControl.invalid,
-      "Alert living time must be defined correctly for an alert spawn!"
-    );
     this.livingTime = this.livingTimeControl.value;
 
-    assert(
-      this.levelControl.value != null,
-      "Alert level must be defined for an alert spawn!"
-    );
+    if (this.livingTimeControl.invalid)
+    {
+      throw new Exception(
+        "Alert living time must be defined correctly for an alert spawn!"
+      );
+    }
+    if (this.levelControl.value == null)
+    {
+      throw new Exception("Alert level must be defined for an alert spawn!");
+    }
+
     this.spawnAlert(this.levelControl.value.value,
       this.messageControl.value ?? "");
   }
