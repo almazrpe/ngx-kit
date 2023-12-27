@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.0
+
+- Rebranded to ngx-kit.
+
 ## 0.6.0
 
 ### Features

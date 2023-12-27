@@ -1,6 +1,6 @@
 {
   "name": "@almazrpe/ngx-kit",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "watch": {
     "tailwind-build": {
       "patterns": [
