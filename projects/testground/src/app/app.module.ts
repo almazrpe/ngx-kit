@@ -3,10 +3,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { CoreErrorHandler, TranslationUtils } from "ngx-kit";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { CoreErrorHandler } from "ngx-kit";
+import { HttpClientModule } from "@angular/common/http";
 import { NgxKitModule } from "ngx-kit/ngx-kit.module";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,20 +14,7 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    NgxKitModule,
-    TranslateModule.forRoot({
-      defaultLanguage: "en",
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (http: HttpClient) =>
-        {
-          return TranslationUtils.createHttpLoader(
-            http, "assets/locale/codes/", ".json"
-          );
-        },
-        deps: [HttpClient]
-      }
-    }),
+    NgxKitModule
   ],
   providers: [
     CoreErrorHandler,

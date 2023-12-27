@@ -1,4 +1,4 @@
-import { UnsupportedError } from "./err";
+import { UnsupportedError } from "./errors";
 
 /**
  * Host DTO is the outermost JSON body object sent from backend services.

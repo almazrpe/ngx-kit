@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
 import { SelectedInput, SelectedInputEvent, ValueHost }
   from "./selected-input";
-import { InputError } from "../err";
+import { InputError } from "../errors";
 
 /**
  * Manages the state of the selected input.

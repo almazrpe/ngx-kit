@@ -4,10 +4,10 @@ import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { HostDTO } from "../dto";
 import { LogService } from "../log/log.service";
-import { TranslationOptions } from "../translation/options";
+import { TranslationOptions } from "../i18n/options";
 import {
-  TranslationService
-} from "../translation/translation.service";
+  I18nService
+} from "../i18n/i18n.service";
 import Codes from "ngx-kit/_auto_codes";
 import { BaseError } from "ngx-kit/err";
 
@@ -20,7 +20,7 @@ export class ErrorHandlerService
   public constructor(
     private log: LogService,
     private alertService: AlertService,
-    private translation: TranslationService,
+    private translation: I18nService,
     private ngZone: NgZone,
   ) { }
 
@@ -56,7 +56,7 @@ export class ErrorHandlerService
       errorCode = Codes.almaz.ngx_kit.err.error.client;
     }
 
-    this.translation.get(
+    this.translation.getTranslation(
       errorCode,
       translationOptions
     ).subscribe((res: string) =>

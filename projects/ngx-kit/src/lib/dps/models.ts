@@ -1,4 +1,4 @@
-import { TranslationCodes } from "../translation/models";
+import { TranslationCodes } from "../i18n/modifier";
 
 /**
  * Page of a document.

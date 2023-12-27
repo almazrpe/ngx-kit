@@ -7,7 +7,7 @@ export {
   ExpectError,
   TypeExpectError,
   UnsupportedError,
-} from "./err";
+} from "./errors";
 
 export { ErrorType } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
@@ -16,8 +16,8 @@ export { MatInputComponent } from "./input/mat-input/mat-input.component";
 export { IncludesPipe } from "./includes.pipe";
 export { KeyboardService } from "./keyboard/keyboard.service";
 
-export { TranslationUtils } from "./translation/utils";
-export { TranslationService } from "./translation/translation.service";
+export { I18nUtils as TranslationUtils } from "./i18n/utils";
+export { I18nService as TranslationService } from "./i18n/i18n.service";
 
 export { ButtonMode } from "./button/button.component";
 
@@ -76,7 +76,7 @@ export {
   TranslationCodes,
   FallbackTranslations,
   GetFromCodesMapArgs
-} from "./translation/models";
+} from "./i18n/modifier";
 
 export { KeyboardComponent } from "./keyboard/keyboard.component";
 export { LoadingComponent } from "./loading/loading.component";

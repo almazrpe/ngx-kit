@@ -13,7 +13,7 @@ import { ValueValidatorEvent }
 import { LayoutItem } from "simple-keyboard-layouts/build/interfaces";
 import { NavigationEnd, Router } from "@angular/router";
 import { Event as GeneralRouterEvent } from "@angular/router";
-import { BaseError } from "../err";
+import { BaseError } from "../errors";
 
 @Injectable({
   providedIn: "root"

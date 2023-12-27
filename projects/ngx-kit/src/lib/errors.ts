@@ -3,7 +3,7 @@ import { code } from "./tmp-keycode";
 /**
  * Base error is a client side by default.
  */
-@code("almaz.ngx-kit.err.error.client")
+@code("almaz.ngx-kit.errors.error.client")
 export class BaseError extends Error
 {
   public s?: string;
@@ -18,12 +18,12 @@ export class BaseError extends Error
   }
 }
 
-@code("almaz.ngx-kit.err.error.server")
+@code("almaz.ngx-kit.errors.error.server")
 export class ServerError extends BaseError
 {
 }
 
-@code("almaz.ngx-kit.err.error.not-found")
+@code("almaz.ngx-kit.errors.error.not-found")
 export class NotFoundError extends BaseError
 {
   public options: any;
@@ -47,7 +47,7 @@ export class NotFoundError extends BaseError
   }
 }
 
-@code("almaz.ngx-kit.err.error.duplicate-name")
+@code("almaz.ngx-kit.errors.error.duplicate-name")
 export class DuplicateNameError extends BaseError
 {
   public duplicatedName?: string;
@@ -59,7 +59,7 @@ export class DuplicateNameError extends BaseError
   }
 }
 
-@code("almaz.ngx-kit.err.error.please-define")
+@code("almaz.ngx-kit.errors.error.please-define")
 export class PleaseDefineError extends BaseError
 {
   public constructor(
@@ -73,10 +73,10 @@ export class PleaseDefineError extends BaseError
   }
 }
 
-@code("almaz.ngx-kit.err.error.expect")
+@code("almaz.ngx-kit.errors.error.expect")
 export class ExpectError extends BaseError {}
 
-@code("almaz.ngx-kit.err.error.type-expect")
+@code("almaz.ngx-kit.errors.error.type-expect")
 export class TypeExpectError extends BaseError
 {
   public constructor(s?: string, expected?: string, actual?: string)
@@ -94,7 +94,7 @@ export class TypeExpectError extends BaseError
   }
 }
 
-@code("almaz.ngx-kit.err.error.unsupported")
+@code("almaz.ngx-kit.errors.error.unsupported")
 export class UnsupportedError extends BaseError
 {
   public constructor(

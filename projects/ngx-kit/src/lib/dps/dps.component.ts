@@ -3,9 +3,9 @@ import { DPSTranslationCodes, DocumentPage } from "./models";
 import { InputType } from "../input/input-type";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
-import { TranslationService } from "../translation/translation.service";
+import { I18nService } from "../i18n/i18n.service";
 import { ButtonMode } from "../button/button.component";
-import { FallbackTranslations } from "../translation/models";
+import { FallbackTranslations } from "../i18n/modifier";
 
 @Component({
   selector: "ngx-kit-dps",
@@ -55,7 +55,7 @@ export class DPSComponent implements OnInit
   };
 
   public constructor(
-    private translation: TranslationService
+    private translation: I18nService
   ) {}
 
   public ngOnInit(): void

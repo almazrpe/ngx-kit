@@ -1,7 +1,7 @@
-import { BaseError } from "../err";
+import { BaseError } from "../errors";
 import { code } from "ngx-kit/tmp-keycode";
 
-@code("almaz.ngx-kit.input.exception.selected-input")
+@code("almaz.ngx-kit.input.error.selected-input")
 export class InputError extends BaseError
 {
 }
