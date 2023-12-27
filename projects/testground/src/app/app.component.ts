@@ -9,8 +9,8 @@ import { ButtonMode } from "ngx-kit/button/button.component";
 import { DatalistOption } from "ngx-kit/datalist/datalist-option";
 import { DatalistUtils } from "ngx-kit/datalist/utils";
 import {
-  Exception, TypeExpectException, UnsupportedException
-} from "ngx-kit/exc";
+  BaseError, TypeExpectError, UnsupportedError
+} from "ngx-kit/err";
 import { InputType } from "ngx-kit/input/input-type";
 import { ErrorType } from "ngx-kit/input/mat-input/error-content";
 import { SelectionElement } from "ngx-kit/input/mat-input/utils";
@@ -580,19 +580,19 @@ export class AppComponent implements OnInit
       case "level":
         if (!DatalistUtils.isDatalistOption(value))
         {
-          throw new TypeExpectException(
+          throw new TypeExpectError(
             "value", "DatalistOption", typeof value
           );
         }
         if (!AlertUtils.isAlertLevel(value.value))
         {
-          throw new TypeExpectException(
+          throw new TypeExpectError(
             "value", "AlertLevel", typeof value
           );
         }
         if (value.obj === undefined)
         {
-          throw new TypeExpectException(
+          throw new TypeExpectError(
             value.obj, "AlertLevel", typeof value.obj
           );
         }
@@ -601,7 +601,7 @@ export class AppComponent implements OnInit
       case "message":
         if (typeof value !== "string")
         {
-          throw new TypeExpectException(
+          throw new TypeExpectError(
             "value", "string", typeof value
           );
         }
@@ -610,14 +610,14 @@ export class AppComponent implements OnInit
       case "livingTime":
         if (isNaN(numValue))
         {
-          throw new TypeExpectException(
+          throw new TypeExpectError(
             "value", "number", typeof value
           );
         }
         this.livingTime = numValue;
         break;
       default:
-        throw new UnsupportedException("input type " + type);
+        throw new UnsupportedError("input type " + type);
     }
   }
 
@@ -627,16 +627,21 @@ export class AppComponent implements OnInit
 
     if (this.livingTimeControl.invalid)
     {
-      throw new Exception(
+      throw new BaseError(
         "Alert living time must be defined correctly for an alert spawn!"
       );
     }
     if (this.levelControl.value == null)
     {
-      throw new Exception("Alert level must be defined for an alert spawn!");
+      throw new BaseError("Alert level must be defined for an alert spawn!");
     }
 
     this.spawnAlert(this.levelControl.value.value,
       this.messageControl.value ?? "");
+  }
+
+  public throwError(): void
+  {
+    throw new BaseError();
   }
 }

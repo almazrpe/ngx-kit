@@ -11,9 +11,4 @@ export function code(c: string): any
     };
     return a;
   };
-
-  // return (target: any) =>
-  // {
-  //   console.log(target.constructor.prototype);
-  // };
 }

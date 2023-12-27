@@ -99,4 +99,4 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     MatInputComponent
   ]
 })
-export class NgxMinithingsModule { }
+export class NgxKitModule { }

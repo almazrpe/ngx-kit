@@ -9,7 +9,7 @@ import {
   TranslationService
 } from "../translation/translation.service";
 import Codes from "ngx-kit/_auto_codes";
-import { Exception } from "ngx-kit/exc";
+import { BaseError } from "ngx-kit/err";
 
 @Injectable({
   providedIn: "root"
@@ -39,21 +39,21 @@ export class ErrorHandlerService
         || dto.value.code === null
       )
       {
-        errorCode = Codes.almaz.ngx_kit.exc.exception.server;
+        errorCode = Codes.almaz.ngx_kit.err.error.server;
       }
       else
       {
         errorCode = dto.value.code as string;
       }
     }
-    else if (error instanceof Exception)
+    else if (error instanceof BaseError)
     {
-      // errorCode = CodeStorage.getCode<>();
-      errorCode = "stub";
+      errorCode = error.constructor.prototype.Code;
+      console.log(errorCode);
     }
     else
     {
-      errorCode = Codes.almaz.ngx_kit.exc.exception.client;
+      errorCode = Codes.almaz.ngx_kit.err.error.client;
     }
 
     this.translation.get(

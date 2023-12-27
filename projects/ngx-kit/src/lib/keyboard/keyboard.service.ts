@@ -13,7 +13,7 @@ import { ValueValidatorEvent }
 import { LayoutItem } from "simple-keyboard-layouts/build/interfaces";
 import { NavigationEnd, Router } from "@angular/router";
 import { Event as GeneralRouterEvent } from "@angular/router";
-import { Exception } from "ngx-kit/exc";
+import { BaseError } from "../err";
 
 @Injectable({
   providedIn: "root"
@@ -71,7 +71,7 @@ export class KeyboardService
   {
     if (this.isInitialized)
     {
-      throw new Exception("already initialized");
+      throw new BaseError("already initialized");
     }
     else
     {
@@ -149,7 +149,7 @@ export class KeyboardService
     }
     else if (event.host !== ValueHost.KEYBOARD)
     {
-      throw new Exception(`unrecognized input value event host=${event.host}`);
+      throw new BaseError(`unrecognized input value event host=${event.host}`);
     }
   }
 
@@ -186,7 +186,7 @@ export class KeyboardService
   {
     if (this.selectedInput === null)
     {
-      throw new Exception("no input focused to type into");
+      throw new BaseError("no input focused to type into");
     }
 
     this.selectedInputService.sendKeyboardValue(value);

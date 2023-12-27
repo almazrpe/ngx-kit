@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
 import { SelectedInput, SelectedInputEvent, ValueHost }
   from "./selected-input";
-import { InputException } from "../exc";
+import { InputError } from "../err";
 
 /**
  * Manages the state of the selected input.
@@ -76,7 +76,7 @@ export class SelectedInputService
     }
     catch (error)
     {
-      if (error instanceof InputException)
+      if (error instanceof InputError)
       {
         return;
       }
@@ -92,7 +92,7 @@ export class SelectedInputService
   {
     if (this.selectedInput === null)
     {
-      throw new InputException("cannot send value: no selected input");
+      throw new InputError("cannot send value: no selected input");
     }
     else
     {

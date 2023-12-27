@@ -1,13 +1,13 @@
 export {
-  Exception,
-  ServerException,
-  NotFoundException,
-  DuplicateNameException,
-  PleaseDefineException,
-  ExpectException,
-  TypeExpectException,
-  UnsupportedException,
-} from "./exc";
+  BaseError as Error,
+  ServerError,
+  NotFoundError,
+  DuplicateNameError,
+  PleaseDefineError,
+  ExpectError,
+  TypeExpectError,
+  UnsupportedError,
+} from "./err";
 
 export { ErrorType } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
@@ -106,4 +106,4 @@ export { AlertService } from "./alert/alert.service";
 export { AlertStackComponent } from "./alert/alert-stack.component";
 export { AlertLevel, Alert } from "./alert/models";
 export { AlertUtils } from "./alert/utils";
-export { NgxMinithingsModule } from "./ngx-kit.module";
+export { NgxKitModule as NgxMinithingsModule } from "./ngx-kit.module";

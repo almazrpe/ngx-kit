@@ -3,10 +3,11 @@ import { code } from "./tmp-keycode";
 /**
  * Base error is a client side by default.
  */
-@code("almaz.ngx-kit.exc.exception.client")
-export class Exception extends Error
+@code("almaz.ngx-kit.err.error.client")
+export class BaseError extends Error
 {
   public s?: string;
+  public static Code: string;
 
   public constructor(
     s?: string
@@ -17,13 +18,13 @@ export class Exception extends Error
   }
 }
 
-@code("almaz.ngx-kit.exc.exception.server")
-export class ServerException extends Exception
+@code("almaz.ngx-kit.err.error.server")
+export class ServerError extends BaseError
 {
 }
 
-@code("almaz.ngx-kit.exc.exception.not-found")
-export class NotFoundException extends Exception
+@code("almaz.ngx-kit.err.error.not-found")
+export class NotFoundError extends BaseError
 {
   public options: any;
 
@@ -46,8 +47,8 @@ export class NotFoundException extends Exception
   }
 }
 
-@code("almaz.ngx-kit.exc.exception.duplicate-name")
-export class DuplicateNameException extends Exception
+@code("almaz.ngx-kit.err.error.duplicate-name")
+export class DuplicateNameError extends BaseError
 {
   public duplicatedName?: string;
 
@@ -58,8 +59,8 @@ export class DuplicateNameException extends Exception
   }
 }
 
-@code("almaz.ngx-kit.exc.exception.please-define")
-export class PleaseDefineException extends Exception
+@code("almaz.ngx-kit.err.error.please-define")
+export class PleaseDefineError extends BaseError
 {
   public constructor(
     cannotDo?: string,
@@ -72,11 +73,11 @@ export class PleaseDefineException extends Exception
   }
 }
 
-@code("almaz.ngx-kit.exc.exception.expect")
-export class ExpectException extends Exception {}
+@code("almaz.ngx-kit.err.error.expect")
+export class ExpectError extends BaseError {}
 
-@code("almaz.ngx-kit.exc.exception.type-expect")
-export class TypeExpectException extends Exception
+@code("almaz.ngx-kit.err.error.type-expect")
+export class TypeExpectError extends BaseError
 {
   public constructor(s?: string, expected?: string, actual?: string)
   {
@@ -93,8 +94,8 @@ export class TypeExpectException extends Exception
   }
 }
 
-@code("almaz.ngx-kit.exc.exception.unsupported")
-export class UnsupportedException extends Exception
+@code("almaz.ngx-kit.err.error.unsupported")
+export class UnsupportedError extends BaseError
 {
   public constructor(
     s?: string

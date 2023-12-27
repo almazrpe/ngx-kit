@@ -1,0 +1,13 @@
+{
+    "almaz": {
+        "ngx-kit": {
+            "err": {
+                "error": {
+                    "client": {
+                        "$": "client error"
+                    }
+                }
+            }
+        }
+    }
+}

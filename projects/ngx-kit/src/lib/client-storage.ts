@@ -2,7 +2,7 @@
  * Extended functionality for client-side browser storages.
  */
 
-import { NotFoundException, TypeExpectException } from "./exc";
+import { NotFoundError, TypeExpectError } from "./err";
 
 // TODO(ryzhovalex):
 //    in order to implement the session storage utils, consider creating a
@@ -22,14 +22,14 @@ export abstract class LocalStorageUtils
 
     if (rawobj === null)
     {
-      throw new NotFoundException("object with key", key);
+      throw new NotFoundError("object with key", key);
     }
 
     const result: object = JSON.parse(rawobj);
 
     if (typeof result !== "object")
     {
-      throw new TypeExpectException("result", "object", typeof result);
+      throw new TypeExpectError("result", "object", typeof result);
     }
 
     return result;
@@ -44,7 +44,7 @@ export abstract class LocalStorageUtils
 
     if (!Array.isArray(result))
     {
-      throw new TypeExpectException("result", "array", typeof result);
+      throw new TypeExpectError("result", "array", typeof result);
     }
 
     return result;
@@ -59,7 +59,7 @@ export abstract class LocalStorageUtils
 
     if (Array.isArray(result))
     {
-      throw new TypeExpectException("result", "base object", typeof result);
+      throw new TypeExpectError("result", "base object", typeof result);
     }
 
     return result;
