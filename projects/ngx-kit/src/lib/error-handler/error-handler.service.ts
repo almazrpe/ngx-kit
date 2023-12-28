@@ -9,7 +9,7 @@ import {
   I18nService
 } from "../i18n/i18n.service";
 import Codes from "ngx-kit/_auto_codes";
-import { BaseError } from "ngx-kit/err";
+import { BaseError } from "ngx-kit/errors";
 
 @Injectable({
   providedIn: "root"
@@ -39,7 +39,7 @@ export class ErrorHandlerService
         || dto.value.code === null
       )
       {
-        errorCode = Codes.almaz.ngx_kit.err.error.server;
+        errorCode = Codes.almaz.ngx_kit.errors.error.server;
       }
       else
       {
@@ -49,25 +49,21 @@ export class ErrorHandlerService
     else if (error instanceof BaseError)
     {
       errorCode = error.constructor.prototype.Code;
-      console.log(errorCode);
     }
     else
     {
-      errorCode = Codes.almaz.ngx_kit.err.error.client;
+      errorCode = Codes.almaz.ngx_kit.errors.error.client;
     }
 
-    this.translation.getTranslation(
+    const res: string = this.translation.getTranslation(
       errorCode,
       translationOptions
-    ).subscribe((res: string) =>
-    {
-      this.ngZone.runTask(() => this.alertService.spawn({
-        level: AlertLevel.Error,
-        // the result is already capitalized if the according translation
-        // option given (or by default)
-        message: res + ` (${errorCode})`
-      })
-      );
-    });
+    );
+    this.ngZone.runTask(() => this.alertService.spawn({
+      level: AlertLevel.Error,
+      // the result is already capitalized if the according translation
+      // option given (or by default)
+      message: res + ` (${errorCode})`
+    }));
   }
 }

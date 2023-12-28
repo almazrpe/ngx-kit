@@ -9,7 +9,7 @@
       <ngx-kit-input
         class="w-1/6 h-2/3"
         [cssClasses]="pageNumberSelectorCSSClasses"
-        [localizedName]="(pageNumberTranslation$ | async) || ''"
+        [localizedName]="pageNumberTranslation"
         formControlName="currentPageNumber"
         [type]="inputType"
         [min]="1"
@@ -85,9 +85,9 @@
   <!-- Errors -->
   <div
     class="flex justify-center align-center h-full w-full"
-    *ngIf="errorMessage$ | async as errorMessageTranslation$"
+    *ngIf="errorMessage$ | async as errorMessageTranslation"
   >
-    <p>{{errorMessageTranslation$ | async}}</p>
+    <p>{{errorMessageTranslation}}</p>
   </div>
   <!---->
 </div>

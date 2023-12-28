@@ -23,4 +23,4 @@ pack.move: pack
 	mv dist/almazrpe-ngx-kit-v*.tgz $(t)
 
 gen_codes:
-	keycode-parser -i projects/ngx-kit/src/lib/*.ts -o projects/ngx-kit/src/lib/codes.ts
+	keycode-parser -i projects/ngx-kit/src/lib/*.ts projects/ngx-kit/src/lib/**/*.ts -o projects/ngx-kit/src/lib/codes.ts

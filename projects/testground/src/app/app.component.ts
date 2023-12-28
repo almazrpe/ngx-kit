@@ -2,15 +2,15 @@ import { Component, OnInit } from "@angular/core";
 
 
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { TypeExpectError, UnsupportedError } from "ngx-kit";
 import { AlertService } from "ngx-kit/alert/alert.service";
 import { AlertLevel } from "ngx-kit/alert/models";
 import { AlertUtils } from "ngx-kit/alert/utils";
 import { ButtonMode } from "ngx-kit/button/button.component";
 import { DatalistOption } from "ngx-kit/datalist/datalist-option";
 import { DatalistUtils } from "ngx-kit/datalist/utils";
-import {
-  BaseError, TypeExpectError, UnsupportedError
-} from "ngx-kit/err";
+import { BaseError } from "ngx-kit/errors";
+import { I18nService } from "ngx-kit/i18n/i18n.service";
 import { InputType } from "ngx-kit/input/input-type";
 import { ErrorType } from "ngx-kit/input/mat-input/error-content";
 import { SelectionElement } from "ngx-kit/input/mat-input/utils";
@@ -71,6 +71,7 @@ export class AppComponent implements OnInit
 
   public constructor(
     private alertService: AlertService,
+    private i18n: I18nService
   ) {}
 
   public sendAppForm(): void
@@ -80,6 +81,19 @@ export class AppComponent implements OnInit
 
   public ngOnInit(): void
   {
+    // init translations
+    this.i18n.init({
+      lang: "en",
+      defaultLang: "en",
+      translationMapByLang: {
+        "en": {
+          "almaz.ngx-kit.errors.error.client": {
+            "default": "client error"
+          }
+        }
+      }
+    });
+
     this.levelOptions = [];
 
     // since we know enum iteration goes over keys first, we can safely store

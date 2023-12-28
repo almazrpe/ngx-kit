@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DPSTranslationCodes, DocumentPage } from "./models";
+import { DocumentPage } from "./document-page";
 import { InputType } from "../input/input-type";
 import { FormControl, FormGroup } from "@angular/forms";
-import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
+import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { I18nService } from "../i18n/i18n.service";
 import { ButtonMode } from "../button/button.component";
-import { FallbackTranslations } from "../i18n/modifier";
+import Codes from "ngx-kit/_auto_codes";
 
 @Component({
   selector: "ngx-kit-dps",
@@ -18,7 +18,6 @@ export class DPSComponent implements OnInit
   public ButtonMode = ButtonMode;
 
   @Input() public pages: DocumentPage[];
-  @Input() public translationCodes?: DPSTranslationCodes;
 
   @Output() public back: EventEmitter<any> = new EventEmitter<any>();
 
@@ -29,9 +28,9 @@ export class DPSComponent implements OnInit
 
   public currentPage$: ReplaySubject<DocumentPage> =
     new ReplaySubject<DocumentPage>();
-  public errorMessage$: BehaviorSubject<Observable<string> | null> =
-    new BehaviorSubject<Observable<string> | null>(null);
-  public pageNumberTranslation$: Observable<string>;
+  public errorMessage$: BehaviorSubject<string | null> =
+    new BehaviorSubject<string | null>(null);
+  public pageNumberTranslation: string;
 
   public isPageupEnabled$: ReplaySubject<boolean> =
     new ReplaySubject<boolean>();
@@ -49,13 +48,8 @@ export class DPSComponent implements OnInit
     "rounded"
   ];
 
-  private readonly FallbackTranslations: FallbackTranslations = {
-    pageNumber: "Page Number",
-    noSuchDocumentPage: "No such document page"
-  };
-
   public constructor(
-    private translation: I18nService
+    private i18n: I18nService
   ) {}
 
   public ngOnInit(): void
@@ -68,11 +62,12 @@ export class DPSComponent implements OnInit
       currentPageNumber: new FormControl(1)
     });
 
-    this.pageNumberTranslation$ = this.translation.getFromCodesMap({
-      key: "pageNumber",
-      codes: this.translationCodes,
-      fallback: this.FallbackTranslations
-    });
+    this.pageNumberTranslation = this.i18n.getTranslation(
+      Codes.almaz.ngx_kit.dps.translation.page_number,
+      {
+        fallback: "Page number"
+      }
+    );
 
     this.togglePageNavigationButtons();
   }
@@ -109,16 +104,15 @@ export class DPSComponent implements OnInit
 
     if (currentPage === undefined)
     {
-      this.errorMessage$.next(this.translation.getFromCodesMap({
-        key: "noSuchDocumentPage",
-        codes: this.translationCodes,
-        fallback: this.FallbackTranslations,
-        options: {
+      this.errorMessage$.next(this.i18n.getTranslation(
+        Codes.almaz.ngx_kit.dps.translation.no_such_document_page,
+        {
           params: {
             number: this.currentPageNumber
-          }
+          },
+          fallback: "no such document page ${number}"
         }
-      }));
+      ));
     }
     else
     {

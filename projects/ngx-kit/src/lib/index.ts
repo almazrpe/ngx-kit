@@ -1,3 +1,5 @@
+export { DocumentPageExtension } from "./dps/document-page-extension";
+
 export {
   BaseError as Error,
   ServerError,
@@ -16,8 +18,7 @@ export { MatInputComponent } from "./input/mat-input/mat-input.component";
 export { IncludesPipe } from "./includes.pipe";
 export { KeyboardService } from "./keyboard/keyboard.service";
 
-export { I18nUtils as TranslationUtils } from "./i18n/utils";
-export { I18nService as TranslationService } from "./i18n/i18n.service";
+export { I18nService } from "./i18n/i18n.service";
 
 export { ButtonMode } from "./button/button.component";
 
@@ -73,9 +74,6 @@ export {
 export { StringUtils } from "./str/utils";
 export {
   TranslationModifier as Modifier,
-  TranslationCodes,
-  FallbackTranslations,
-  GetFromCodesMapArgs
 } from "./i18n/modifier";
 
 export { KeyboardComponent } from "./keyboard/keyboard.component";
@@ -94,8 +92,8 @@ export { InputType } from "./input/input-type";
 export { InputComponent } from "./input/input.component";
 export { DPSComponent } from "./dps/dps.component";
 export {
-  DocumentPageExtension, DocumentPage
-} from "./dps/models";
+  DocumentPage
+} from "./dps/document-page";
 export { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
 export { BlockComponent } from "./block/block.component";
 export { ButtonComponent } from "./button/button.component";

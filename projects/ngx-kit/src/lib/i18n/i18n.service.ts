@@ -16,13 +16,13 @@ export class I18nService
 
   public constructor()
   {
-    this.setup({lang: "en"});
+    this.init({lang: "en"});
   }
 
   /**
    * Only defined fields of config are rewritten, others are ignored.
    */
-  public setup(config: I18nConfig): void
+  public init(config: I18nConfig): void
   {
     if (config.lang !== undefined)
     {
@@ -80,20 +80,21 @@ export class I18nService
     }
     catch (err)
     {
-      if (finalOptions.fallbackTranslation === undefined)
+      if (finalOptions.fallback === undefined)
       {
         throw new NotFoundError(
           "a translation for code " + code,
           finalOptions
         );
       }
-      translation = finalOptions.fallbackTranslation;
+      translation = finalOptions.fallback;
     }
 
     if (finalOptions.params !== undefined)
     {
       for (const key in finalOptions.params)
       {
+        // just skip if the translation does not contain a param - it's ok
         translation.replaceAll("${" + key + "}", finalOptions.params[key]);
       }
     }
@@ -101,7 +102,7 @@ export class I18nService
     // TODO(ryzhovalex):
     //    check that not variable brackets are left, to avoid errors
 
-    if (finalOptions.isCapitalized === true)
+    if (isCapitalized === true)
     {
       translation = translation[0].toUpperCase() + translation.slice(1);
     }
