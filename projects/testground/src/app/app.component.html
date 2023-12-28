@@ -249,6 +249,20 @@
 
 
   <div class="flex flex-col gap-2">
+    <p class="text-xl">😠 Error Throwing</p>
+    <p>Throws errors and checks out how error handler works with them.</p>
+    <ngx-kit-mat-input
+      [type]="InputType.Select"
+      [formControl]="errorThrowControl"
+      [fillingOptions]="errorOptionsForThrowing"
+    />
+    <ngx-kit-button (clickFunc)="throwError()">
+      Throw!
+    </ngx-kit-button>
+  </div>
+
+
+  <div class="flex flex-col gap-2">
     <p class="text-xl">🔎 Pagination</p>
     <p>Доступны отделы IT и Кухня, а также количество страниц: 10, 20 и 200.</p>
     <div class="max-h-[30vh]">
@@ -260,15 +274,6 @@
         [customColumnSortingFunctions]="customColumnSortingFunctions"
       />
     </div>
-  </div>
-
-
-  <div class="flex flex-col gap-2">
-    <p class="text-xl">😠 Error Throwing</p>
-    <p>Throw errors and check out how error handler works with them.</p>
-    <ngx-kit-button>
-      Throw!
-    </ngx-kit-button>
   </div>
 
   <ngx-kit-keyboard class="fixed w-full bottom-10 z-50"/>

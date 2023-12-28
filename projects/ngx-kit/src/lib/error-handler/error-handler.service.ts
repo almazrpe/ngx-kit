@@ -9,7 +9,7 @@ import {
   I18nService
 } from "../i18n/i18n.service";
 import Codes from "ngx-kit/_auto_codes";
-import { BaseError } from "ngx-kit/errors";
+import { BaseError, NotFoundError } from "ngx-kit/errors";
 
 @Injectable({
   providedIn: "root"
@@ -48,22 +48,45 @@ export class ErrorHandlerService
     }
     else if (error instanceof BaseError)
     {
-      errorCode = error.constructor.prototype.Code;
+      errorCode = (error as any).Code;
     }
     else
     {
       errorCode = Codes.almaz.ngx_kit.errors.error.client;
     }
 
-    const res: string = this.translation.getTranslation(
-      errorCode,
-      translationOptions
-    );
+    let res: string;
+    try
+    {
+      res = this.translation.getTranslation(
+        errorCode,
+        translationOptions
+      );
+    }
+    catch (err: any)
+    {
+      if (err instanceof NotFoundError)
+      {
+        res = "untranslated error with code \"" + errorCode + "\"";
+      }
+      else
+      {
+        res = "unknown error on translation retrieval";
+        error = err as Error;
+      }
+
+      errorCode = Codes.almaz.ngx_kit.errors.error.client;
+    }
+
     this.ngZone.runTask(() => this.alertService.spawn({
       level: AlertLevel.Error,
       // the result is already capitalized if the according translation
       // option given (or by default)
       message: res + ` (${errorCode})`
     }));
+
+    this.log.error(
+      "unhandled error: " + JSON.stringify(error)
+    );
   }
 }

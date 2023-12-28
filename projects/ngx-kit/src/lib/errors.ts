@@ -39,7 +39,7 @@ export class NotFoundError extends BaseError
 
     if (options !== undefined)
     {
-      message += `for options: ${JSON.stringify(options)}`;
+      message += ` for options: ${JSON.stringify(options)}`;
     }
 
     super(message);

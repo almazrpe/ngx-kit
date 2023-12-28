@@ -58,7 +58,7 @@ export class I18nService
     }
 
     const isCapitalized: boolean = finalOptions.isCapitalized !== undefined
-      ? finalOptions.isCapitalized : true;
+      ? finalOptions.isCapitalized : false;
 
     let finalLang: string = this.defaultLang;
     if (this.lang !== undefined)
@@ -80,14 +80,26 @@ export class I18nService
     }
     catch (err)
     {
-      if (finalOptions.fallback === undefined)
+      // try get from default
+      // in case if lang is undefined, this will do redundant work, since
+      // if lang === undefined => finalLang = defaultLang, but we can allow
+      // this for now
+      try
       {
-        throw new NotFoundError(
-          "a translation for code " + code,
-          finalOptions
-        );
+        translation =
+          this.translationMapByLang[this.defaultLang][code][finalModifier];
       }
-      translation = finalOptions.fallback;
+      catch (err)
+      {
+        if (finalOptions.fallback === undefined)
+        {
+          throw new NotFoundError(
+            "a translation for code " + code,
+            finalOptions
+          );
+        }
+        translation = finalOptions.fallback;
+      }
     }
 
     if (finalOptions.params !== undefined)

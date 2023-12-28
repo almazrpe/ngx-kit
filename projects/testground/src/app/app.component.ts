@@ -9,7 +9,7 @@ import { AlertUtils } from "ngx-kit/alert/utils";
 import { ButtonMode } from "ngx-kit/button/button.component";
 import { DatalistOption } from "ngx-kit/datalist/datalist-option";
 import { DatalistUtils } from "ngx-kit/datalist/utils";
-import { BaseError } from "ngx-kit/errors";
+import { BaseError, NotFoundError, ServerError } from "ngx-kit/errors";
 import { I18nService } from "ngx-kit/i18n/i18n.service";
 import { InputType } from "ngx-kit/input/input-type";
 import { ErrorType } from "ngx-kit/input/mat-input/error-content";
@@ -50,7 +50,12 @@ export class AppComponent implements OnInit
         Validators.min(1),
         Validators.max(99)
       ]);
+  public errorThrowControl: FormControl = new FormControl(
+    new SelectionElement(0, "client"),
+    [Validators.required]
+  );
   public levelOptionsForControl: SelectionElement[] = [];
+  public errorOptionsForThrowing: SelectionElement[] = [];
 
   public paginationItems: PaginationItem[] = [];
   public paginationFilters: PaginationFilter[] = [];
@@ -83,12 +88,20 @@ export class AppComponent implements OnInit
   {
     // init translations
     this.i18n.init({
-      lang: "en",
+      lang: "ru",
       defaultLang: "en",
       translationMapByLang: {
         "en": {
           "almaz.ngx-kit.errors.error.client": {
             "default": "client error"
+          },
+          "almaz.ngx-kit.errors.error.not-found": {
+            "default": "object is not found"
+          }
+        },
+        "ru": {
+          "almaz.ngx-kit.errors.error.not-found": {
+            "default": "объект не найден"
           }
         }
       }
@@ -115,6 +128,16 @@ export class AppComponent implements OnInit
           new SelectionElement(index, level as string));
       }
     });
+
+    this.errorOptionsForThrowing.push(
+      new SelectionElement(0, "client")
+    );
+    this.errorOptionsForThrowing.push(
+      new SelectionElement(1, "server")
+    );
+    this.errorOptionsForThrowing.push(
+      new SelectionElement(2, "not-found")
+    );
 
     //////////////////////////////////////////////////////////////////////////
     //////////////// Angular Material FormGroup settings /////////////////////
@@ -656,6 +679,16 @@ export class AppComponent implements OnInit
 
   public throwError(): void
   {
-    throw new BaseError();
+    const errorstr: string = this.errorThrowControl.value.print;
+
+    switch (errorstr)
+    {
+      case "client":
+        throw new BaseError("hello base");
+      case "server":
+        throw new ServerError("hello server");
+      case "not-found":
+        throw new NotFoundError("hello not found");
+    }
   }
 }
