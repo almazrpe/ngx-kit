@@ -5,7 +5,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { I18nService } from "../i18n/i18n.service";
 import { ButtonMode } from "../button/button.component";
-import Codes from "ngx-kit/_auto_codes";
+import Codes from "../_auto_codes";
 
 @Component({
   selector: "ngx-kit-dps",

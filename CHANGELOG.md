@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.6
+
+- fix abs imports
+
 ## 0.7.5
 
 - fix absolute imports within lib
