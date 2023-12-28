@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.5
+
+- fix absolute imports within lib
+
 ## 0.7.4
 
 - fix base error export

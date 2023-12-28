@@ -8,8 +8,8 @@ import { TranslationOptions } from "../i18n/options";
 import {
   I18nService
 } from "../i18n/i18n.service";
-import Codes from "ngx-kit/_auto_codes";
-import { BaseError, NotFoundError } from "ngx-kit/errors";
+import Codes from "../_auto_codes";
+import { BaseError, NotFoundError } from "../errors";
 
 @Injectable({
   providedIn: "root"
