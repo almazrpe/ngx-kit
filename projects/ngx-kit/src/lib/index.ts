@@ -104,4 +104,12 @@ export { AlertService } from "./alert/alert.service";
 export { AlertStackComponent } from "./alert/alert-stack.component";
 export { AlertLevel, Alert } from "./alert/models";
 export { AlertUtils } from "./alert/utils";
-export { NgxKitModule as NgxMinithingsModule } from "./ngx-kit.module";
+export { NgxKitModule } from "./ngx-kit.module";
+
+export {TranslationOptions} from "./i18n/options";
+export {I18nConfig} from "./i18n/config";
+export {
+  TranslationMapByLang,
+  TranslationMap,
+  TranslationUnit
+} from "./i18n/translation";

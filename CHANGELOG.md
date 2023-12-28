@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.3
+
+- expand exports
+
 ## 0.7.2
 
 - add i18n module
