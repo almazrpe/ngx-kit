@@ -4,6 +4,7 @@ import { NotFoundError, PleaseDefineError } from "../errors";
 import { I18nConfig } from "./config";
 import { TranslationMapByLang } from "./translation";
 import { TranslationModifier } from "./modifier";
+import { BaseError } from "../errors";
 
 @Injectable({
   providedIn: "root"
@@ -75,31 +76,28 @@ export class I18nService
     let translation: string;
     try
     {
+      if (
+        this.translationMapByLang[finalLang] === undefined
+        || this.translationMapByLang[finalLang][code] === undefined
+        || this.translationMapByLang[finalLang][code][finalModifier]
+          === undefined
+      )
+      {
+        throw new BaseError();
+      }
       translation =
         this.translationMapByLang[finalLang][code][finalModifier];
     }
-    catch (err)
+    catch
     {
-      // try get from default
-      // in case if lang is undefined, this will do redundant work, since
-      // if lang === undefined => finalLang = defaultLang, but we can allow
-      // this for now
-      try
+      if (finalOptions.fallback === undefined)
       {
-        translation =
-          this.translationMapByLang[this.defaultLang][code][finalModifier];
+        throw new NotFoundError(
+          "a translation for code " + code,
+          finalOptions
+        );
       }
-      catch (err)
-      {
-        if (finalOptions.fallback === undefined)
-        {
-          throw new NotFoundError(
-            "a translation for code " + code,
-            finalOptions
-          );
-        }
-        translation = finalOptions.fallback;
-      }
+      translation = finalOptions.fallback;
     }
 
     if (finalOptions.params !== undefined)
@@ -107,7 +105,9 @@ export class I18nService
       for (const key in finalOptions.params)
       {
         // just skip if the translation does not contain a param - it's ok
-        translation.replaceAll("${" + key + "}", finalOptions.params[key]);
+        translation = translation.replaceAll(
+          "${" + key + "}", finalOptions.params[key]
+        );
       }
     }
 

@@ -1,7 +1,5 @@
-import { TranslationModifier } from "./modifier";
-
 export interface TranslationOptions {
-  modifier?: TranslationModifier;
+  modifier?: string;
   params?: { [key: string]: any };
   isCapitalized?: boolean;
 

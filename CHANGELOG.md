@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.7
+
+- fix i18n translation params and modifiers
+
 ## 0.7.6
 
 - fix abs imports
