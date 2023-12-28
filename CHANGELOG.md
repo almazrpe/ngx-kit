@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.7.4
+
+- fix base error export
+
 ## 0.7.3
 
 - expand exports

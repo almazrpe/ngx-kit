@@ -1,7 +1,7 @@
 export { DocumentPageExtension } from "./dps/document-page-extension";
 
 export {
-  BaseError as Error,
+  BaseError,
   ServerError,
   NotFoundError,
   DuplicateNameError,
