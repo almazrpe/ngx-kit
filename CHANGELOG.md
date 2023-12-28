@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.7.2
+
+- add i18n module
+- adapt exports
+
 ## 0.7.1
 
 - Adjust exports.
