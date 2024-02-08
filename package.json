@@ -1,52 +1,29 @@
 {
-  "name": "ngx-kit",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng"
+  "name": "@almazrpe/ngx-kit",
+  "version": "0.7.7",
+  "watch": {
+    "tailwind-build": {
+      "patterns": [
+        "."
+      ],
+      "extensions": "js,ts,css,scss,html"
+    }
   },
-  "private": true,
+  "scripts": {
+    "build": "make build",
+    "tailwind-build": "make tailwind.build"
+  },
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0"
+  },
   "dependencies": {
-    "@angular/animations": "^15.2.9",
-    "@angular/cdk": "^15.2.9",
-    "@angular/common": "^15.2.9",
-    "@angular/compiler": "^15.2.9",
-    "@angular/core": "^15.2.9",
-    "@angular/forms": "^15.2.9",
-    "@angular/material": "^15.2.9",
-    "@angular/platform-browser": "^15.2.9",
-    "@angular/platform-browser-dynamic": "^15.2.9",
-    "@angular/router": "^15.2.9",
-    "rxjs": "~7.5.0",
-    "simple-keyboard": "^3.7.10",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "queue-typescript": "^1.0.1",
+    "simple-keyboard": "^3.7.12",
+    "simple-keyboard-layouts": "^3.3.16",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.2.9",
-    "@angular-eslint/builder": "14.4.0",
-    "@angular-eslint/eslint-plugin": "14.4.0",
-    "@angular-eslint/eslint-plugin-template": "14.4.0",
-    "@angular-eslint/schematics": "14.4.0",
-    "@angular-eslint/template-parser": "14.4.0",
-    "@angular/cli": "~15.2.9",
-    "@angular/compiler-cli": "^15.2.9",
-    "@angular/localize": "15.2.9",
-    "@types/jasmine": "~4.0.0",
-    "@typescript-eslint/eslint-plugin": "5.43.0",
-    "@typescript-eslint/parser": "5.43.0",
-    "autoprefixer": "^10.4.15",
-    "eslint": "^8.28.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
-    "jasmine-core": "~4.3.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.0.0",
-    "ng-packagr": "^15.2.2",
-    "ngx-mat-timepicker": "^15.1.7",
-    "postcss": "^8.4.30",
-    "tailwindcss": "^3.3.3",
-    "typescript": "~4.9.5"
+    "npm-watch": "^0.11.0"
   }
 }

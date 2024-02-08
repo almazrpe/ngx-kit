@@ -8,7 +8,6 @@ import { TranslationOptions } from "../i18n/options";
 import {
   I18nService
 } from "../i18n/i18n.service";
-import Codes from "../_auto_codes";
 import { BaseError, NotFoundError } from "../errors";
 
 @Injectable({
@@ -39,7 +38,7 @@ export class ErrorHandlerService
         || dto.value.code === null
       )
       {
-        errorCode = Codes.almaz.ngx_kit.errors.error.server;
+        errorCode = "server-err";
       }
       else
       {
@@ -52,7 +51,7 @@ export class ErrorHandlerService
     }
     else
     {
-      errorCode = Codes.almaz.ngx_kit.errors.error.client;
+      errorCode = "client-err";
     }
 
     let res: string;
@@ -75,7 +74,7 @@ export class ErrorHandlerService
         error = err as Error;
       }
 
-      errorCode = Codes.almaz.ngx_kit.errors.error.client;
+      errorCode = "client-err";
     }
 
     this.ngZone.runTask(() => this.alertService.spawn({
@@ -85,8 +84,6 @@ export class ErrorHandlerService
       message: res + ` (${errorCode})`
     }));
 
-    this.log.error(
-      "unhandled error: " + JSON.stringify(error)
-    );
+    console.error(error);
   }
 }

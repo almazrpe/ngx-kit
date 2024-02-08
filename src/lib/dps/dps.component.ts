@@ -5,7 +5,6 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { I18nService } from "../i18n/i18n.service";
 import { ButtonMode } from "../button/button.component";
-import Codes from "../_auto_codes";
 
 @Component({
   selector: "ngx-kit-dps",
@@ -63,7 +62,7 @@ export class DPSComponent implements OnInit
     });
 
     this.pageNumberTranslation = this.i18n.getTranslation(
-      Codes.almaz.ngx_kit.dps.translation.page_number,
+      "translation-page-number",
       {
         fallback: "Page number"
       }
@@ -105,7 +104,7 @@ export class DPSComponent implements OnInit
     if (currentPage === undefined)
     {
       this.errorMessage$.next(this.i18n.getTranslation(
-        Codes.almaz.ngx_kit.dps.translation.no_such_document_page,
+        "translation-no-such-document-page",
         {
           params: {
             number: this.currentPageNumber

@@ -15,12 +15,3 @@ build:
 
 release: build
 	cd dist/ngx-kit && yarn publish --access public && cd ../../ && git add . && git commit -m "$(version)" && git tag "$(version)" && git push && git push --tags
-
-pack: build
-	cd dist/ngx-kit && yarn pack && mv almazrpe-ngx-kit-v*.tgz ../
-
-pack.move: pack
-	mv dist/almazrpe-ngx-kit-v*.tgz $(t)
-
-gen_codes:
-	keycode-parser -i projects/ngx-kit/src/lib/*.ts projects/ngx-kit/src/lib/**/*.ts -o projects/ngx-kit/src/lib/codes.ts

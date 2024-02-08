@@ -1,124 +1,126 @@
-# CHANGELOG
+# unreleased
 
-## 0.7.7
+- move to single-lib repo
+
+# 0.7.7
 
 - fix i18n translation params and modifiers
 
-## 0.7.6
+# 0.7.6
 
 - fix abs imports
 
-## 0.7.5
+# 0.7.5
 
 - fix absolute imports within lib
 
-## 0.7.4
+# 0.7.4
 
 - fix base error export
 
-## 0.7.3
+# 0.7.3
 
 - expand exports
 
-## 0.7.2
+# 0.7.2
 
 - add i18n module
 - adapt exports
 
-## 0.7.1
+# 0.7.1
 
 - Adjust exports.
 
-## 0.7.0
+# 0.7.0
 
 - Rebranded to ngx-kit.
 
-## 0.6.0
+# 0.6.0
 
-### Features
+## Features
 
 - Integrated Angular Material with forms.
 - UI QOL.
 
-## 0.5.1
+# 0.5.1
 
-### Fixed
+## Fixed
 
 - Pagination QOL.
 
-## 0.5.0
+# 0.5.0
 
-### Features
+## Features
 
 - Big paginations update - extended icons, configuration and more
 
-## 0.4.2
+# 0.4.2
 
-### Features
+## Features
 
 - Pagination minor improvements and QOL
 
-## 0.4.1
+# 0.4.1
 
-### Fixed
+## Fixed
 
 - Invalid import paths
 
-## 0.4.0
+# 0.4.0
 
-### Features
+## Features
 
 - TableSearch interface
 - UnitDTO.code
 
-### Fixed
+## Fixed
 
 - Populated index.ts with missing API
 
-### Refactor
+## Refactor
 
 - FormUtils
 - dps -> ngx-kit-dps
 
-### Docs
+## Docs
 
 - Readme safelist recommendations
 
-## 0.3.0
+# 0.3.0
 
-### Features
+## Features
 
 - Integrate keyboard
 
-## 0.2.1
+# 0.2.1
 
-### Fixes
+## Fixes
 
 - Pagination component architecture
 
-## 0.2.0
+# 0.2.0
 
-### Features
+## Features
 
 - Pagination component
 
-## 0.1.4
+# 0.1.4
 
 - fix: better tailwind usage
 - docs: improvements
 
-## 0.1.3
+# 0.1.3
 
 - fix: internal import paths
 
-## 0.1.2
+# 0.1.2
 
 - refactor: tailwind.css -> main.css
 
-## 0.1.1
+# 0.1.1
 
 - Better CSS bundling.
 
-## 0.1.0
+# 0.1.0
 
 - Initial migration.
