@@ -68,7 +68,7 @@ export {
 } from "./event-plus";
 export { conditionValidatorWrapper } from "./condition.validator";
 export {
-  DTOUtils, HostDTOType, HostDTO, UnitDTO, ContainerDTO
+  Dto, Udto, Fdto
 } from "./dto";
 
 export { StringUtils } from "./str/utils";
