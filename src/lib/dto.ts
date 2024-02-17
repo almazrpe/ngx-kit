@@ -2,7 +2,7 @@ export interface Dto
 {
 }
 
-export interface UnitDto extends Dto
+export interface Udto extends Dto
 {
     sid: string;
 }

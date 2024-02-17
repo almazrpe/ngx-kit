@@ -1,8 +1,6 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable, NgZone } from "@angular/core";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
-import { HostDTO } from "../dto";
 import { LogService } from "../log/log.service";
 import { TranslationOptions } from "../i18n/options";
 import {
@@ -28,24 +26,7 @@ export class ErrorHandlerService
     let errorCode: string;
     const translationOptions: TranslationOptions = {};
 
-    if (error instanceof HttpErrorResponse)
-    {
-      const dto: HostDTO = error.error as HostDTO;
-
-      if (
-        dto.value === undefined
-        || dto.value.code === undefined
-        || dto.value.code === null
-      )
-      {
-        errorCode = "server-err";
-      }
-      else
-      {
-        errorCode = dto.value.code as string;
-      }
-    }
-    else if (error instanceof BaseError)
+    if (error instanceof BaseError)
     {
       errorCode = (error as any).Code;
     }
