@@ -6,6 +6,7 @@ import { SelectedInputService }
   from "../input/selected-input/selected-input.service";
 import { ButtonMode } from "../button/button.component";
 
+
 @Component({
   selector: "ngx-kit-keyboard",
   templateUrl: "./keyboard.component.html",
