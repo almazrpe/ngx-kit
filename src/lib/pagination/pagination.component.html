@@ -224,10 +224,12 @@
                                      || column.type === PagAttrType.TIME"
                     >
                       {{
-                        (item.attr[column.name].body.formatter
-                         ?? defaultDTFormatters.get(column.type))
-                           .format(item.attr[column.name].body.value) +
-                        (item.attr[column.name].body.endStr ?? '')
+                        item.attr[column.name].body.value == null
+                          ? " "
+                          : (item.attr[column.name].body.formatter
+                             ?? defaultDTFormatters.get(column.type))
+                               .format(item.attr[column.name].body.value) +
+                            (item.attr[column.name].body.endStr ?? '')
                       }}
                     </div>
 
