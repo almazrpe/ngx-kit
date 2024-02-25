@@ -7,6 +7,6 @@ export interface Udto extends Dto
     sid: string;
 }
 
-export interface Fdto extends Dto
+export interface Fdto extends Udto
 {
 }
