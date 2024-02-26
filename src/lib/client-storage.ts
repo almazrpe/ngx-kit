@@ -84,7 +84,9 @@ export abstract class LocalStorageUtils
     fieldValue: object
   ): void
   {
-    const newLooseObj: {[k: string]: object} = {...this.getBaseObject(key)};
+    const newLooseObj: { [k: string]: object } = {
+      ...this.getBaseObject(key)
+    };
     newLooseObj[fieldKey] = fieldValue;
     this.setObject(key, newLooseObj);
   }

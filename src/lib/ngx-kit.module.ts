@@ -62,7 +62,7 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {appearance: "outline", subscriptSizing: "dynamic"}
+      useValue: { appearance: "outline", subscriptSizing: "dynamic" }
     }
   ],
   imports: [

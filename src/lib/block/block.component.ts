@@ -52,7 +52,7 @@ export class BlockComponent implements OnInit, OnChanges
     "bg-c30"
   ]);
 
-  public html: {classes: string[]} = {
+  public html: { classes: string[] } = {
     classes: []
   };
 

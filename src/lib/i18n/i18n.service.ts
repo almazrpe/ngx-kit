@@ -17,7 +17,7 @@ export class I18nService
 
   public constructor()
   {
-    this.init({lang: "en"});
+    this.init({ lang: "en" });
   }
 
   /**

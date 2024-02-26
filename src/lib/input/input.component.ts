@@ -3,7 +3,9 @@ import { Component, EventEmitter, Input, OnInit, Output, forwardRef }
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { InputType } from "./input-type";
-import { SelectedInputEvent, ValueHost} from "./selected-input/selected-input";
+import {
+  SelectedInputEvent, ValueHost
+} from "./selected-input/selected-input";
 import { SelectedInputService } from "./selected-input/selected-input.service";
 import { ValueValidator } from "./selected-input/value-validator";
 import { checkValueAgainstValidators } from "./selected-input/utils";

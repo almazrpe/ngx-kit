@@ -3,7 +3,7 @@ export args
 export version
 
 lint:
-	npx eslint --fix $(args) projects/$(t)
+	cd ../../ && npx eslint --fix $(args) projects/ngx-kit/src/$(t)
 
 test:
 	ng test

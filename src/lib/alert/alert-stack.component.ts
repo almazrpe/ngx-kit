@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import {Alert, AlertLevel, AlertUrls} from "./models";
+import { Alert, AlertLevel, AlertUrls } from "./models";
 import { AlertService } from "./alert.service";
-import {Queue} from "queue-typescript";
+import { Queue } from "queue-typescript";
 import { QueueUtils } from "../queue";
 
 export enum CallEvent {

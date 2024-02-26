@@ -106,8 +106,8 @@ export { AlertLevel, Alert } from "./alert/models";
 export { AlertUtils } from "./alert/utils";
 export { NgxKitModule } from "./ngx-kit.module";
 
-export {TranslationOptions} from "./i18n/options";
-export {I18nConfig} from "./i18n/config";
+export { TranslationOptions } from "./i18n/options";
+export { I18nConfig } from "./i18n/config";
 export {
   TranslationMapByLang,
   TranslationMap,

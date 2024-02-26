@@ -44,7 +44,7 @@ export class ButtonComponent implements OnInit, OnChanges
   public cssClasses$: ReplaySubject<string[]> =
     new ReplaySubject<string[]>();
 
-  private html: {classes: string[]} = {
+  private html: { classes: string[] } = {
     classes: []
   };
 

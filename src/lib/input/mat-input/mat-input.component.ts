@@ -17,7 +17,7 @@ import { SelectedInputService }
   from "../selected-input/selected-input.service";
 import { ValueValidatorEvent }
   from "../selected-input/value-validator-event";
-import { SelectedInputEvent, ValueHost}
+import { SelectedInputEvent, ValueHost }
   from "../selected-input/selected-input";
 import { InputType } from "../input-type";
 import {
@@ -171,7 +171,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   @Output() public inputValue: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
-  public formControl: FormControl = new FormControl("", {nonNullable: true});
+  public formControl: FormControl = new FormControl("", { nonNullable: true });
   public stateChanges: Subject<void> = new Subject<void>();
   public matcher: InputErrorStateMatcher = new InputErrorStateMatcher();
   public errorState: boolean = false;
