@@ -36,6 +36,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatListModule } from "@angular/material/list";
 import { NgxMatTimepickerModule } from "ngx-mat-timepicker";
 import { MatInputComponent } from "./input/mat-input/mat-input.component";
+import { RefreshComponent } from "./refresh/refresh.component";
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     PaginationComponent,
     IncludesPipe,
     PaginationOverflowDirective,
-    MatInputComponent
+    MatInputComponent,
+    RefreshComponent
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -96,7 +98,8 @@ import { MatInputComponent } from "./input/mat-input/mat-input.component";
     CapitalizeEachPipe,
     CapitalizePipe,
     PaginationComponent,
-    MatInputComponent
+    MatInputComponent,
+    RefreshComponent
   ]
 })
 export class NgxKitModule { }
