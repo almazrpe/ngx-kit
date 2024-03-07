@@ -36,9 +36,9 @@ import {
   MatFormFieldControl,
 } from "@angular/material/form-field";
 import {
-  ErrorType,
+  InputValidationErrorCode,
+  getDefaultErrorMessage,
   InputErrorStateMatcher,
-  getDefaultErrorMessage
 } from "./error-content";
 
 @Component({
@@ -78,7 +78,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    * Custom messages for validation errors.
    * Will be used instead of default messages if defined.
    */
-  @Input() public customErrorMessages: Map<ErrorType, string> = new Map();
+  @Input() public customErrorMessages:
+    Map<InputValidationErrorCode, string> | undefined = undefined;
   /**
    * Custom placeholder (could be used as just label in some InputTypes).
    */
@@ -460,8 +461,14 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       if (errors != null)
       {
         const errorName: string = Object.keys(errors)[0];
-        if (this.customErrorMessages.has(errorName as ErrorType))
-          return this.customErrorMessages.get(errorName as ErrorType) ?? "";
+        if (this.customErrorMessages !== undefined
+          && this.customErrorMessages.has(
+            errorName as InputValidationErrorCode
+          )
+        )
+          return this.customErrorMessages.get(
+            errorName as InputValidationErrorCode
+          ) ?? "";
         else
           return getDefaultErrorMessage(errorName, errors[errorName]);
       }

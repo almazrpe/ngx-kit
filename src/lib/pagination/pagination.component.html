@@ -307,6 +307,35 @@
                       </div>
                     </div>
 
+                    <!-- LABEL -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.LABEL"
+                    >
+                      <ngx-kit-label
+                        [title]="item.attr[column.name].body.title"
+                        [bgColor]="item.attr[column.name].body.bgColor"
+                        [textColor]="item.attr[column.name].body.textColor"
+                        [isShrunk]="true"
+                      ></ngx-kit-label>
+                    </div>
+
+                    <!-- LABELS -->
+                    <div
+                      *ngSwitchCase="column.type === PagAttrType.LABELS"
+                      class="flex flex-row flex-wrap"
+                    >
+                      <div
+                        *ngFor="let label of item.attr[column.name].body"
+                      >
+                        <ngx-kit-label
+                          [title]="label.title"
+                          [bgColor]="label.bgColor"
+                          [textColor]="label.textColor"
+                          [isShrunk]="true"
+                        ></ngx-kit-label>
+                      </div>
+                    </div>
+
                     <!-- BUTTON -->
                     <div
                       *ngSwitchCase="column.type === PagAttrType.BUTTON"

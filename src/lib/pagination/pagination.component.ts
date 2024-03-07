@@ -10,6 +10,7 @@ import {
   SortColumnMode,
   defaultDateTimeFormatters,
   PaginationIcon,
+  PaginationLabel,
   PaginationAttr,
   PaginationAttrType,
   paginationAttrTypeChecker,
@@ -464,6 +465,7 @@ export class PaginationComponent implements OnInit
         switch(chosenColumnType)
         {
           case PaginationAttrType.BUTTON:
+          case PaginationAttrType.LABEL:
           case PaginationAttrType.ICON: {
             if (aAttr!.body.priority == bAttr!.body.priority)
               return this.sortingCondition(a, b, iter + 1);
@@ -473,13 +475,18 @@ export class PaginationComponent implements OnInit
               return -1 * modeFactor;
             break;
           }
+          case PaginationAttrType.LABELS:
           case PaginationAttrType.ICONS: {
             if (modeFactor > 0)
             {
               const aBest: number = Math.max(...aAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               const bBest: number = Math.max(...bAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               if (aBest == bBest)
                 return this.sortingCondition(a, b, iter + 1);
               else if (aBest > bBest)
@@ -490,9 +497,13 @@ export class PaginationComponent implements OnInit
             else
             {
               const aWorst: number = Math.min(...aAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               const bWorst: number = Math.min(...bAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               if (aWorst == bWorst)
                 return this.sortingCondition(a, b, iter + 1);
               else if (aWorst < bWorst)

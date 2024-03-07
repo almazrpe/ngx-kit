@@ -11,7 +11,7 @@ export {
   UnsupportedError,
 } from "./errors";
 
-export { ErrorType } from "./input/mat-input/error-content";
+export { InputValidationErrorCode } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
 
@@ -49,6 +49,7 @@ export {
   PaginationAttr,
   PaginationAttrType,
   PaginationIcon,
+  PaginationLabel,
   PaginationButton,
   PaginationDateTime,
   PaginationFilter,

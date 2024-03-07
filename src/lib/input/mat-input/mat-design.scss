@@ -21,8 +21,8 @@
 
 ::ng-deep mat-form-field {
   .mat-mdc-text-field-wrapper {
-    @apply bg-white;
-    @apply rounded;
+    background-color: rgb(255 255 255) !important;
+    border-radius: 0.25rem !important;
   }
 }
 
