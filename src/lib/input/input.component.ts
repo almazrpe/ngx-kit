@@ -302,6 +302,8 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
         case ValueValidatorEvent.Clear:
           value = (this.min !== undefined ? this.min : "") as T;
           break;
+        case ValueValidatorEvent.Complete:
+          return;
       }
       this.value$.next(value);
 
