@@ -6,15 +6,12 @@
       class="flex flex-row h-full justify-start items-center gap-1"
       [formGroup]="form"
     >
-      <ngx-kit-input
-        class="w-1/6 h-2/3"
-        [cssClasses]="pageNumberSelectorCSSClasses"
-        [localizedName]="pageNumberTranslation"
+      <ngx-kit-mat-input
         formControlName="currentPageNumber"
-        [type]="inputType"
-        [min]="1"
-        [max]="totalPagesNumber"
-        [isDefaultBlurValidatorsEnabled]="false"
+        class="w-1/5"
+        [localizedName]="_config_.pageNumberTranslation"
+        [type]="InputType.Number"
+        [showErrors]="false"
         (inputValue)="onInputValue($event)"
       />
       <p class="self-center">

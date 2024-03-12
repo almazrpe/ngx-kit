@@ -13,15 +13,14 @@
 
         https://stackoverflow.com/a/29829002/14748231
       -->
-      <ngx-kit-input
-        [localizedName]="labelText"
+      <ngx-kit-mat-input
         formControlName="main"
-        [cssClasses]="['w-full']"
+        class="w-full"
+        [localizedName]="labelText"
         [type]="inputType"
         [attrList]="[datalistId]"
-        [isFormRequired]="isFormRequired"
         (inputValue)="onInputValue($event)"
-        (blur)="onBlur($event)"
+        (blur)="onBlur()"
       />
     </ng-container>
     <datalist [id]="datalistId">

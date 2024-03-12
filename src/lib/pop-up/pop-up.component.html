@@ -1,0 +1,186 @@
+<div
+  id="pop-up-container"
+  class="h-screen w-full bg-neutral-950/50 absolute inset-0 overflow-y-auto"
+  *ngIf="popUpService.isShown$ | async"
+  (mousedown)="borderClosingCheck($event)"
+>
+  <div
+    class=
+    "
+      bg-c30 shadow inline-table p-6
+      absolute mx-auto left-0 right-0 top-14 rounded-md
+    "
+    [ngClass]="{'min-w-[75%]': type == PopUpType.Form}"
+    [ngSwitch]="true"
+  >
+    <div
+      *ngSwitchCase="type == PopUpType.YesNo"
+      class="w-full flex flex-col justify-center items-center"
+    >
+      <div class="w-full text-xl cursor-default select-none px-1" i18n>
+        Подтверждение
+      </div>
+
+      <div
+        class="border-y-2 border-c10 my-4
+          w-full text-lg text-left font-bold
+          px-3 py-7 bg-repeating-diag-white-lines"
+      >
+        {{ title }}
+      </div>
+
+      <div
+        class="w-full flex flex-row gap-14 items-center justify-between px-1"
+      >
+        <ngx-kit-button
+          [mode]="ButtonMode.DANGER"
+          (clickFunc)="sendAnswer(false)"
+          class="grow max-w-64"
+          i18n
+        >
+          Нет
+        </ngx-kit-button>
+
+        <ngx-kit-button
+          [mode]="ButtonMode.SUCCESS"
+          (clickFunc)="sendAnswer(true)"
+          class="grow max-w-64"
+          i18n
+        >
+          Да
+        </ngx-kit-button>
+      </div>
+    </div>
+
+    <div
+      *ngSwitchCase="type == PopUpType.ChoosingBtn"
+      class="w-full flex flex-col gap-2 justify-center items-center"
+    >
+      <div class="w-full text-xl cursor-default select-none px-1">
+        <span i18n>Выберите действие</span>
+        <span *ngIf="title.length > 0" i18n> для </span>
+        <span *ngIf="title.length > 0">«{{title}}»</span>
+      </div>
+
+      <ngx-kit-hr class="w-full"></ngx-kit-hr>
+
+      <ng-container *ngFor="let btn of choosingButtons">
+        <ngx-kit-button
+          [mode]="btn.mode ?? ButtonMode.DEFAULT"
+          (clickFunc)="sendAnswer(btn.value)"
+          class="w-full"
+          [ngClass]="btn.extraCssClasses ?? []"
+        >
+          {{btn.print}}
+        </ngx-kit-button>
+      </ng-container>
+    </div>
+
+    <div *ngSwitchCase="type == PopUpType.Form">
+      <div class="w-full flex items-center gap-2 justify-between px-1">
+        <div class="text-xl self-center cursor-default select-none" i18n>
+          {{title}}
+        </div>
+
+        <ngx-kit-button
+          [mode]="ButtonMode.DANGER"
+          (clickFunc)="closePopUp()"
+        >
+          <img
+            [src]="_config_.abortIconPath"
+            alt="X"
+            class="w-4"
+          >
+        </ngx-kit-button>
+      </div>
+
+      <ngx-kit-hr class="w-full mb-2"></ngx-kit-hr>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="sendForm()"
+        class="w-full flex flex-col gap-2"
+      >
+        <ng-container *ngFor="let field of fields">
+          <div *ngIf="field.alreadyCompleted == true
+            && (field.hideField != null ? !(field.hideField.value) : true)"
+          >
+            <div class="ml-1">{{field.localizedName ?? 'noname'}}</div>
+            <div class="ml-4 font-bold">{{field.value}}</div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngFor="let field of fields">
+          <ng-container *ngIf="field.alreadyCompleted == false
+            && (field.hideField != null ? !(field.hideField.value) : true)"
+          >
+            <div *ngIf="field.localizedName != null" class="w-full px-1">
+              {{field.localizedName}}
+            </div>
+            <ngx-kit-mat-input
+              *ngIf="(field.fileUploadType ?? false) == false"
+              [formControl]="getFormControl(field.name)"
+              [type]="field.type ?? InputType.Text"
+              [localizedName]="field.localizedName ?? 'noname'"
+              [placeholder]="field.placeholder ?? ''"
+              [autocompleteRequired]="field.autocompleteRequired ?? false"
+              [fillingOptions]="field.fillingOptions != null
+                ? field.fillingOptions.value
+                : []
+              "
+              [showErrors]="field.showErrors ?? true"
+              [customErrorMessages]="field.customErrorMessages"
+              (complete)="sendForm()"
+            />
+
+            <ngx-kit-upload-files-input
+              *ngIf="(field.fileUploadType ?? false) == true
+                && getFormControl(field.name) as control"
+              [control]="control"
+              [fileExtensions]="field.fileUploadExtensions"
+              [checkFunc]="field.fileUploadCheckFunc"
+              [config]="uploadFilesInputConfig()"
+            >
+            </ngx-kit-upload-files-input>
+          </ng-container>
+        </ng-container>
+
+
+        <ngx-kit-button
+          [isEnabled]="form.valid"
+          class="mt-3"
+          type="submit"
+          i18n
+        >
+          Отправить
+        </ngx-kit-button>
+
+
+        <table class="border-separate border-spacing-1 select-none">
+          <colgroup>
+            <col width="40rem" class=""/>
+            <col width="20%" class=""/>
+            <col width="*" class=""/>
+          </colgroup>
+          <ng-container *ngFor="let field of descriptorFields">
+            <tr class="">
+              <td class="p-2 bg-c10/30 rounded">
+                <img
+                  *ngIf="field.imageSrc != null"
+                  class="inline-block w-8"
+                  [src]="field.imageSrc"
+                >
+              </td>
+              <td class="py-2 px-3 bg-c10/30 rounded">
+                <div class="font-bold text-right uppercase text-sm">{{field.fieldName}}</div>
+              </td>
+              <td class="py-2 px-3 bg-c10/30 rounded italic">
+                <div class="font-bold">{{field.message}}</div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>

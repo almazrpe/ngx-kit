@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { DocumentPage } from "./document-page";
 import { InputType } from "../input/input-type";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, ReplaySubject } from "rxjs";
-import { I18nService } from "../i18n/i18n.service";
 import { ButtonMode } from "../button/button.component";
+import { DPSConfig, makeDPSConfig } from "./models";
 
 @Component({
   selector: "ngx-kit-dps",
@@ -15,6 +15,9 @@ export class DPSComponent implements OnInit
 {
   public InputType = InputType;
   public ButtonMode = ButtonMode;
+  public _config_: DPSConfig;
+
+  @Input() public config: Partial<DPSConfig> = {};
 
   @Input() public pages: DocumentPage[];
 
@@ -22,51 +25,35 @@ export class DPSComponent implements OnInit
 
   public currentPageNumber: number;
   public totalPagesNumber: number;
-  public inputType: InputType = InputType.Number;
   public form: FormGroup;
 
   public currentPage$: ReplaySubject<DocumentPage> =
     new ReplaySubject<DocumentPage>();
   public errorMessage$: BehaviorSubject<string | null> =
     new BehaviorSubject<string | null>(null);
-  public pageNumberTranslation: string;
 
   public isPageupEnabled$: ReplaySubject<boolean> =
     new ReplaySubject<boolean>();
   public isPagedownEnabled$: ReplaySubject<boolean> =
     new ReplaySubject<boolean>();
 
-  public pageNumberSelectorCSSClasses: string[] = [
-    // Remove arrows from number inputs (see input.class)
-    // https://stackoverflow.com/a/75872055
-    "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none"
-      + " [&::-webkit-inner-spin-button]:appearance-none",
-    "w-full",
-    "h-full",
-    "text-center",
-    "rounded"
-  ];
-
-  public constructor(
-    private i18n: I18nService
-  ) {}
+  //public constructor() {}
 
   public ngOnInit(): void
   {
+    this._config_ = makeDPSConfig(this.config);
     this.currentPageNumber = 1;
     this.emitCurrentPage();
     this.totalPagesNumber = this.pages.length;
 
     this.form = new FormGroup({
-      currentPageNumber: new FormControl(1)
+      currentPageNumber: new FormControl(1, [
+        Validators.min(1),
+        Validators.max(this.totalPagesNumber),
+        // Restriction for decimal fractions:
+        Validators.pattern(/^[0-9]{1,}$/)
+      ]),
     });
-
-    this.pageNumberTranslation = this.i18n.getTranslation(
-      "translation-page-number",
-      {
-        fallback: "Page number"
-      }
-    );
 
     this.togglePageNavigationButtons();
   }
@@ -103,15 +90,9 @@ export class DPSComponent implements OnInit
 
     if (currentPage === undefined)
     {
-      this.errorMessage$.next(this.i18n.getTranslation(
-        "translation-no-such-document-page",
-        {
-          params: {
-            number: this.currentPageNumber
-          },
-          fallback: "no such document page ${number}"
-        }
-      ));
+      this.errorMessage$.next(
+        `${this._config_.noSuchDocPageTranslation} ${this.currentPageNumber}`
+      );
     }
     else
     {

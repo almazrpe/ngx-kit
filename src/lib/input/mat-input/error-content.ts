@@ -11,7 +11,9 @@ export enum InputValidationErrorCode {
   MinLength = "minlength",
   MaxLength = "maxlength",
   Email = "email",
-  Pattern = "pattern"
+  Pattern = "pattern",
+  // Custom validation errors from validation.ts
+  Whitespace = "whitespace"
 }
 
 /**
@@ -39,6 +41,8 @@ export function getDefaultErrorMessage(errorName: string, error: any): string
       return "The field contains an incorrect email";
     case InputValidationErrorCode.Pattern:
       return "The field is filled in incorrectly";
+    case InputValidationErrorCode.Whitespace:
+      return "Whitespaces are restricted for this field";
     default:
       return "The field contains an error";
   }

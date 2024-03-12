@@ -40,7 +40,7 @@
           >
             <img
               class="w-6 h-6"
-              [src]="config.filterIconPath"
+              [src]="_config_.filterIconPath"
               [alt]="'👁️'"
             >
           </ngx-kit-button>
@@ -98,17 +98,17 @@
         <table
           class="overflow-auto w-full"
           [ngClass]="{
-              'flex' : config.viewType == PagViewType.List
-                       || config.viewType == PagViewType.Tiles,
-              'flex-col' : config.viewType == PagViewType.List,
+              'flex' : _config_.viewType == PagViewType.List
+                       || _config_.viewType == PagViewType.Tiles,
+              'flex-col' : _config_.viewType == PagViewType.List,
               'flex-row
                flex-wrap
-               justify-center' : config.viewType == PagViewType.Tiles,
-              'border-collapse' : config.viewType == PagViewType.Table
+               justify-center' : _config_.viewType == PagViewType.Tiles,
+              'border-collapse' : _config_.viewType == PagViewType.Table
             }"
           *ngIf="items.length > 0; else no_items"
         >
-          <ng-container *ngIf="config.viewType == PagViewType.Table">
+          <ng-container *ngIf="_config_.viewType == PagViewType.Table">
             <tr class="w-full">
               <th
                 class="px-3 align-top cursor-pointer
@@ -130,7 +130,7 @@
                     <div class="w-full flex justify-center">
                       <img
                         class="w-4 h-4"
-                        [src]="config.ascSortIconPath"
+                        [src]="_config_.ascSortIconPath"
                         [alt]="'⬇️'"
                       >
                     </div>
@@ -143,7 +143,7 @@
                     <div class="w-full flex justify-center">
                       <img
                         class="w-4 h-4"
-                        [src]="config.descSortIconPath"
+                        [src]="_config_.descSortIconPath"
                         [alt]="'⬆️'"
                       >
                     </div>
@@ -173,26 +173,27 @@
             "
             class="select-none"
             [ngClass]="{
-              'bg-white/25': i % 2 == 1 && config.viewType == PagViewType.Table,
+              'bg-white/25': i % 2 == 1
+                             && _config_.viewType == PagViewType.Table,
               'hover:bg-c10/75
-               cursor-pointer' : config.viewType == PagViewType.Table
+               cursor-pointer' : _config_.viewType == PagViewType.Table
                                  && item.route != null,
-              'cursor-default' : config.viewType == PagViewType.Table
+              'cursor-default' : _config_.viewType == PagViewType.Table
                                  && item.route == null,
-              'mt-1' : MathModule.floor(i / config.itemCntPerPage) == curPage
+              'mt-1' : MathModule.floor(i / _config_.itemCntPerPage) == curPage
             }"
             (click)="goLink(item.route)"
           >
             <ng-container
-              *ngIf="MathModule.floor(i / config.itemCntPerPage) == curPage"
+              *ngIf="MathModule.floor(i / _config_.itemCntPerPage) == curPage"
             >
               <!-- NO TABLE VIEW -->
               <ng-container
-                *ngIf="config.viewType != PagViewType.Table"
+                *ngIf="_config_.viewType != PagViewType.Table"
               >
                 <ngx-kit-button
                   [ngClass]="{
-                    'w-40 h-40 block m-1' : config.viewType == PagViewType.Tiles
+                    'w-40 h-40 block m-1' : _config_.viewType == PagViewType.Tiles
                   }"
                   [extraCssClasses]="['h-full']"
                   (clickFunc)="goLink(item.route)"
@@ -203,7 +204,7 @@
 
               <!-- TABLE VIEW -->
               <ng-container
-                *ngIf="config.viewType == PagViewType.Table"
+                *ngIf="_config_.viewType == PagViewType.Table"
               >
                 <td
                   *ngFor="let column of tableColumns;"
@@ -430,7 +431,7 @@
                 *ngIf="i == 0
                        || i == pageCnt - 1
                        || (i > leftSlice
-                           && i <= leftSlice + config.visiblePagesCnt - 2)"
+                           && i <= leftSlice + _config_.visiblePagesCnt - 2)"
             >
               <ng-container
                   *ngIf="i == curPage"
@@ -469,7 +470,7 @@
 
             <ng-container
                 *ngIf="i == pageCnt - 2
-                       && i > leftSlice + config.visiblePagesCnt - 2"
+                       && i > leftSlice + _config_.visiblePagesCnt - 2"
             >
               <div class="text-center mx-2">...</div>
             </ng-container>
@@ -493,13 +494,13 @@
 <ng-template #no_items>
   <ng-container *ngIf="paginationItemsCount > 0">
     <div class="no-items text-center mt-2 fst-italic">
-      {{config.noSuitableItemsText}}
+      {{_config_.noSuitableItemsText}}
     </div>
   </ng-container>
 
   <ng-container *ngIf="paginationItemsCount == 0">
     <div class="no-items text-center mt-2 fst-italic">
-      {{config.noAnyItemsText}}
+      {{_config_.noAnyItemsText}}
     </div>
   </ng-container>
 </ng-template>
