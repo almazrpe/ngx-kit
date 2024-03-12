@@ -1,3 +1,4 @@
 export enum ValueValidatorEvent {
-  Clear = "clear",
+  Clear = "__clear__",
+  Complete = "__complete__",
 }

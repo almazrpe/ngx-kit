@@ -10,6 +10,7 @@ import {
   SortColumnMode,
   defaultDateTimeFormatters,
   PaginationIcon,
+  PaginationLabel,
   PaginationAttr,
   PaginationAttrType,
   paginationAttrTypeChecker,
@@ -38,7 +39,8 @@ export class PaginationComponent implements OnInit
   /**
    * Configuration object for the pagination
    */
-  @Input() public config: PaginationConfig = makePaginationConfig();
+  @Input() public config: Partial<PaginationConfig> = {};
+  public _config_: PaginationConfig;
 
   /**
    * Map object with custom sorting functions (compare-like)
@@ -97,10 +99,11 @@ export class PaginationComponent implements OnInit
 
   public ngOnInit(): void
   {
-    if (this.config.firstColumnOff == undefined
-        || this.config.firstColumnOff == false)
+    this._config_ = makePaginationConfig(this.config);
+    if (this._config_.firstColumnOff == undefined
+        || this._config_.firstColumnOff == false)
       this.tableColumns.push({
-        name: this.config.firstColumnTitle ?? "Название",
+        name: this._config_.firstColumnTitle ?? "Name",
         type: PaginationAttrType.STRING
       });
 
@@ -122,15 +125,15 @@ export class PaginationComponent implements OnInit
             this.tableColumns.push({
               name: key,
               type: item.attr[key].type,
-              alignCenter: this.config.centerAlignedColumns.includes(key)
+              alignCenter: this._config_.centerAlignedColumns.includes(key)
             });
           }
       }
 
-      if (this.config.firstColumnOff == undefined
-          || this.config.firstColumnOff == false)
+      if (this._config_.firstColumnOff == undefined
+          || this._config_.firstColumnOff == false)
         (this.paginationItems[index]
-          .attr[this.config.firstColumnTitle ?? "Название"]) =
+          .attr[this._config_.firstColumnTitle ?? "Name"]) =
         {
           type: PaginationAttrType.STRING,
           body: item.text
@@ -142,7 +145,7 @@ export class PaginationComponent implements OnInit
     this.paginationFiltersCount = this.paginationFilters.length;
     this.pageCnt = this.paginationItems.length > 1
       ? Math.ceil(this.paginationItems.length /
-                       this.config.itemCntPerPage)
+                       this._config_.itemCntPerPage)
       : 1;
 
     setInterval(() =>
@@ -152,10 +155,10 @@ export class PaginationComponent implements OnInit
         this.paginationItemsCount = this.paginationItems.length;
         this.paginationItems.forEach((item: PaginationItem, index: number) =>
         {
-          if (this.config.firstColumnOff == undefined
-              || this.config.firstColumnOff == false)
+          if (this._config_.firstColumnOff == undefined
+              || this._config_.firstColumnOff == false)
             (this.paginationItems[index]
-              .attr[this.config.firstColumnTitle ?? "Название"]) =
+              .attr[this._config_.firstColumnTitle ?? "Name"]) =
             {
               type: PaginationAttrType.STRING,
               body: item.text
@@ -190,18 +193,18 @@ export class PaginationComponent implements OnInit
   public getNextPage(): void
   {
     this.curPage+=1;
-    if (this.curPage >= this.config.visiblePagesCnt - 2)
+    if (this.curPage >= this._config_.visiblePagesCnt - 2)
     {
       this.leftSlice+=1;
-      if (this.leftSlice > this.pageCnt - this.config.visiblePagesCnt)
-        this.leftSlice = this.pageCnt - this.config.visiblePagesCnt;
+      if (this.leftSlice > this.pageCnt - this._config_.visiblePagesCnt)
+        this.leftSlice = this.pageCnt - this._config_.visiblePagesCnt;
     }
   }
 
   public getPreviousPage(): void
   {
     this.curPage-=1;
-    if (this.curPage < this.pageCnt - this.config.visiblePagesCnt + 2)
+    if (this.curPage < this.pageCnt - this._config_.visiblePagesCnt + 2)
     {
       this.leftSlice-=1;
       if (this.leftSlice < 0)
@@ -212,9 +215,9 @@ export class PaginationComponent implements OnInit
   public getPage(pageNum: number): void
   {
     this.curPage = pageNum;
-    this.leftSlice = this.curPage - this.config.visiblePagesCnt + 3;
-    if (this.leftSlice > this.pageCnt - this.config.visiblePagesCnt)
-      this.leftSlice = this.pageCnt - this.config.visiblePagesCnt;
+    this.leftSlice = this.curPage - this._config_.visiblePagesCnt + 3;
+    if (this.leftSlice > this.pageCnt - this._config_.visiblePagesCnt)
+      this.leftSlice = this.pageCnt - this._config_.visiblePagesCnt;
     else if (this.leftSlice < 0)
       this.leftSlice = 0;
   }
@@ -369,8 +372,9 @@ export class PaginationComponent implements OnInit
       });
 
     this.pageCnt = this.activePaginationItems.length > 1
-      ? Math.ceil(this.activePaginationItems.length /
-                       this.config.itemCntPerPage)
+      ? Math.ceil(
+        this.activePaginationItems.length / this._config_.itemCntPerPage
+      )
       : 1;
   }
 
@@ -464,6 +468,7 @@ export class PaginationComponent implements OnInit
         switch(chosenColumnType)
         {
           case PaginationAttrType.BUTTON:
+          case PaginationAttrType.LABEL:
           case PaginationAttrType.ICON: {
             if (aAttr!.body.priority == bAttr!.body.priority)
               return this.sortingCondition(a, b, iter + 1);
@@ -473,13 +478,18 @@ export class PaginationComponent implements OnInit
               return -1 * modeFactor;
             break;
           }
+          case PaginationAttrType.LABELS:
           case PaginationAttrType.ICONS: {
             if (modeFactor > 0)
             {
               const aBest: number = Math.max(...aAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               const bBest: number = Math.max(...bAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               if (aBest == bBest)
                 return this.sortingCondition(a, b, iter + 1);
               else if (aBest > bBest)
@@ -490,9 +500,13 @@ export class PaginationComponent implements OnInit
             else
             {
               const aWorst: number = Math.min(...aAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               const bWorst: number = Math.min(...bAttr!.body.map(
-                (item: PaginationIcon): number => item.priority));
+                (item: PaginationIcon | PaginationLabel): number =>
+                  item.priority
+              ));
               if (aWorst == bWorst)
                 return this.sortingCondition(a, b, iter + 1);
               else if (aWorst < bWorst)

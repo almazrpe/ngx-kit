@@ -88,10 +88,10 @@ export function makePaginationConfig(options?: Partial<PaginationConfig>):
   const defaults: PaginationConfig = {
     itemCntPerPage: 1,
     visiblePagesCnt: 5,
-    noSuitableItemsText: "Подходящие объекты не найдены...",
-    noAnyItemsText: "Объекты не найдены...",
+    noSuitableItemsText: "No suitable objects were found...",
+    noAnyItemsText: "No objects were found...",
     firstColumnOff: false,
-    firstColumnTitle: "Название",
+    firstColumnTitle: "Name",
     centerAlignedColumns: [],
     filterIconPath: "",
     ascSortIconPath: "",
@@ -175,7 +175,9 @@ export enum PaginationAttrType {
   DATETIME = 5,
   DATE = 6,
   TIME = 7,
-  BUTTON = 8
+  BUTTON = 8,
+  LABEL = 9,
+  LABELS = 10
 }
 
 /**
@@ -212,6 +214,23 @@ export function paginationAttrTypeChecker(attr: PaginationAttr): boolean
                 && typeof (icon as PaginationIcon).priority == "number"
                 && (icon as PaginationIcon).src !== undefined
                 && typeof (icon as PaginationIcon).src == "string";
+             }).reduce((acc: boolean, cur: boolean) => acc && cur, true);
+      break;
+    case PaginationAttrType.LABEL:
+      return (attr.body as PaginationLabel).priority !== undefined
+          && typeof (attr.body as PaginationLabel).priority == "number"
+          && (attr.body as PaginationLabel).title !== undefined
+          && typeof (attr.body as PaginationLabel).title == "string";
+      break;
+    case PaginationAttrType.LABELS:
+      return attr.body instanceof Array
+             && attr.body.length > 0
+             && attr.body.map((label: any) =>
+             {
+               return (label as PaginationLabel).priority !== undefined
+                && typeof (label as PaginationLabel).priority == "number"
+                && (label as PaginationLabel).title !== undefined
+                && typeof (label as PaginationLabel).title == "string";
              }).reduce((acc: boolean, cur: boolean) => acc && cur, true);
       break;
     case PaginationAttrType.BUTTON:
@@ -257,6 +276,32 @@ export interface PaginationIcon {
    * (mainly for weight and height setup)
    */
   cssClasses?: string[];
+}
+
+/**
+ * Interface representing a type that can be specified among the 'attr'
+ * attributes within a PaginationItem
+ * Interface to work with ngx-kit-labels in the cells of
+ * the pagination component
+ * (in case viewType configuration of the component is Table)
+ */
+export interface PaginationLabel {
+  /**
+   * Value using within column sorting
+   */
+  priority: number;
+  /**
+   * Text on the label
+   */
+  title: string;
+  /**
+   * Background color of the label
+   */
+  bgColor?: string;
+  /**
+   * Text color of the label
+   */
+  textColor?: string;
 }
 
 /**

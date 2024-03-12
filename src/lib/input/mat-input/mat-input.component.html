@@ -24,6 +24,7 @@
       [formControl]="getFirstSupportFormControl()"
       [errorStateMatcher]="matcher"
       class="!h-0 !absolute"
+      (keydown.enter)="onEnterInput($event)"
     >
     <mat-selection-list
       class="w-full select-none"
@@ -65,6 +66,7 @@
       [formControl]="getFirstSupportFormControl()"
       [errorStateMatcher]="matcher"
       class="!h-0 !absolute"
+      (keydown.enter)="onEnterInput($event)"
     >
     <mat-selection-list
       class="w-full select-none"
@@ -100,6 +102,7 @@
       matInput
       class="!h-0 !absolute"
       [formControl]="getFirstSupportFormControl()"
+      (keydown.enter)="onEnterInput($event)"
     >
     <mat-checkbox
       class="w-full select-none"
@@ -132,6 +135,7 @@
       [id]="id"
       [placeholder]="placeholder"
       [attr.list]="attrList"
+      (keydown.enter)="onEnterInput($event)"
       #main
     >
     <ngx-mat-timepicker
@@ -355,14 +359,22 @@
     <input
       matInput
       class="w-full"
+      [ngClass]="{
+        '![appearance:textfield]
+        [&::-webkit-outer-spin-button]:appearance-none
+        [&::-webkit-inner-spin-button]:appearance-none
+        ': type == InputType.Number
+      }"
       [formControl]="formControl"
       [matAutocomplete]="auto"
+      [matAutocompleteDisabled]="filteredAutocompleteOptions.length == 0"
       [errorStateMatcher]="matcher"
       [id]="id"
       [type]="type"
       [placeholder]="placeholder"
       [attr.list]="attrList"
       (input)="filterAutocomplete($event); onInput($event)"
+      (keydown.enter)="onEnterInput($event)"
       (focus)="filterAutocomplete($event)"
       (blur)="onTouched()"
       #main

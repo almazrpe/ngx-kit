@@ -36,9 +36,9 @@ import {
   MatFormFieldControl,
 } from "@angular/material/form-field";
 import {
-  ErrorType,
+  InputValidationErrorCode,
+  getDefaultErrorMessage,
   InputErrorStateMatcher,
-  getDefaultErrorMessage
 } from "./error-content";
 
 @Component({
@@ -68,7 +68,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    * List of items for InputType.Select, InputType.CheckList,
    * InputType.RadioList and autocompletion (using only in REGULAR InputTypes)
    */
-  @Input() public fillingOptions: Array<T> = [];
+  @Input() public fillingOptions: Array<T> | undefined = undefined;
   /**
    * Whether error messages must be displayed
    * (by default, they are displayed).
@@ -78,7 +78,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    * Custom messages for validation errors.
    * Will be used instead of default messages if defined.
    */
-  @Input() public customErrorMessages: Map<ErrorType, string> = new Map();
+  @Input() public customErrorMessages:
+    Map<InputValidationErrorCode, string> | undefined = undefined;
   /**
    * Custom placeholder (could be used as just label in some InputTypes).
    */
@@ -169,6 +170,26 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    * whenever the value changes.
    */
   @Output() public inputValue: EventEmitter<any> = new EventEmitter<any>();
+  /**
+   * Emits an event whenever the component becomes focused.
+   */
+  @Output() public focus: EventEmitter<any> = new EventEmitter<any>();
+  /**
+   * Emits an event whenever the component becomes blured.
+   * May not work correctly for non REGULAR input types
+   * (because they possibly use html page elements out of the component).
+   */
+  @Output() public blur: EventEmitter<any> = new EventEmitter<any>();
+  /**
+   * Emits an event whenever user wants to send a whole form
+   * (including this component)
+   * Event now reacts only when ENTER keyboard button pressed.
+   * Not working for TextArea and Select input types
+   * (they have different behaviour)
+   * Not working correctly for Date and DateRange input types
+   * (they auto blur after a value has chosen)
+   */
+  @Output() public complete: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
   public formControl: FormControl = new FormControl("", { nonNullable: true });
@@ -213,11 +234,15 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       this.ngControl.valueAccessor = this;
     }
 
-    this.filteredAutocompleteOptions = this.fillingOptions.slice();
+    this.filteredAutocompleteOptions = this.fillingOptions != null
+      ? this.fillingOptions.slice()
+      : [];
   }
 
   public ngOnInit(): void
   {
+    this.fillingOptions = this.fillingOptions ?? [];
+
     if (this.localizedName == "" || this.localizedName == undefined)
     {
       this.localizedName = "noname";
@@ -233,9 +258,12 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
             && event.host !== ValueHost.INPUT
           )
           {
-            // don't resend an input change event back to keyboard, because
-            // here the keyboard initiated the change
-            this.sendInputMockEvent(event.value, true);
+            if (event.value === ValueValidatorEvent.Complete)
+              this.onEnterInput();
+            else
+              // don't resend an input change event back to keyboard, because
+              // here the keyboard initiated the change
+              this.sendInputMockEvent(event.value, true);
           }
         }
       });
@@ -268,9 +296,11 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   public filterAutocomplete(event: any): void
   {
     const val: any = event.target.value;
-    this.filteredAutocompleteOptions =
-      this.fillingOptions.filter(
-        opt => String(opt).toLowerCase().includes(String(val)));
+    this.filteredAutocompleteOptions = this.fillingOptions != null
+      ? this.fillingOptions.filter(
+        opt => String(opt).toLowerCase().includes(String(val).toLowerCase())
+      )
+      : [];
   }
 
   public ngDoCheck(): void
@@ -316,6 +346,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
         this.value
       );
       this.focused = true;
+      this.focus.emit();
       this.stateChanges.next();
     }
   }
@@ -327,6 +358,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     {
       this.touched = true;
       this.focused = false;
+      this.blur.emit();
       this.onTouched();
       this.stateChanges.next();
     }
@@ -432,7 +464,9 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
 
     if (this.autocompleteRequired == true)
     {
-      if (this.fillingOptions.includes(val) == false)
+      if (this.fillingOptions == null ||
+        this.fillingOptions.includes(val) == false
+      )
         this.matcher.errorState = true;
       else
         this.matcher.errorState = false;
@@ -460,8 +494,14 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       if (errors != null)
       {
         const errorName: string = Object.keys(errors)[0];
-        if (this.customErrorMessages.has(errorName as ErrorType))
-          return this.customErrorMessages.get(errorName as ErrorType) ?? "";
+        if (this.customErrorMessages !== undefined
+          && this.customErrorMessages.has(
+            errorName as InputValidationErrorCode
+          )
+        )
+          return this.customErrorMessages.get(
+            errorName as InputValidationErrorCode
+          ) ?? "";
         else
           return getDefaultErrorMessage(errorName, errors[errorName]);
       }
@@ -473,5 +513,19 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   {
     this.stateChanges.complete();
     this._focusMonitor.stopMonitoring(this._elementRef);
+  }
+
+  public onEnterInput(event?: Event): void
+  {
+    if (event != undefined)
+    {
+      event.preventDefault();
+      (event.target as HTMLElement).blur();
+    }
+    else
+      if (this.mainElementRef != null)
+        this.mainElementRef.nativeElement.blur();
+
+    this.complete.emit();
   }
 }

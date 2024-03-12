@@ -98,9 +98,9 @@ export class DatalistComponent implements
     this.emitSelectedConditionally(value, isValueMatched, false);
   }
 
-  public onBlur(event: any): void
+  public onBlur(): void
   {
-    const value: any = event.target.value;
+    const value: any = this.form.controls["main"].value;
     // spawn an unmatch alert only on leaving the input
     this.emitSelectedConditionally(
       value,

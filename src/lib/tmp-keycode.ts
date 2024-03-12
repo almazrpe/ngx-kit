@@ -1,3 +1,8 @@
+/**
+ * @deprecated
+ * Not used and could be removed.
+ * Use code from fcode.ts instead
+ */
 export function code(c: string): any
 {
   return <T extends { new(...args: any[]): any }>(target: T) =>

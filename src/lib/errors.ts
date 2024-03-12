@@ -1,8 +1,10 @@
-import { code } from "./tmp-keycode";
-
 /**
- * Base error is a client side by default.
+ * @deprecated
+ * Not used and could be removed.
+ * Use errors from err.ts instead
  */
+import { code } from "./fcode";
+
 @code("almaz.ngx-kit.errors.error.client")
 export class BaseError extends Error
 {

@@ -13,6 +13,11 @@ import { ValueValidatorEvent } from "./selected-input/value-validator-event";
 import { StringUtils } from "../str/utils";
 import { NumUtils } from "../num";
 
+/**
+ * @deprecated
+ * Not used, could be removed.
+ * Use ngx-kit-mat-input component instead
+ */
 @Component({
   selector: "ngx-kit-input",
   templateUrl: "./input.component.html",
@@ -302,6 +307,8 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor
         case ValueValidatorEvent.Clear:
           value = (this.min !== undefined ? this.min : "") as T;
           break;
+        case ValueValidatorEvent.Complete:
+          return;
       }
       this.value$.next(value);
 

@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { InputComponent } from "./input/input.component";
 import { AlertComponent } from "./alert/alert.component";
 import { ButtonComponent } from "./button/button.component";
 import { BlockComponent } from "./block/block.component";
@@ -36,12 +35,17 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatListModule } from "@angular/material/list";
 import { NgxMatTimepickerModule } from "ngx-mat-timepicker";
 import { MatInputComponent } from "./input/mat-input/mat-input.component";
+import { LabelComponent } from "./label/label.component";
+import { FileDragDropDirective }
+  from "./input/upload-files-input/file-drag-drop.directive";
+import { UploadFilesInputComponent }
+  from "./input/upload-files-input/upload-files-input.component";
+import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
 
 @NgModule({
   declarations: [
     ButtonComponent,
-    InputComponent,
     AlertComponent,
     AlertStackComponent,
     BlockComponent,
@@ -58,6 +62,10 @@ import { RefreshComponent } from "./refresh/refresh.component";
     IncludesPipe,
     PaginationOverflowDirective,
     MatInputComponent,
+    FileDragDropDirective,
+    UploadFilesInputComponent,
+    PopUpComponent,
+    LabelComponent,
     RefreshComponent
   ],
   providers: [
@@ -85,7 +93,6 @@ import { RefreshComponent } from "./refresh/refresh.component";
   exports: [
     IncludesPipe,
     ButtonComponent,
-    InputComponent,
     AlertStackComponent,
     BlockComponent,
     DatalistComponent,
@@ -99,6 +106,9 @@ import { RefreshComponent } from "./refresh/refresh.component";
     CapitalizePipe,
     PaginationComponent,
     MatInputComponent,
+    UploadFilesInputComponent,
+    PopUpComponent,
+    LabelComponent,
     RefreshComponent
   ]
 })
