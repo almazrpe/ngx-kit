@@ -41,6 +41,7 @@ import { FileDragDropDirective }
 import { UploadFilesInputComponent }
   from "./input/upload-files-input/upload-files-input.component";
 import { PopUpComponent } from "./pop-up/pop-up.component";
+import { RefreshComponent } from "./refresh/refresh.component";
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { PopUpComponent } from "./pop-up/pop-up.component";
     FileDragDropDirective,
     UploadFilesInputComponent,
     PopUpComponent,
-    LabelComponent
+    LabelComponent,
+    RefreshComponent
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -106,7 +108,8 @@ import { PopUpComponent } from "./pop-up/pop-up.component";
     MatInputComponent,
     UploadFilesInputComponent,
     PopUpComponent,
-    LabelComponent
+    LabelComponent,
+    RefreshComponent
   ]
 })
 export class NgxKitModule { }
