@@ -137,9 +137,11 @@ export {
   TranslationMap,
   TranslationUnit
 } from "./i18n/translation";
-export { log } from "./log";
-export { ArrUtils } from "./arr";
-export { asrt } from "./asrt";
-export { check } from "./check";
-export { Query } from "./mongo";
+export * from "./log";
+export * from "./arr";
+export * from "./asrt";
+export * from "./check";
+export * from "./mongo";
 export * from "./msg";
+export * from "./rxcat";
+export * from "./conn";
