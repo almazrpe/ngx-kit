@@ -339,7 +339,7 @@ export class ClientBus
     this.alertSv = alertSv;
     this.connSv = connSv;
 
-    this.connWrapper$ = this.connSv.cpasbWsUrl$.pipe(
+    this.connWrapper$ = this.connSv.serverWsUrl$.pipe(
       map(url =>
       {
         log.info(`conn ws at ${url + "/rx"}`);

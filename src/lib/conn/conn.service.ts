@@ -7,16 +7,16 @@ import { map, Observable, ReplaySubject } from "rxjs";
 export class ConnService
 {
   // first initialized by the app
-  public cpasbHostPort$: ReplaySubject<string> = new ReplaySubject<string>();
-  public cpasbWsUrl$: Observable<string>;
-  public cpasbHttpUrl$: Observable<string>;
+  public serverHostPort$: ReplaySubject<string> = new ReplaySubject<string>();
+  public serverWsUrl$: Observable<string>;
+  public serverHttpUrl$: Observable<string>;
 
   public constructor()
   {
-    this.cpasbWsUrl$ = this.cpasbHostPort$.pipe(
+    this.serverWsUrl$ = this.serverHostPort$.pipe(
       map(hostport => "ws://" + hostport)
     );
-    this.cpasbHttpUrl$ = this.cpasbHostPort$.pipe(
+    this.serverHttpUrl$ = this.serverHostPort$.pipe(
       map(hostport => "http://" + hostport)
     );
   }
