@@ -1,6 +1,9 @@
-# unreleased
+# 1.0.0a1
+
+## Features
 
 - move to single-lib repo
+- add many things from private repos
 
 # 0.7.7
 

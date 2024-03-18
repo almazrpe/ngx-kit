@@ -42,6 +42,7 @@ import { UploadFilesInputComponent }
   from "./input/upload-files-input/upload-files-input.component";
 import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
+import { InputComponent } from "./input";
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { RefreshComponent } from "./refresh/refresh.component";
     FileDragDropDirective,
     UploadFilesInputComponent,
     PopUpComponent,
+    InputComponent,
     LabelComponent,
     RefreshComponent
   ],
