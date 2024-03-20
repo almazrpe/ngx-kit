@@ -16,6 +16,7 @@ export class KeyboardComponent implements OnInit
 {
   public keyboardButtonMode: ButtonMode = ButtonMode.DIMMED;
   public cssSelectors$: Observable<string[]>;
+  public cssSelectorsBtn$: Observable<string[]>;
   public selectedInputEvent$: Observable<SelectedInputEvent<any>>;
 
   public constructor(
@@ -28,6 +29,13 @@ export class KeyboardComponent implements OnInit
     // initialize css selectors on init, not after DOM load or angular somehow
     // will give ChangedBeforeChecked-ish error
     this.cssSelectors$ = this.keyboardService.isEnabled$.pipe(
+      map((isEnabled: boolean) =>
+      {
+        return isEnabled ? ["flex"] : ["hidden"];
+      })
+    );
+
+    this.cssSelectorsBtn$ = this.keyboardService.isBtnEnabled$.pipe(
       map((isEnabled: boolean) =>
       {
         return isEnabled ? ["flex"] : ["hidden"];

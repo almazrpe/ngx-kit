@@ -27,6 +27,10 @@ export class KeyboardService
     new BehaviorSubject<boolean>(false);
   public isEnabled$: Observable<boolean> = this.isEnabled.asObservable();
 
+  private isBtnEnabled: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(true);
+  public isBtnEnabled$: Observable<boolean> = this.isBtnEnabled.asObservable();
+
   private isInitialized = false;
   private selectedInput: SelectedInput<any> | null = null;
 
@@ -66,6 +70,11 @@ export class KeyboardService
   public get isEnabledValue(): boolean
   {
     return this.isEnabled.value;
+  }
+
+  public get isBtnEnabledValue(): boolean
+  {
+    return this.isBtnEnabled.value;
   }
 
   public initialize(): Keyboard
@@ -181,6 +190,21 @@ export class KeyboardService
   public disable(): void
   {
     this.isEnabled.next(false);
+  }
+
+  public toggleBtn(): void
+  {
+    this.isBtnEnabled.next(!this.isBtnEnabled.value);
+  }
+
+  public enableBtn(): void
+  {
+    this.isBtnEnabled.next(true);
+  }
+
+  public disableBtn(): void
+  {
+    this.isBtnEnabled.next(false);
   }
 
   private onChange(value: string): void

@@ -1,4 +1,7 @@
-<div class="absolute left-2 bottom-10 z-10">
+<div
+  [ngClass]="cssSelectorsBtn$ | async"
+  class="absolute left-2 bottom-10 z-10"
+>
   <ngx-kit-button
     class="flex justify-center"
     [mode]="keyboardButtonMode"
