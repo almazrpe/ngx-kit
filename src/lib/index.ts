@@ -149,3 +149,4 @@ export * from "./pop-up";
 export * from "./refresh";
 export * from "./input";
 export * from "./label";
+export * from "./storage";
