@@ -1,6 +1,6 @@
-# 1.0.0 - UNRELEASED
+# 1.0.0
 
-- add storage: synchronizer between key-val storage and rxjs
+- add storage - synchronizer between key-val storage and rxjs
 
 # 1.0.0a1
 
