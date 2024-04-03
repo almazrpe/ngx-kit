@@ -12,7 +12,7 @@ import { asrt } from "../asrt";
 })
 export class StorageService
 {
-  private storages: {[key: string]: IStorage<any>};
+  private storages: {[key: string]: IStorage<any>} = {};
   private items: {
     [storageKey: string]: {[itemKey: string]: ReplaySubject<any>};
   } = {};
@@ -42,6 +42,14 @@ export class StorageService
     }
     delete this.items[key];
     return storage;
+  }
+
+  public addItem<T>(
+    storageKey: string,
+    itemKey: string,
+    initVal?: T): void
+  {
+    this.addItem$(storageKey, itemKey, initVal);
   }
 
   public addItem$<T>(
@@ -76,20 +84,45 @@ export class StorageService
     return subj.asObservable();
   }
 
+  public initItem<T>(storageKey: string, itemKey: string, defaultVal?: T): T
+  {
+    return this.getItem(storageKey, itemKey, defaultVal);
+  }
+
   public getItem$<T>(storageKey: string, itemKey: string): Observable<T>
+  {
+    // on every get, the target item key is refreshed
+    let subj = this.items[storageKey][itemKey];
+    subj.next(this.getItem(storageKey, itemKey));
+    return subj.asObservable();
+  }
+
+  public getItem<T>(storageKey: string, itemKey: string, defaultVal?: T): T
   {
     if (!(storageKey in this.storages) || !(storageKey in this.items))
     {
       throw new NotFoundErr("storage with key " + storageKey);
     }
+    let storageVal = this.storages[storageKey].get(itemKey);
     if (!(itemKey in this.items[storageKey]))
     {
-      throw new NotFoundErr("item with key " + itemKey);
+      // use existing val from storage
+      if (storageVal !== undefined)
+      {
+        defaultVal = storageVal;
+      }
+      if (defaultVal === undefined)
+      {
+        throw new NotFoundErr("item with key " + itemKey);
+      }
+      this.addItem$(storageKey, itemKey, defaultVal);
+      return this.getItem(storageKey, itemKey);
     }
     // on every get, the target item key is refreshed
     let subj = this.items[storageKey][itemKey];
-    subj.next(this.storages[storageKey].get(itemKey));
-    return subj.asObservable();
+    let newval = this.storages[storageKey].get(itemKey);
+    subj.next(newval);
+    return newval;
   }
 
   public setItemVal(storageKey: string, itemKey: string, val: any): void
@@ -100,7 +133,7 @@ export class StorageService
     }
     if (!(itemKey in this.items[storageKey]))
     {
-      throw new NotFoundErr("item with key " + itemKey);
+      this.addItem$(storageKey, itemKey, val);
     }
     this.storages[storageKey].set(itemKey, val);
     this.items[storageKey][itemKey].next(val);

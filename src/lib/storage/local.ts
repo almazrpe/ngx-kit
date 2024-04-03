@@ -2,6 +2,8 @@ import { IStorage } from "./models";
 
 export class LocalStorage implements IStorage<string>
 {
+  public constructor() {}
+
   public get(key: string): string | undefined
   {
     let f = localStorage.getItem(key);

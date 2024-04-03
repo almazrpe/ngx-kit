@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject } from "rxjs";
+import { map, Observable } from "rxjs";
+import { StorageService } from "../../public-api";
 
 @Injectable({
   providedIn: "root"
@@ -7,17 +8,39 @@ import { map, Observable, ReplaySubject } from "rxjs";
 export class ConnService
 {
   // first initialized by the app
-  public serverHostPort$: ReplaySubject<string> = new ReplaySubject<string>();
+  public serverHostPort$: Observable<string>;
   public serverWsUrl$: Observable<string>;
   public serverHttpUrl$: Observable<string>;
 
-  public constructor()
+  public storageHostPortItemKey: string = "";
+  public storageKey: string = "";
+
+  public constructor(private storageSv: StorageService)
   {
+  }
+
+  public init(
+    storageKey: string,
+    storageHostPortItemKey: string = "conn_hostport")
+  {
+    this.storageKey = storageKey;
+    this.storageHostPortItemKey = storageHostPortItemKey;
+    this.serverHostPort$ = this.storageSv.addItem$(
+      storageKey, this.storageHostPortItemKey);
+
     this.serverWsUrl$ = this.serverHostPort$.pipe(
       map(hostport => "ws://" + hostport)
     );
     this.serverHttpUrl$ = this.serverHostPort$.pipe(
       map(hostport => "http://" + hostport)
     );
+  }
+
+  public setHostPort(val: string): void
+  {
+    this.storageSv.setItemVal(
+      this.storageKey,
+      this.storageHostPortItemKey,
+      val);
   }
 }
