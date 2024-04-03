@@ -21,12 +21,13 @@ export class ConnService
 
   public init(
     storageKey: string,
-    storageHostPortItemKey: string = "conn_hostport")
+    storageHostPortItemKey: string = "conn_hostport",
+    defaultHostPort?: string)
   {
     this.storageKey = storageKey;
     this.storageHostPortItemKey = storageHostPortItemKey;
-    this.serverHostPort$ = this.storageSv.addItem$(
-      storageKey, this.storageHostPortItemKey);
+    this.serverHostPort$ = this.storageSv.initItem$(
+      storageKey, this.storageHostPortItemKey, defaultHostPort);
 
     this.serverWsUrl$ = this.serverHostPort$.pipe(
       map(hostport => "ws://" + hostport)

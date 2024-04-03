@@ -89,11 +89,22 @@ export class StorageService
     return this.getItem(storageKey, itemKey, defaultVal);
   }
 
-  public getItem$<T>(storageKey: string, itemKey: string): Observable<T>
+  public initItem$<T>(
+    storageKey: string, itemKey: string, defaultVal?: T): Observable<T>
   {
+    return this.getItem$(storageKey, itemKey, defaultVal);
+  }
+
+  public getItem$<T>(
+    storageKey: string, itemKey: string, defaultVal?: T): Observable<T>
+  {
+    if (!(storageKey in this.storages) || !(storageKey in this.items))
+    {
+      throw new NotFoundErr("storage with key " + storageKey);
+    }
     // on every get, the target item key is refreshed
+    this.getItem(storageKey, itemKey, defaultVal);
     let subj = this.items[storageKey][itemKey];
-    subj.next(this.getItem(storageKey, itemKey));
     return subj.asObservable();
   }
 
