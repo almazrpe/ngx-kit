@@ -1,3 +1,7 @@
+# 1.0.1
+
+- fix storage refresh loops
+
 # 1.0.0
 
 - add storage - synchronizer between key-val storage and rxjs

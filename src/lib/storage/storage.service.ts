@@ -102,7 +102,6 @@ export class StorageService
     {
       throw new NotFoundErr("storage with key " + storageKey);
     }
-    // on every get, the target item key is refreshed
     this.getItem(storageKey, itemKey, defaultVal);
     let subj = this.items[storageKey][itemKey];
     return subj.asObservable();
@@ -129,10 +128,7 @@ export class StorageService
       this.addItem$(storageKey, itemKey, defaultVal);
       return this.getItem(storageKey, itemKey);
     }
-    // on every get, the target item key is refreshed
-    let subj = this.items[storageKey][itemKey];
     let newval = this.storages[storageKey].get(itemKey);
-    subj.next(newval);
     return newval;
   }
 
