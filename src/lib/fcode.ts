@@ -31,6 +31,14 @@ export class FcodeCore
     this._deflock = v;
   }
 
+  public secure(data: {[key: string]: AnyConstructor})
+  {
+    for (const [code, _constructor] of Object.entries(data))
+    {
+      this.defcode(code, _constructor, undefined, true);
+    }
+  }
+
   public tryGetConstructorForAnyCodes(
     anycodes: string[]
   ): AnyConstructor | undefined
@@ -66,7 +74,8 @@ export class FcodeCore
   }
 
   public defcode(
-    code: string, constructor: AnyConstructor, legacyCodes?: string[]
+    code: string, constructor: AnyConstructor, legacyCodes?: string[],
+    isRewritten: boolean = false
   ): void
   {
     if (this._deflock)
@@ -74,9 +83,9 @@ export class FcodeCore
       throw new Error("def of new codes");
     }
 
-    if (code in this.activeCodeToConstructor)
+    if (!isRewritten && code in this.activeCodeToConstructor)
     {
-      throw new Error(code);
+      throw new Error(code + " already registered");
     }
 
     const legacyCodesToAdd: string[] = [];

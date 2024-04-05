@@ -1,3 +1,7 @@
+# 1.0.2
+
+- fcode: add secure function to avoid nasty ts build decorator bugs
+
 # 1.0.1
 
 - fix storage refresh loops
