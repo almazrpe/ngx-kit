@@ -75,7 +75,23 @@
     class="flex h-full w-full overflow-scroll justify-center"
     *ngIf="(currentPage$ | async) as currentPage"
   >
-    <img [src]="currentPage.url">
+    <pinch-zoom
+      *ngIf="_config_.pinchZoomFlag == true"
+      [limit-zoom]="100"
+      [disableZoomControl]="'disable'"
+      [limitPan]="true"
+      [backgroundColor]="'var(--c60)'"
+      class="h-full w-full"
+    >
+      <img
+        [src]="currentPage.url"
+      >
+    </pinch-zoom>
+
+    <img
+      *ngIf="_config_.pinchZoomFlag == false"
+      [src]="currentPage.url"
+    >
   </div>
   <!---->
 

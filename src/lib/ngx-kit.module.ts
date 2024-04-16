@@ -43,6 +43,7 @@ import { UploadFilesInputComponent }
 import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
 import { InputComponent } from "./input";
+import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
 
 @NgModule({
   declarations: [
@@ -91,6 +92,7 @@ import { InputComponent } from "./input";
     MatCheckboxModule,
     MatListModule,
     NgxMatTimepickerModule,
+    PinchZoomModule,
   ],
   exports: [
     IncludesPipe,

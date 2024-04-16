@@ -1,4 +1,5 @@
 export interface DPSConfig {
+  pinchZoomFlag: boolean;
   pageNumberTranslation: string;
   noSuchDocPageTranslation: string;
 }
@@ -19,6 +20,8 @@ export function makeDPSConfig(
 ): DPSConfig
 {
   const defaults: DPSConfig = {
+    pinchZoomFlag:
+      false,
     pageNumberTranslation:
       "Page number",
     noSuchDocPageTranslation:
