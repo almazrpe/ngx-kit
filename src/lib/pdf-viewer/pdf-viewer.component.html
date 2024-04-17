@@ -1,0 +1,132 @@
+<div class="flex flex-col gap-2 h-full w-full">
+  <!-- Top Bar -->
+  <div class="px-1 mt-1 flex flex-row w-full justify-between items-center">
+    <!-- Page Number Selector -->
+    <form
+      class="flex flex-row h-full justify-start items-center gap-1"
+      [formGroup]="form"
+    >
+      <ngx-kit-mat-input
+        formControlName="currentPageNumber"
+        class="w-1/5"
+        [localizedName]="_config_.pageNumberTranslation"
+        [type]="InputType.Number"
+        [showErrors]="false"
+        (inputValue)="onInputValue($event)"
+      />
+      <p class="self-center">
+        <span i18n>из</span> {{pagesCount}}
+      </p>
+
+      <!-- Page Navigation Arrows -->
+      <div
+        class="flex flex-row justify-center items-center ml-2 gap-1"
+      >
+        <ngx-kit-button
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isPageupEnabled$ | async"
+          (clickFunc)="pageup()"
+        >
+          <img
+            src="assets/arrow-up-thick.svg"
+            alt="pageup"
+            class="w-8"
+          >
+        </ngx-kit-button>
+        <ngx-kit-button
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isPagedownEnabled$ | async"
+          (clickFunc)="pagedown()"
+        >
+          <img
+            src="assets/arrow-down-thick.svg"
+            alt="pagedown"
+            class="w-8"
+          >
+        </ngx-kit-button>
+      </div>
+      <!---->
+    </form>
+    <!---->
+
+    <div class="flex flex-row gap-10">
+      <!-- Zoom Arrows -->
+      <div
+        class="flex flex-row justify-center items-center ml-2 gap-1"
+      >
+        <ngx-kit-button
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isZoomdownEnabled$ | async"
+          (clickFunc)="zoomdown()"
+        >
+          <img
+            src="assets/black-decrease.png"
+            alt="zoomdown"
+            class="w-9"
+          >
+        </ngx-kit-button>
+        <div
+          class="text-center w-10"
+          *ngIf="zoom$ | async as zoom"
+        >
+          {{Math.round(zoom * 100)}}%
+        </div>
+        <ngx-kit-button
+          class="flex items-center"
+          [mode]="ButtonMode.CONTROLS"
+          [isEnabled]="isZoomupEnabled$ | async"
+          (clickFunc)="zoomup()"
+        >
+          <img
+            src="assets/black-increase.png"
+            alt="zoomup"
+            class="w-9"
+          >
+        </ngx-kit-button>
+      </div>
+      <!---->
+
+      <!-- Back Button -->
+      <ngx-kit-button
+        class="flex items-center"
+        [mode]="ButtonMode.CONTROLS"
+        (clickFunc)="backInner($event)"
+      >
+        <img
+          src="assets/arrow-left-circle.svg"
+          alt="go back"
+          class="w-10"
+        >
+      </ngx-kit-button>
+      <!---->
+
+    </div>
+  </div>
+
+  <!-- Errors -->
+  <div
+    class="flex justify-center align-center h-full w-full"
+    *ngIf="errorMessage$ | async as errorMessageTranslation; else docViewer"
+  >
+    <p>{{errorMessageTranslation}}</p>
+  </div>
+  <!---->
+
+  <!-- Document viewer -->
+  <ng-template #docViewer>
+    <pdf-viewer
+      [src]="url"
+      [page]="currentPageNumber$ | async"
+      [render-text]="false"
+      [original-size]="false"
+      [fit-to-page]="false"
+      [zoom]="(zoom$ | async) ?? 1"
+      [zoom-scale]="'page-width'"
+      class="w-full h-screen">
+    </pdf-viewer>
+  </ng-template>
+  <!---->
+</div>

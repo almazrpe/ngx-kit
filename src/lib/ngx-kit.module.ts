@@ -44,6 +44,8 @@ import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
 import { InputComponent } from "./input";
 import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
+import { PdfViewerModule } from "ng2-pdf-viewer";
+import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,8 @@ import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
     PopUpComponent,
     InputComponent,
     LabelComponent,
-    RefreshComponent
+    RefreshComponent,
+    PdfViewerComponent
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -92,6 +95,7 @@ import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
     MatCheckboxModule,
     MatListModule,
     NgxMatTimepickerModule,
+    PdfViewerModule,
     PinchZoomModule,
   ],
   exports: [
@@ -113,7 +117,8 @@ import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
     UploadFilesInputComponent,
     PopUpComponent,
     LabelComponent,
-    RefreshComponent
+    RefreshComponent,
+    PdfViewerComponent
   ]
 })
 export class NgxKitModule { }

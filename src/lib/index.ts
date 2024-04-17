@@ -118,6 +118,7 @@ export { DPSConfig, makeDPSConfig } from "./dps/models";
 export {
   DocumentPage
 } from "./dps/document-page";
+export { PdfViewerConfig, makePdfViewerConfig } from "./pdf-viewer/models";
 export { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
 export { BlockComponent } from "./block/block.component";
 export { ButtonComponent } from "./button/button.component";
