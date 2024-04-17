@@ -29,8 +29,8 @@
           (clickFunc)="pageup()"
         >
           <img
-            src="assets/arrow-up-thick.svg"
-            alt="pageup"
+            [src]="_config_.pageUpIconPath"
+            alt="page up"
             class="w-8"
           >
         </ngx-kit-button>
@@ -41,8 +41,8 @@
           (clickFunc)="pagedown()"
         >
           <img
-            src="assets/arrow-down-thick.svg"
-            alt="pagedown"
+            [src]="_config_.pageDownIconPath"
+            alt="page down"
             class="w-8"
           >
         </ngx-kit-button>
@@ -63,8 +63,8 @@
           (clickFunc)="zoomdown()"
         >
           <img
-            src="assets/black-decrease.png"
-            alt="zoomdown"
+            [src]="_config_.zoomDownIconPath"
+            alt="zoom down"
             class="w-9"
           >
         </ngx-kit-button>
@@ -81,8 +81,8 @@
           (clickFunc)="zoomup()"
         >
           <img
-            src="assets/black-increase.png"
-            alt="zoomup"
+            [src]="_config_.zoomUpIconPath"
+            alt="zoom up"
             class="w-9"
           >
         </ngx-kit-button>
@@ -96,7 +96,7 @@
         (clickFunc)="backInner($event)"
       >
         <img
-          src="assets/arrow-left-circle.svg"
+          [src]="_config_.returnIconPath"
           alt="go back"
           class="w-10"
         >

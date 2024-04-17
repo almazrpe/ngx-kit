@@ -1,6 +1,11 @@
 export interface PdfViewerConfig {
   pageNumberTranslation: string;
   noSuchDocPageTranslation: string;
+  returnIconPath: string;
+  pageUpIconPath: string;
+  pageDownIconPath: string;
+  zoomUpIconPath: string;
+  zoomDownIconPath: string;
 }
 
 /**
@@ -23,6 +28,11 @@ export function makePdfViewerConfig(
       "Page number",
     noSuchDocPageTranslation:
       "There is no such document page:",
+    returnIconPath: "",
+    pageUpIconPath: "",
+    pageDownIconPath: "",
+    zoomUpIconPath: "",
+    zoomDownIconPath: "",
   };
 
   return {
