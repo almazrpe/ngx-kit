@@ -58,13 +58,6 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    */
   @Input() public type: InputType = InputType.Text;
   /**
-   * Whether user inputted data must be similar to one of the fillingOptions.
-   * The form field will display as containing an error
-   * if it is not similar and this configuration is active.
-   * (by default, autocomplete does not required).
-   */
-  @Input() public autocompleteRequired: boolean = false;
-  /**
    * List of items for InputType.Select, InputType.CheckList,
    * InputType.RadioList and autocompletion (using only in REGULAR InputTypes)
    */
@@ -460,16 +453,6 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
         if (val != null)
           this.valFromViewFlag = true;
       }
-    }
-
-    if (this.autocompleteRequired == true)
-    {
-      if (this.fillingOptions == null ||
-        this.fillingOptions.includes(val) == false
-      )
-        this.matcher.errorState = true;
-      else
-        this.matcher.errorState = false;
     }
 
     this.value = val;

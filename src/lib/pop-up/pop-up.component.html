@@ -123,7 +123,6 @@
               [type]="field.type ?? InputType.Text"
               [localizedName]="field.localizedName ?? 'noname'"
               [placeholder]="field.placeholder ?? ''"
-              [autocompleteRequired]="field.autocompleteRequired ?? false"
               [fillingOptions]="field.fillingOptions != null
                 ? field.fillingOptions.value
                 : []
@@ -164,17 +163,17 @@
           </colgroup>
           <ng-container *ngFor="let field of descriptorFields">
             <tr class="">
-              <td class="p-2 bg-c10/30 rounded">
+              <td class="p-2 bg-c10-fourth rounded">
                 <img
                   *ngIf="field.imageSrc != null"
                   class="inline-block w-8"
                   [src]="field.imageSrc"
                 >
               </td>
-              <td class="py-2 px-3 bg-c10/30 rounded">
+              <td class="py-2 px-3 bg-c10-fourth rounded">
                 <div class="font-bold text-right uppercase text-sm">{{field.fieldName}}</div>
               </td>
-              <td class="py-2 px-3 bg-c10/30 rounded italic">
+              <td class="py-2 px-3 bg-c10-fourth rounded italic">
                 <div class="font-bold">{{field.message}}</div>
               </td>
             </tr>

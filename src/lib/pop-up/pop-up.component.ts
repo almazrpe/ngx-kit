@@ -4,6 +4,7 @@ import { BehaviorSubject } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
 import { ButtonMode } from "../button/button.component";
+import { FormValidationUtils } from "../validation";
 import { I18nService } from "../i18n/i18n.service";
 import { PopUpService } from "./pop-up.service";
 import {
@@ -70,9 +71,21 @@ export class PopUpComponent implements OnInit
           this.form = new FormGroup({});
           window.fields.forEach((field: PopUpFormField) =>
           {
+            if (field.fillingOptions == undefined)
+              field.fillingOptions = new BehaviorSubject<any[]>([]);
+
             this.form.addControl(
               field.name,
-              new FormControl(field.value, field.validators ?? []),
+              new FormControl(
+                field.value, 
+                (field.validators ?? []).concat(
+                  field.autocompleteRequired === true 
+                    ? FormValidationUtils.requiredAutocompleteValidator(
+                      field.fillingOptions
+                    ) 
+                    : []
+                )
+              ),
               {
                 emitEvent: false
               }
@@ -80,9 +93,6 @@ export class PopUpComponent implements OnInit
 
             if (field.fillingFunction != undefined)
             {
-              if (field.fillingOptions == undefined)
-                field.fillingOptions = new BehaviorSubject<any[]>([]);
-
               if (field.hideField == undefined)
                 field.hideField = new BehaviorSubject<boolean>(true);
 

@@ -112,10 +112,10 @@
             <tr class="w-full">
               <th
                 class="px-3 align-top cursor-pointer
-                       hover:bg-c10/50 select-none"
+                       hover:bg-c10-half select-none"
                 *ngFor="let column of tableColumns;"
                 [ngClass]="{
-                  'bg-c10/25': chosenColumnCheck(column,
+                  'bg-c10-fourth': chosenColumnCheck(column,
                                  [SortColMode.ASC, SortColMode.DESC]) == true
                 }"
                 (click)="sortPaginationItems(column, $event)"
@@ -175,8 +175,7 @@
             [ngClass]="{
               'bg-white/25': i % 2 == 1
                              && _config_.viewType == PagViewType.Table,
-              'hover:bg-c10/75
-               cursor-pointer' : _config_.viewType == PagViewType.Table
+              'hover:bg-c10-half cursor-pointer' : _config_.viewType == PagViewType.Table
                                  && item.route != null,
               'cursor-default' : _config_.viewType == PagViewType.Table
                                  && item.route == null,

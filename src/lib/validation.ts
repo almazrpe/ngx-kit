@@ -1,4 +1,9 @@
-import { AbstractControl, ValidationErrors } from "@angular/forms";
+import {
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn
+} from "@angular/forms";
+import { BehaviorSubject } from "rxjs";
 
 export abstract class ValidationUtils
 {
@@ -33,5 +38,31 @@ export abstract class FormValidationUtils
     {
       return null;
     }
+  }
+
+  /**
+   * Handles cases when autocomplete is required in form fields.
+   */
+  public static requiredAutocompleteValidator(
+    options: any[] | BehaviorSubject<any[]>
+  ): ValidatorFn 
+  {
+    return (control: AbstractControl): ValidationErrors | null => 
+    {
+      if (options instanceof BehaviorSubject)
+      {
+        if (options.value.includes(control.value) == true)
+          return null;
+        else
+          return { requiredautocomplete: true };
+      }
+      else
+      {
+        if (options.includes(control.value) == true)
+          return null;
+        else
+          return { requiredautocomplete: true };
+      }
+    };
   }
 }
