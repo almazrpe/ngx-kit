@@ -43,9 +43,9 @@ import { UploadFilesInputComponent }
 import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
 import { InputComponent } from "./input";
-import { PinchZoomModule } from '@meddv/ngx-pinch-zoom';
+import { PinchZoomModule } from "@meddv/ngx-pinch-zoom";
 import { PdfViewerModule } from "ng2-pdf-viewer";
-import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
+import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
 
 @NgModule({
   declarations: [

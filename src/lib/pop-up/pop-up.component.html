@@ -130,7 +130,7 @@
               "
               [showErrors]="field.showErrors ?? true"
               [customErrorMessages]="field.customErrorMessages"
-              (complete)="sendForm()"
+              (complete)="form.valid ? sendForm() : null"
             />
 
             <ngx-kit-upload-files-input

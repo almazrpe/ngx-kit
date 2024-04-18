@@ -6,8 +6,8 @@ import { ButtonMode } from "../button/button.component";
 import { PdfViewerConfig, makePdfViewerConfig } from "./models";
 
 @Component({
-  selector: 'ngx-kit-pdf-viewer',
-  templateUrl: './pdf-viewer.component.html',
+  selector: "ngx-kit-pdf-viewer",
+  templateUrl: "./pdf-viewer.component.html",
   styleUrls: []
 })
 export class PdfViewerComponent implements OnInit
