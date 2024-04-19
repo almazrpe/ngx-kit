@@ -1,7 +1,6 @@
 import { Injectable, NgZone } from "@angular/core";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
-import { LogService } from "../log/log.service";
 import { TranslationOptions } from "../i18n/options";
 import {
   I18nService
@@ -15,7 +14,6 @@ export class ErrorHandlerService
 {
 
   public constructor(
-    private log: LogService,
     private alertService: AlertService,
     private translation: I18nService,
     private ngZone: NgZone,
