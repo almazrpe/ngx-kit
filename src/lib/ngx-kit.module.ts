@@ -96,7 +96,7 @@ import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
     MatListModule,
     NgxMatTimepickerModule,
     PdfViewerModule,
-    PinchZoomModule,
+    PinchZoomModule
   ],
   exports: [
     IncludesPipe,

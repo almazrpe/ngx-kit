@@ -102,7 +102,6 @@ export {
 
 export { KeyboardComponent } from "./keyboard/keyboard.component";
 export { LoadingComponent } from "./loading/loading.component";
-export { LogService } from "./log/log.service";
 export {
   StatusCircleComponent
 } from "./status-circle/status-circle.component";
