@@ -12,6 +12,28 @@ import { ButtonMode } from "../button/button.component";
  */
 export interface PaginationConfig {
   /**
+   * Chosen type of the pagination component displaying
+   */
+  viewType: PaginationViewType;
+  /**
+   * The first column is created automatically with
+   * DEFAULT_FIRST_COLUMN_NAME (constant in the component) as its title
+   * and contains the values from 'text' attributes of PaginationItem objects
+   * (in case viewType configuration of the component is Table)
+   * This setting is used for manipulation the first column displaying
+   * true = first column will not be displayed (RECOMMENDED)
+   * false or undefined = first column will be displayed (DEFAULT)
+   */
+  firstColumnOff: boolean;
+  /**
+   * Flag indicating pagination items must be displayed in reversed order
+   */
+  reverseItems: boolean;
+  /**
+   * Number of items that must be shown on one page
+   */
+  addEmptyItemsOnLastPage: boolean;
+  /**
    * Number of items that must be shown on one page
    */
   itemCntPerPage: number;
@@ -21,46 +43,104 @@ export interface PaginationConfig {
    */
   visiblePagesCnt: number;
   /**
+   * Parts of the pagination component that must be disabled
+   * PaginationPart.Config doesn't work,
+   * PaginationPart.Filters and PaginationPart.Items could be set initially,
+   * but after a first update their view will be determined by the count of
+   * filters and pagination items int the component
+   * OTHERS - could be set initially and after every update they change
+   * their disabled status
+   */
+  disabledParts: Set<PaginationPart>;
+  /**
+   * Height parameter that must be specified as a style.height
+   * for the rows of the table
+   * NULL (default value) means the height depends on content of
+   * the specific row, and
+   * NOT NULL will make height of all rows the same
+   * (in case viewType configuration of the component is Table)
+   */
+  rowFixedHeight: string | null;
+  /////////////////////////////////////////////////////////////
+  // Not dynamic (using only once on initialisation stage)
+  /////////////////////////////////////////////////////////////
+  /**
+   * Height parameter that must be specified as a style.height
+   * for the table
+   * NULL (default value) means the height depends on content, and
+   * NOT NULL will make fixed the height of the table and prevent any
+   * footer unsanctioned moves but will create a risk of vertical overflowing
+   * (in case viewType configuration of the component is Table)
+   */
+  tableFixedHeight: string | null;
+  /**
+   * Height parameter that must be specified as a style.height
+   * for the <tbody> element of the table
+   * NULL (default value) means the height depends on content, and
+   * NOT NULL will make fixed the height of the <tbody> and all
+   * rows of the table will stretch trying to fill all specified height
+   * (in case viewType configuration of the component is Table)
+   */
+  tbodyFixedHeight: string | null;
+  /**
+   * Width parameters for specific columns
+   * keys are column names, and
+   * values are strings that must be specified as a style.width
+   * (in case viewType configuration of the component is Table)
+   */
+  columnFixedWidths: Map<string,string>;
+  /**
+   * Column tags determining column behaviour and view
+   * keys are column names, and
+   * values are sets of PaginationColumnTag-s
+   * (in case viewType configuration of the component is Table)
+   */
+  columnTags: Map<string,Set<PaginationColumnTag>>;
+  /////////////////////////////////////////////////////////////
+  // Text strings and translations
+  /////////////////////////////////////////////////////////////
+  /**
    * Text that will be displayed in case no suitable
    * items was found (after all filters implementation)
    */
-  noSuitableItemsText?: string;
+  noSuitableItemsTxt: string;
   /**
    * Text that will be displayed in case
    * no items have been sent to the component
    */
-  noAnyItemsText?: string;
-
-  // First column settings
-  // The first column is created automatically with
-  // firstColumnTitle setting as its title
-  // and contains the values from 'text' attributes of PaginationItem objects
-  // (in case viewType configuration of the component is Table)
-  // ________________________________________________________________________
+  noAnyItemsTxt: string;
   /**
-   * Setting to manipulate the first column displaying
-   * true = first column will not be displayed
-   * false or undefined = first column will be displayed
+   * Text that will be displayed in case
+   * items view was disabled (using disabledParts configuration)
    */
-  firstColumnOff?: boolean;
+  hiddenItemsTxt: string;
   /**
-   * Title for the first table column
+   * Text of button "back" in the footer
    */
-  firstColumnTitle?: string;
-
+  backTxt: string;
   /**
-   * List of column names that must be center-aligned
+   * Text of button "forward" in the footer
    */
-  centerAlignedColumns: string[];
-
+  forwardTxt: string;
+  /**
+   * Placeholder for full text search input field
+   */
+  fullTextSearchTxt: string;
+  /////////////////////////////////////////////////////////////
+  // Paths for icons
+  /////////////////////////////////////////////////////////////
+  /**
+   * Icon path for show/hide filters button
+   */
   filterIconPath: string;
-  ascSortIconPath: string;
-  descSortIconPath: string;
-
   /**
-   * Chosen type of the pagination component displaying
+   * Path for asc sorting icon
    */
-  viewType: PaginationViewType;
+  ascSortIconPath: string;
+  /**
+   * Path for desc sorting icon
+   */
+  descSortIconPath: string;
 }
 
 /**
@@ -82,21 +162,32 @@ export enum PaginationViewType {
  *                   user decided to specify by themself
  * @returns          completed PaginationConfig object with all attributes
  */
-export function makePaginationConfig(options?: Partial<PaginationConfig>):
-  PaginationConfig
+export function makePaginationConfig(
+  options?: Partial<PaginationConfig>
+): PaginationConfig
 {
   const defaults: PaginationConfig = {
+    viewType: PaginationViewType.Table,
+    firstColumnOff: false,
+    reverseItems: false,
+    addEmptyItemsOnLastPage: false,
     itemCntPerPage: 1,
     visiblePagesCnt: 5,
-    noSuitableItemsText: "No suitable objects were found...",
-    noAnyItemsText: "No objects were found...",
-    firstColumnOff: false,
-    firstColumnTitle: "Name",
-    centerAlignedColumns: [],
+    disabledParts: new Set<PaginationPart>(),
+    columnTags: new Map<string,Set<PaginationColumnTag>>(),
+    columnFixedWidths: new Map<string, string>(),
+    rowFixedHeight: null,
+    tableFixedHeight: null,
+    tbodyFixedHeight: null,
+    noSuitableItemsTxt: "No suitable objects were found...",
+    noAnyItemsTxt: "No objects were found...",
+    hiddenItemsTxt: "All objects are hidden...",
+    backTxt: "BACK",
+    forwardTxt: "FORWARD",
+    fullTextSearchTxt: "Full text search...",
     filterIconPath: "",
     ascSortIconPath: "",
-    descSortIconPath: "",
-    viewType: PaginationViewType.Table
+    descSortIconPath: ""
   };
 
   return {
@@ -126,9 +217,12 @@ export interface PaginationItem {
    */
   route: string | null;
   /**
-   * Settings of this PaginationItem for hidden filters
+    * Map object that determines the element's response
+    * to the hidden filters
+    * key - id of some PaginationFilter that was sent to the component
+    * value - value that need to be used during the filtration
    */
-  filterValues: PaginationFilterValuesItem[];
+  filterValues: Map<number, any> | null;
   /**
    * Settings of this PaginationItem for columns
    * (in case viewType configuration of the component is Table)
@@ -136,21 +230,11 @@ export interface PaginationItem {
   attr: {
     [key: string]: PaginationAttr;
   };
-}
-
-/**
- * Interface that determines the element's response
- * to one of the hidden filters
- */
-export interface PaginationFilterValuesItem {
   /**
-   * Id of some PaginationFilter that was sent to the pagination component
+   * Indicates this item is dummy (created just for more pleasant view)
+   * (in case viewType configuration of the component is Table)
    */
-  filterId: string;
-  /**
-   * Value that need to be used during the filtration
-   */
-  filterValue: any;
+  dummy?: boolean;
 }
 
 /**
@@ -188,7 +272,7 @@ export function paginationAttrTypeChecker(attr: PaginationAttr): boolean
   if (attr.body == null || attr.body == undefined)
     return false;
 
-  switch (attr.type) 
+  switch (attr.type)
   {
     case PaginationAttrType.BOOLEAN:
       return typeof attr.body == "boolean";
@@ -413,7 +497,7 @@ export interface PaginationFilter {
    * Do not start id string with double underscores (__), this two symbols
    * are using for automatic filter generation inside the pagination component
    */
-  id: string;
+  id: number;
   /**
    * Text which user will see as the name the filter
    */
@@ -442,12 +526,18 @@ export interface FilterInputConfig {
 ///// Supporting elements for the table form of the pagination component //////
 ///////////////////////////////////////////////////////////////////////////////
 /**
- * Interface to store the columns in the pagination component
+ * Interface to store a column information in the pagination component
  */
 export interface TableColumn {
   name: string;
   type: PaginationAttrType;
-  alignCenter?: boolean;
+  disabled: boolean;
+  alignTHClass: string;
+  alignTDClass: string;
+  sorting: boolean;
+  header: PaginationColumnTag.NameHeader
+    | PaginationColumnTag.ImgHeader
+    | PaginationColumnTag.NoHeader;
 }
 
 /**
@@ -459,10 +549,138 @@ export interface SortTableColumn {
 }
 
 /**
+ * Column tags determining column behaviour and view
+ * (in case viewType configuration of the component is Table)
+ */
+export enum PaginationColumnTag {
+  Enabled = 0,
+  Disabled = 1,
+  LeftAlign = 2,
+  RightAlign = 3,
+  CenterAlign = 4,
+  Sort = 5,
+  NoSort = 6,
+  NameHeader = 7,
+  ImgHeader = 8,
+  NoHeader = 9
+}
+
+/**
+ * Function for setting column tags in a more convenient way
+ * (using objects of type: {'someColumnName': [firstTag, secondTag, ...]})
+ */
+export function makePaginationColumnTags(
+  obj: object
+): Map<string,Set<PaginationColumnTag>>
+{
+  return new Map<string,Set<PaginationColumnTag>>(
+    Object.entries(obj).map(
+      ([columnName, tags]: [string, PaginationColumnTag[]]) => 
+      {
+        return [columnName, new Set<PaginationColumnTag>(tags)];
+      })
+  );
+}
+
+/**
+ * Inner pagination component function for getting
+ * actual TableColumn from set of the column tags
+ */
+export function makeTableColumnSettings(
+  tags: Set<PaginationColumnTag> | undefined
+): TableColumn
+{
+  const settings: Partial<TableColumn> = {};
+  if (tags !== undefined)
+  {
+    for (let tag of tags)
+    {
+      switch(tag)
+      {
+        case PaginationColumnTag.Enabled:
+          settings.disabled = false;
+          break;
+        case PaginationColumnTag.Disabled:
+          settings.disabled = true;
+          break;
+        case PaginationColumnTag.LeftAlign:
+          settings.alignTHClass = "justify-start";
+          settings.alignTDClass = "text-left";
+          break;
+        case PaginationColumnTag.RightAlign:
+          settings.alignTHClass = "justify-end";
+          settings.alignTDClass = "text-right";
+          break;
+        case PaginationColumnTag.CenterAlign:
+          settings.alignTHClass = "justify-center";
+          settings.alignTDClass = "text-center";
+          break;
+        case PaginationColumnTag.Sort:
+          settings.sorting = true;
+          break;
+        case PaginationColumnTag.NoSort:
+          settings.sorting = false;
+          break;
+        case PaginationColumnTag.NameHeader:
+        case PaginationColumnTag.ImgHeader:
+        case PaginationColumnTag.NoHeader:
+          settings.header = tag;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  const defaults: TableColumn = {
+    name: "UNKNOWN",
+    type: PaginationAttrType.STRING,
+    disabled: false,
+    alignTHClass: "justify-start",
+    alignTDClass: "text-left",
+    sorting: true,
+    header: PaginationColumnTag.NameHeader,
+  };
+
+  return {
+    ...defaults,
+    ...settings,
+  };
+}
+
+/**
  * Modes for the column sorting
  */
 export enum SortColumnMode {
   OFF = 0,
   ASC = 1,
   DESC = 2
+}
+
+/**
+ * Type for custom sorting pagination functions (compare-like)
+ * Any custom function should receive 3 arguments:
+ * a (of your expected type),
+ * b (of your expected type), and
+ * modeFactor (1 or -1) that will tell your
+ * function is that ASC or DESC sorting
+ * Your function must return a number
+ */
+export type PaginationSortFunc = (
+  a: PaginationAttr | undefined,
+  b: PaginationAttr | undefined,
+  modeFactor: number
+) => number
+
+/**
+ * Parts of pagination that can be updated and/or disabled
+ */
+export enum PaginationPart {
+  Config = 0,
+  Items = 1,
+  Filters = 2,
+  SearchField = 3,
+  FirstHr = 4,
+  SecondHr = 5,
+  Footer = 6
 }

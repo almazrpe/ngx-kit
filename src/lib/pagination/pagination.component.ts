@@ -1,5 +1,14 @@
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  Input
+} from "@angular/core";
 import { Router } from "@angular/router";
+import { BehaviorSubject, Observable, Subscription, of } from "rxjs";
 import {
   PaginationItem,
   PaginationFilter,
@@ -11,22 +20,27 @@ import {
   defaultDateTimeFormatters,
   PaginationIcon,
   PaginationLabel,
+  PaginationSortFunc,
+  PaginationColumnTag,
   PaginationAttr,
   PaginationAttrType,
   paginationAttrTypeChecker,
+  makeTableColumnSettings,
+  PaginationPart,
   makePaginationConfig
-
 } from "./models";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
 import { StatusCircleMode } from "../status-circle/status-circle.component";
+
+const DEFAULT_FIRST_COLUMN_NAME: string = "###NAME###";
 
 @Component({
   selector: "ngx-kit-pagination",
   templateUrl: "./pagination.component.html",
   styleUrls: []
 })
-export class PaginationComponent implements OnInit
+export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 {
   /**
    * List of items for the pagination
@@ -40,7 +54,10 @@ export class PaginationComponent implements OnInit
    * Configuration object for the pagination
    */
   @Input() public config: Partial<PaginationConfig> = {};
-  public _config_: PaginationConfig;
+  /**
+   * Observable which indicates some part of the component must be updated
+   */
+  @Input() public updateEvent: Observable<PaginationPart | null> = of(null);
 
   /**
    * Map object with custom sorting functions (compare-like)
@@ -48,23 +65,22 @@ export class PaginationComponent implements OnInit
    * (in case viewType configuration of the component is Table)
    * The keys of the Map object are names of table columns
    * The values of the Map object are functions
-   * that must be used to sort this columns
-   * Your custom function should receive 3 arguments:
-   * a (of your expected type),
-   * b (of your expected type), and
-   * modeFactor (1 or -1) that will tell your
-   * function is that ASC or DESC sorting
-   * Your function must return a number
    */
-  /* eslint-disable @typescript-eslint/ban-types */
-  @Input() public customColumnSortingFunctions: Map<string, Function> =
-    new Map<string, Function>([]);
-  /* eslint-enable */
+  @Input() public customColumnSortingFunctions:
+    Map<string, PaginationSortFunc> =
+      new Map<string, PaginationSortFunc>();
 
   // Lists of items and filters that are active and on the screen
-  public activePaginationItems: PaginationItem[] = [];
-  public activePaginationFilters: PaginationFilter[] = [];
-  public disabledPaginationFilters: PaginationFilter[] = [];
+  public allPaginationItems$: BehaviorSubject<PaginationItem[]> =
+    new BehaviorSubject<PaginationItem[]>([]);
+  public activePaginationItems$: BehaviorSubject<PaginationItem[]> =
+    new BehaviorSubject<PaginationItem[]>([]);
+  public activePaginationFilters$: BehaviorSubject<PaginationFilter[]> =
+    new BehaviorSubject<PaginationFilter[]>([]);
+  public disabledPaginationFilters$: BehaviorSubject<PaginationFilter[]> =
+    new BehaviorSubject<PaginationFilter[]>([]);
+  public config$: BehaviorSubject<PaginationConfig> =
+    new BehaviorSubject<PaginationConfig>(makePaginationConfig());
 
   // Imported modules, interfaces and etc for html
   public MathModule: any = Math;
@@ -75,23 +91,27 @@ export class PaginationComponent implements OnInit
   public SortColMode: any = SortColumnMode;
   public defaultDTFormatters: any = defaultDateTimeFormatters;
   public PagAttrType: any = PaginationAttrType;
+  public PagColTag: any = PaginationColumnTag;
+  public PagPart: any = PaginationPart;
 
   public pageCnt: number;
   public curPage: number = 0;
   public leftSlice: number = 0;
 
   public isFiltersWindowShown: boolean = false;
-  private curFilterValues: Map<string, any> = new Map<string, any>([]);
+  private curFilterValues: Map<number, any> = new Map<number, any>([]);
+  private fullTextSearchValue: string | null = null;
 
   public tableColumns: TableColumn[] = [];
   public sortChosenColumns: SortTableColumn[] = [];
 
-  public paginationItemsCount: number;
-  public paginationFiltersCount: number;
-  private updateCheckingInterval: number = 1000;
-
   public isTableOverflowing: boolean = false;
   private tableScrollingSpeed: number = 50;
+
+  private updateEventSubscription: Subscription;
+
+  @ViewChild("tableRef") public tableRef: ElementRef;
+  @ViewChild("tableBodyRef") public tableBodyRef: ElementRef;
 
   public constructor(
     private router: Router,
@@ -99,112 +119,245 @@ export class PaginationComponent implements OnInit
 
   public ngOnInit(): void
   {
-    this._config_ = makePaginationConfig(this.config);
-    if (this._config_.firstColumnOff == undefined
-        || this._config_.firstColumnOff == false)
+    this.config$.next(makePaginationConfig(this.config));
+
+    if (this.config$.value.firstColumnOff == false)
       this.tableColumns.push({
-        name: this._config_.firstColumnTitle ?? "Name",
-        type: PaginationAttrType.STRING
+        name: DEFAULT_FIRST_COLUMN_NAME,
+        type: PaginationAttrType.STRING,
+        disabled: false,
+        alignTHClass: "justify-start",
+        alignTDClass: "text-left",
+        sorting: true,
+        header: PaginationColumnTag.NoHeader,
       });
 
-    this.paginationItems.forEach((item: PaginationItem, index: number) =>
-    {
-      for (const key in item.attr)
+    this.paginationItems.forEach(
+      (item: PaginationItem, index: number) =>
       {
-        if (item.attr[key] == null
-            || item.attr[key] == undefined
-            || paginationAttrTypeChecker(item.attr[key]) == false)
-          continue;
-        else
-          if (undefined == this.tableColumns.find(column =>
-          {
-            return column.name == key
-                   && column.type == item.attr[key].type;
-          }))
-          {
-            this.tableColumns.push({
-              name: key,
-              type: item.attr[key].type,
-              alignCenter: this._config_.centerAlignedColumns.includes(key)
-            });
-          }
-      }
-
-      if (this._config_.firstColumnOff == undefined
-          || this._config_.firstColumnOff == false)
-        (this.paginationItems[index]
-          .attr[this._config_.firstColumnTitle ?? "Name"]) =
+        for (const key in item.attr)
         {
-          type: PaginationAttrType.STRING,
-          body: item.text
-        };
+          if (
+            item.attr[key] == null
+            || item.attr[key] == undefined
+            || paginationAttrTypeChecker(item.attr[key]) == false
+          )
+            continue;
+          else
+            if (undefined == this.tableColumns.find(
+              (column: TableColumn) =>
+              {
+                return column.name == key
+                       && column.type == item.attr[key].type;
+              }
+            ))
+            {
+              this.config$.value;
+              this.tableColumns.push({
+                ...makeTableColumnSettings(
+                  this.config$.value.columnTags.get(key)
+                ),
+                name: key,
+                type: item.attr[key].type,
+              });
+            }
+        }
+
+        if (this.config$.value.firstColumnOff == false)
+          this.paginationItems[index].attr[DEFAULT_FIRST_COLUMN_NAME] = {
+            type: PaginationAttrType.STRING,
+            body: item.text
+          };
+      }
+    );
+    this.allPaginationItems$.next(
+      this.config$.value.reverseItems == true
+        ? this.paginationItems.concat().reverse()
+        : this.paginationItems.concat()
+    );
+    this.activePaginationItems$.next(this.allPaginationItems$.value);
+    this.disabledPaginationFilters$.next(this.paginationFilters.concat());
+    this.refreshPageCnt();
+
+    this.updateEventSubscription = this.updateEvent.subscribe({
+      next: (part: PaginationPart | null) =>
+      {
+        switch(part)
+        {
+          case PaginationPart.Config:
+            this.config$.next(
+              makePaginationConfig(this.config)
+            );
+            break;
+          case PaginationPart.Items:
+            if (this.config$.value.disabledParts.has(PaginationPart.Items))
+            {
+              const conf: PaginationConfig = this.config$.value;
+              conf.disabledParts.delete(PaginationPart.Items);
+              this.config$.next(conf);
+            }
+
+            setTimeout(() =>
+            {
+              if (this.config$.value.firstColumnOff == false)
+              {
+                for (let i in this.paginationItems)
+                {
+                  this.paginationItems[i].attr[DEFAULT_FIRST_COLUMN_NAME] = {
+                    type: PaginationAttrType.STRING,
+                    body: this.paginationItems[i].text
+                  };
+                }
+              }
+
+              this.allPaginationItems$.next(
+                this.config$.value.reverseItems == true
+                  ? this.paginationItems.concat().reverse()
+                  : this.paginationItems.concat()
+              );
+              this.refreshPages();
+            }, 100);
+            break;
+          case PaginationPart.Filters:
+            if (this.config$.value.disabledParts.has(PaginationPart.Filters))
+            {
+              const conf: PaginationConfig = this.config$.value;
+              conf.disabledParts.delete(PaginationPart.Filters);
+              this.config$.next(conf);
+            }
+
+            this.disabledPaginationFilters$.next(
+              this.paginationFilters.concat()
+            );
+            this.activePaginationFilters$.next([]);
+            this.curFilterValues.clear();
+            this.isFiltersWindowShown = false;
+            this.refreshPages();
+            break;
+          case PaginationPart.SearchField:
+          case PaginationPart.FirstHr:
+          case PaginationPart.SecondHr:
+          case PaginationPart.Footer:
+            this.updateVisualPart(part);
+            break;
+          default:
+            break;
+        }
+      }
     });
-    this.activePaginationItems = this.paginationItems.concat();
-    this.disabledPaginationFilters = this.paginationFilters.concat();
-    this.paginationItemsCount = this.paginationItems.length;
-    this.paginationFiltersCount = this.paginationFilters.length;
-    this.pageCnt = this.paginationItems.length > 1
-      ? Math.ceil(this.paginationItems.length /
-                       this._config_.itemCntPerPage)
+  }
+
+  public ngAfterViewInit(): void
+  {
+    if (this.config$.value.tableFixedHeight != null)
+    {
+      this.tableRef.nativeElement.style.height =
+        this.config$.value.tableFixedHeight;
+    }
+
+    if (this.config$.value.tbodyFixedHeight != null)
+    {
+      this.tableBodyRef.nativeElement.style.height =
+        this.config$.value.tbodyFixedHeight;
+    }
+  }
+
+  public setRowFixedHeight(cellRef: HTMLDivElement): void
+  {
+    if (this.config$.value.rowFixedHeight != null)
+    {
+      cellRef.style.height = this.config$.value.rowFixedHeight;
+      cellRef.style.overflow = "hidden";
+      cellRef.style.textOverflow = "ellipsis";
+    }
+  }
+
+  public setColumnFixedWidth(
+    colRef: HTMLTableColElement,
+    colObj: TableColumn
+  ): void
+  {
+    const colWidth: string | undefined =
+      this.config$.value.columnFixedWidths.get(colObj.name);
+
+    if (colWidth !== undefined)
+      colRef.style.width = colWidth;
+  }
+
+  public ngOnDestroy(): void 
+  {
+    this.updateEventSubscription.unsubscribe();
+  }
+
+  private updateVisualPart(
+    part: PaginationPart.SearchField
+      | PaginationPart.FirstHr
+      | PaginationPart.SecondHr
+      | PaginationPart.Footer
+  ): void
+  {
+    const conf: PaginationConfig = this.config$.value;
+    if (conf.disabledParts.has(part))
+      conf.disabledParts.delete(part);
+    else
+      conf.disabledParts.add(part);
+    this.config$.next(conf);
+  }
+
+  private refreshPageCnt(): void
+  {
+    const itemCntPerPage: number = this.config$.value.itemCntPerPage > 0
+      ? this.config$.value.itemCntPerPage
       : 1;
 
-    setInterval(() =>
+    this.pageCnt = this.activePaginationItems$.value.length > 1
+      ? Math.ceil(
+        this.activePaginationItems$.value.length / itemCntPerPage
+      )
+      : 1;
+
+    if (this.config$.value.addEmptyItemsOnLastPage == true)
     {
-      if (this.paginationItems.length != this.paginationItemsCount)
-      {
-        this.paginationItemsCount = this.paginationItems.length;
-        this.paginationItems.forEach((item: PaginationItem, index: number) =>
-        {
-          if (this._config_.firstColumnOff == undefined
-              || this._config_.firstColumnOff == false)
-            (this.paginationItems[index]
-              .attr[this._config_.firstColumnTitle ?? "Name"]) =
-            {
-              type: PaginationAttrType.STRING,
-              body: item.text
-            };
-        });
-        this.refreshPages();
-      }
-      if (this.paginationFilters.length != this.paginationFiltersCount)
-      {
-        this.paginationFiltersCount = this.paginationFilters.length;
-        this.disabledPaginationFilters = this.disabledPaginationFilters.concat(
-          this.paginationFilters.filter( mainFilter =>
-          {
-            const activeCheck: PaginationFilter | undefined =
-              this.activePaginationFilters.find(activeFilter =>
-              {
-                return mainFilter.id == activeFilter.id;
-              });
+      const newPagItems: Array<PaginationItem> = new Array<PaginationItem>(
+        itemCntPerPage - (
+          this.activePaginationItems$.value.length - (
+            (this.pageCnt - 1) * itemCntPerPage
+          )
+        )
+      );
 
-            const disabledCheck: PaginationFilter | undefined =
-              this.disabledPaginationFilters.find(disabledFilter =>
-              {
-                return mainFilter.id == disabledFilter.id;
-              });
-
-            return activeCheck == undefined && disabledCheck == undefined;
-          }));
+      for (let i = 0; i < newPagItems.length; i += 1)
+      {
+        newPagItems[i] = {
+          text: "",
+          route: null,
+          filterValues: null,
+          attr: {},
+          dummy: true
+        };
       }
-    }, this.updateCheckingInterval);
+
+      this.activePaginationItems$.next(
+        this.activePaginationItems$.value.concat(newPagItems)
+      );
+    }
   }
 
   public getNextPage(): void
   {
     this.curPage+=1;
-    if (this.curPage >= this._config_.visiblePagesCnt - 2)
+    if (this.curPage >= this.config$.value.visiblePagesCnt - 2)
     {
       this.leftSlice+=1;
-      if (this.leftSlice > this.pageCnt - this._config_.visiblePagesCnt)
-        this.leftSlice = this.pageCnt - this._config_.visiblePagesCnt;
+      if (this.leftSlice > this.pageCnt - this.config$.value.visiblePagesCnt)
+        this.leftSlice = this.pageCnt - this.config$.value.visiblePagesCnt;
     }
   }
 
   public getPreviousPage(): void
   {
     this.curPage-=1;
-    if (this.curPage < this.pageCnt - this._config_.visiblePagesCnt + 2)
+    if (this.curPage < this.pageCnt - this.config$.value.visiblePagesCnt + 2)
     {
       this.leftSlice-=1;
       if (this.leftSlice < 0)
@@ -215,9 +368,9 @@ export class PaginationComponent implements OnInit
   public getPage(pageNum: number): void
   {
     this.curPage = pageNum;
-    this.leftSlice = this.curPage - this._config_.visiblePagesCnt + 3;
-    if (this.leftSlice > this.pageCnt - this._config_.visiblePagesCnt)
-      this.leftSlice = this.pageCnt - this._config_.visiblePagesCnt;
+    this.leftSlice = this.curPage - this.config$.value.visiblePagesCnt + 3;
+    if (this.leftSlice > this.pageCnt - this.config$.value.visiblePagesCnt)
+      this.leftSlice = this.pageCnt - this.config$.value.visiblePagesCnt;
     else if (this.leftSlice < 0)
       this.leftSlice = 0;
   }
@@ -227,70 +380,57 @@ export class PaginationComponent implements OnInit
     this.isFiltersWindowShown = !this.isFiltersWindowShown;
   }
 
-  public dropFilter(filterId: string): void
+  public dropFilter(filterId: number): void
   {
     const filter: PaginationFilter | undefined =
       this.paginationFilters.find(filter=>
       {
         return filter.id == filterId;
       });
-    filter != undefined ? this.disabledPaginationFilters.push(filter) : null;
 
-    this.activePaginationFilters = this.activePaginationFilters.filter(f =>
-    {
-      return f.id !== filterId;
-    });
+    if (filter != undefined)
+      this.disabledPaginationFilters$.next(
+        this.disabledPaginationFilters$.value.concat([filter])
+      );
+
+    this.activePaginationFilters$.next(
+      this.activePaginationFilters$.value.filter(f =>
+      {
+        return f.id !== filterId;
+      })
+    );
 
     this.curFilterValues.delete(filterId);
     this.refreshPages();
   }
 
-  public addFilter(filterId: string): void
+  public addFilter(filterId: number): void
   {
-    for (const filter of this.activePaginationFilters)
+    for (const filter of this.activePaginationFilters$.value)
     {
       if (filter.id == filterId)
         return;
     }
 
-    this.disabledPaginationFilters =
-      this.disabledPaginationFilters.filter(filter =>
+    this.disabledPaginationFilters$.next(
+      this.disabledPaginationFilters$.value.filter(filter =>
       {
         if (filter.id == filterId)
         {
-          this.activePaginationFilters.push(filter);
+          this.activePaginationFilters$.next(
+            this.activePaginationFilters$.value.concat([filter])
+          );
           return false;
         }
         else
           return true;
-      });
+      })
+    );
 
     this.isFiltersWindowShown = true;
   }
 
-  public columnFilterChange(value: any): void
-  {
-    if (value == null || value.length == 0)
-    {
-      for (const fid of this.curFilterValues.keys())
-      {
-        if (fid.startsWith("__"))
-          this.curFilterValues.delete(fid);
-      }
-    }
-    else
-    {
-      this.tableColumns.forEach(column =>
-      {
-        this.curFilterValues.set("__" + column.name, value);
-      });
-    }
-    this.refreshPages();
-    this.curPage = 0;
-    this.leftSlice = 0;
-  }
-
-  public filterChange(filterId: string, value: any): void
+  public filterChange(filterId: number, value: any): void
   {
     value = value ?? "";
     this.curFilterValues.set(filterId, value);
@@ -299,24 +439,51 @@ export class PaginationComponent implements OnInit
     this.leftSlice = 0;
   }
 
+  public setFullTextSearchVal(value: string | null): void
+  {
+    this.fullTextSearchValue =
+      value == null || value.length == 0
+        ? null
+        : value;
+    this.refreshPages();
+    this.curPage = 0;
+    this.leftSlice = 0;
+  }
+
   private refreshPages(): void
   {
     this.sortChosenColumns = [];
-    this.activePaginationItems =
-      this.paginationItems.concat().filter(item =>
+
+    this.activePaginationItems$.next(
+      this.allPaginationItems$.value.filter(item =>
       {
-        let isThereColumnFilters: boolean = false;
-        let isColumnFilterApproved: boolean = false;
-
-        for (const fid of this.curFilterValues.keys())
+        if (this.curFilterValues.size == 0) {}
+        else if (item.filterValues === null)
+          return false;
+        else
         {
-          if (fid.startsWith("__"))
+          for (const fid of this.curFilterValues.keys())
           {
-            isThereColumnFilters = true;
+            const fIVal: any = item.filterValues.get(fid);
+            if (fIVal === undefined)
+              return false;
+            else
+            {
+              if (fIVal != this.curFilterValues.get(fid)
+                  && !String(fIVal).toLowerCase().includes(
+                    String(this.curFilterValues.get(fid)).toLowerCase()))
+                return false;
+            }
+          }
+        }
 
+        if (this.fullTextSearchValue != null)
+        {
+          for (const column of this.tableColumns)
+          {
             for (const key in item.attr)
             {
-              if (key == fid.slice(2))
+              if (key == column.name)
               {
                 let attrStr: string;
                 switch(item.attr[key].type)
@@ -337,45 +504,26 @@ export class PaginationComponent implements OnInit
                         item.attr[key].body.value);
                     break;
                   default:
-                    attrStr = String(item.attr[key].body).toLowerCase();
+                    attrStr = String(item.attr[key].body);
                 }
 
-                if (attrStr.includes(
-                  String(this.curFilterValues.get(fid)).toLowerCase()))
-                  isColumnFilterApproved = true;
+                if (attrStr.toLowerCase().includes(
+                  this.fullTextSearchValue.toLowerCase())
+                )
+                {
+                  return true;
+                }
               }
             }
           }
-          else
-          {
-            let isThereFilter: boolean = false;
-            for (const fvalue of item.filterValues)
-            {
-              if (fvalue.filterId == fid)
-              {
-                isThereFilter = true;
-                if (fvalue.filterValue != this.curFilterValues.get(fid)
-                    && !String(fvalue.filterValue).toLowerCase().includes(
-                      String(this.curFilterValues.get(fid)).toLowerCase()))
-                  return false;
-              }
-            }
-            if (isThereFilter == false)
-              return false;
-          }
+          return false;
         }
 
-        if (isThereColumnFilters == true && isColumnFilterApproved == false)
-          return false;
-        else
-          return true;
-      });
+        return true;
+      })
+    );
 
-    this.pageCnt = this.activePaginationItems.length > 1
-      ? Math.ceil(
-        this.activePaginationItems.length / this._config_.itemCntPerPage
-      )
-      : 1;
+    this.refreshPageCnt();
   }
 
   public goLink(route: string | null): void
@@ -403,10 +551,8 @@ export class PaginationComponent implements OnInit
 
     if (this.customColumnSortingFunctions.has(chosenColumnName))
     {
-      /* eslint-disable @typescript-eslint/ban-types */
-      const func: Function | undefined =
+      const func: PaginationSortFunc | undefined =
         this.customColumnSortingFunctions.get(chosenColumnName);
-      /* eslint-enable */
 
       let res: number | undefined = undefined;
       try
@@ -586,12 +732,18 @@ export class PaginationComponent implements OnInit
       }];
 
       if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
-        this.activePaginationItems.sort((a, b) =>
+      {
+        const items: PaginationItem[] = this.activePaginationItems$.value;
+        items.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
-      else
+        this.activePaginationItems$.next(items);
+      }
+      else 
+      {
         this.refreshPages();
+      }
     }
     else
     {
@@ -619,10 +771,14 @@ export class PaginationComponent implements OnInit
       }
 
       if (this.sortChosenColumns.length != 0)
-        this.activePaginationItems.sort((a, b) =>
+      {
+        const items: PaginationItem[] = this.activePaginationItems$.value;
+        items.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
         });
+        this.activePaginationItems$.next(items);
+      }
       else
         this.refreshPages();
     }

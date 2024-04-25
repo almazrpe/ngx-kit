@@ -46,6 +46,7 @@ import { InputComponent } from "./input";
 import { PinchZoomModule } from "@meddv/ngx-pinch-zoom";
 import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
+import { OnCreateDirective } from "./on-create.directive";
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
     InputComponent,
     LabelComponent,
     RefreshComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
+    OnCreateDirective
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -118,7 +120,8 @@ import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
     PopUpComponent,
     LabelComponent,
     RefreshComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
+    OnCreateDirective
   ]
 })
 export class NgxKitModule { }

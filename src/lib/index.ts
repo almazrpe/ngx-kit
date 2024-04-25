@@ -56,7 +56,6 @@ export {
   PaginationViewType,
   makePaginationConfig,
   PaginationItem,
-  PaginationFilterValuesItem,
   PaginationAttr,
   PaginationAttrType,
   PaginationIcon,
@@ -65,6 +64,10 @@ export {
   PaginationDateTime,
   PaginationFilter,
   FilterInputConfig,
+  PaginationColumnTag,
+  PaginationPart,
+  makePaginationColumnTags,
+  PaginationSortFunc,
 } from "./pagination/models";
 
 export {
