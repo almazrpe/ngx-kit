@@ -1,5 +1,5 @@
 <ngx-kit-block
-  class="w-screen text-center"
+  class="w-screen"
   *ngIf="{
     _config_: config$ | async,
     items: allPaginationItems$ | async,
@@ -196,8 +196,8 @@
                           column,
                           [SortColMode.DESC, SortColMode.ASC]
                         ) == true
-                          ? 'justify-center'
-                          : column.alignTHClass
+                          ? 'justify-center text-center'
+                          : column.alignFlexClass
                       "
                     >
                       <div>
@@ -215,19 +215,19 @@
               *ngFor="let item of items; index as i"
             >
               <tr
-                *ngIf="MathModule.floor(i / data._config_!.itemCntPerPage) == curPage"
+                *ngIf="MathModule.floor(
+                  i / data._config_!.itemCntPerPage
+                ) == curPage"
                 class="select-none"
                 [ngClass]="{
+                  'block w-full mt-1':
+                    data._config_!.viewType != PagViewType.Table,
                   'bg-white/25':
-                    data._config_!.viewType == PagViewType.Table && i % 2 == 1,
+                    data._config_!.viewType == PagViewType.Table
+                      && whiteRowCheck(i, data._config_!),
                   'hover:bg-c10-half cursor-pointer':
                     data._config_!.viewType == PagViewType.Table
-                      && item.route != null,
-                  'cursor-default':
-                    data._config_!.viewType == PagViewType.Table
-                      && item.route == null,
-                  'mt-1':
-                    MathModule.floor(i / data._config_!.itemCntPerPage) == curPage
+                      && item.route != null
                 }"
                 (click)="goLink(item.route)"
               >
@@ -255,11 +255,12 @@
                     <td
                       *ngIf="column.disabled == false"
                       class="px-3 py-1.5"
-                      [ngClass]="[column.alignTDClass]"
                       [ngSwitch]="true"
                     >
                       <div
                         *ngIf="item.attr[column.name] != undefined"
+                        class="flex items-center"
+                        [ngClass]="[column.alignFlexClass]"
                         (onCreate)="setRowFixedHeight(cellRef)"
                         NgxKitOnCreate
                         #cellRef
@@ -369,7 +370,8 @@
                         <!-- LABELS -->
                         <div
                           *ngSwitchCase="column.type === PagAttrType.LABELS"
-                          class="flex flex-row flex-wrap"
+                          class="w-full flex flex-row flex-wrap"
+                          [ngClass]="[column.alignFlexClass]"
                         >
                           <div
                             *ngFor="let label of item.attr[column.name].body"
@@ -424,7 +426,11 @@
                         </div>
 
                         <!-- DEFAULT -->
-                        <div *ngSwitchDefault>
+                        <div
+                          class="whitespace-pre-line"
+                          [ngClass]="setTextCellStyles(column)"
+                          *ngSwitchDefault
+                        >
                           {{item.attr[column.name].body}}
                         </div>
                       </div>

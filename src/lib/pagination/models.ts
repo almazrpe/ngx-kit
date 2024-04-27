@@ -42,6 +42,8 @@ export interface PaginationConfig {
    * that must be shown in the bottom part
    */
   visiblePagesCnt: number;
+
+  rowsLineClamp: 1 | 2 | 3 | 4 | 5 | 6 | null;
   /**
    * Parts of the pagination component that must be disabled
    * PaginationPart.Config doesn't work,
@@ -173,6 +175,7 @@ export function makePaginationConfig(
     addEmptyItemsOnLastPage: false,
     itemCntPerPage: 1,
     visiblePagesCnt: 5,
+    rowsLineClamp: null,
     disabledParts: new Set<PaginationPart>(),
     columnTags: new Map<string,Set<PaginationColumnTag>>(),
     columnFixedWidths: new Map<string, string>(),
@@ -532,8 +535,8 @@ export interface TableColumn {
   name: string;
   type: PaginationAttrType;
   disabled: boolean;
-  alignTHClass: string;
-  alignTDClass: string;
+  alignFlexClass: string;
+  wordBreakClass: string;
   sorting: boolean;
   header: PaginationColumnTag.NameHeader
     | PaginationColumnTag.ImgHeader
@@ -560,9 +563,12 @@ export enum PaginationColumnTag {
   CenterAlign = 4,
   Sort = 5,
   NoSort = 6,
-  NameHeader = 7,
-  ImgHeader = 8,
-  NoHeader = 9
+  WordBreakNormal = 7,
+  WordBreakWords = 8,
+  WordBreakAll = 9,
+  NameHeader = 10,
+  ImgHeader = 11,
+  NoHeader = 12
 }
 
 /**
@@ -587,7 +593,7 @@ export function makePaginationColumnTags(
  * actual TableColumn from set of the column tags
  */
 export function makeTableColumnSettings(
-  tags: Set<PaginationColumnTag> | undefined
+  tags?: Set<PaginationColumnTag>
 ): TableColumn
 {
   const settings: Partial<TableColumn> = {};
@@ -604,16 +610,22 @@ export function makeTableColumnSettings(
           settings.disabled = true;
           break;
         case PaginationColumnTag.LeftAlign:
-          settings.alignTHClass = "justify-start";
-          settings.alignTDClass = "text-left";
+          settings.alignFlexClass = "justify-start text-left";
           break;
         case PaginationColumnTag.RightAlign:
-          settings.alignTHClass = "justify-end";
-          settings.alignTDClass = "text-right";
+          settings.alignFlexClass = "justify-end text-right";
           break;
         case PaginationColumnTag.CenterAlign:
-          settings.alignTHClass = "justify-center";
-          settings.alignTDClass = "text-center";
+          settings.alignFlexClass = "justify-center text-center";
+          break;
+        case PaginationColumnTag.WordBreakNormal:
+          settings.wordBreakClass = "break-normal";
+          break;
+        case PaginationColumnTag.WordBreakWords:
+          settings.wordBreakClass = "break-words";
+          break;
+        case PaginationColumnTag.WordBreakAll:
+          settings.wordBreakClass = "break-all";
           break;
         case PaginationColumnTag.Sort:
           settings.sorting = true;
@@ -636,8 +648,8 @@ export function makeTableColumnSettings(
     name: "UNKNOWN",
     type: PaginationAttrType.STRING,
     disabled: false,
-    alignTHClass: "justify-start",
-    alignTDClass: "text-left",
+    alignFlexClass: "justify-start",
+    wordBreakClass: "break-normal",
     sorting: true,
     header: PaginationColumnTag.NameHeader,
   };

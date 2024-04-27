@@ -123,12 +123,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (this.config$.value.firstColumnOff == false)
       this.tableColumns.push({
+        ...makeTableColumnSettings(),
         name: DEFAULT_FIRST_COLUMN_NAME,
-        type: PaginationAttrType.STRING,
-        disabled: false,
-        alignTHClass: "justify-start",
-        alignTDClass: "text-left",
-        sorting: true,
         header: PaginationColumnTag.NoHeader,
       });
 
@@ -267,8 +263,27 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.config$.value.rowFixedHeight != null)
     {
       cellRef.style.height = this.config$.value.rowFixedHeight;
-      cellRef.style.overflow = "hidden";
-      cellRef.style.textOverflow = "ellipsis";
+    }
+  }
+
+  public setTextCellStyles(column: TableColumn): string[]
+  {
+    switch(this.config$.value.rowsLineClamp)
+    {
+      case 1:
+        return ["line-clamp-1"].concat([column.wordBreakClass]);
+      case 2:
+        return ["line-clamp-2"].concat([column.wordBreakClass]);
+      case 3:
+        return ["line-clamp-3"].concat([column.wordBreakClass]);
+      case 4:
+        return ["line-clamp-4"].concat([column.wordBreakClass]);
+      case 5:
+        return ["line-clamp-5"].concat([column.wordBreakClass]);
+      case 6:
+        return ["line-clamp-6"].concat([column.wordBreakClass]);
+      default:
+        return [column.wordBreakClass];
     }
   }
 
@@ -733,7 +748,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
       if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
       {
-        const items: PaginationItem[] = this.activePaginationItems$.value;
+        const items: PaginationItem[] =
+          this.activePaginationItems$.value.concat();
         items.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
@@ -772,7 +788,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
       if (this.sortChosenColumns.length != 0)
       {
-        const items: PaginationItem[] = this.activePaginationItems$.value;
+        const items: PaginationItem[] =
+          this.activePaginationItems$.value.concat();
         items.sort((a, b) =>
         {
           return this.sortingCondition(a, b, 0);
@@ -792,6 +809,14 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         scolumn.column.name == column.name);
 
     return sortColumn == undefined ? false : modes.includes(sortColumn.mode);
+  }
+
+  public whiteRowCheck(itemInd: number, config: PaginationConfig): boolean
+  {
+    if (config.itemCntPerPage % 2 == 0 || this.curPage % 2 == 0)
+      return itemInd % 2 == 1;
+    else
+      return itemInd % 2 == 0;
   }
 
   public scrollTableRight(event: any): void
