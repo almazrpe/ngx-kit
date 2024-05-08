@@ -45,6 +45,8 @@ export class PdfViewerComponent implements OnInit
   public ngOnInit(): void
   {
     this._config_ = makePdfViewerConfig(this.config);
+    if (this._config_.pdfWorkerPath != null)
+      (window as any).pdfWorkerSrc = this._config_.pdfWorkerPath;
     this.emitCurrentPage();
 
     this.form = new FormGroup({

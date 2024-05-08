@@ -6,6 +6,7 @@ export interface PdfViewerConfig {
   pageDownIconPath: string;
   zoomUpIconPath: string;
   zoomDownIconPath: string;
+  pdfWorkerPath: string | null;
 }
 
 /**
@@ -33,6 +34,7 @@ export function makePdfViewerConfig(
     pageDownIconPath: "",
     zoomUpIconPath: "",
     zoomDownIconPath: "",
+    pdfWorkerPath: null,
   };
 
   return {
