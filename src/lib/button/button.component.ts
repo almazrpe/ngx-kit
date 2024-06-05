@@ -18,7 +18,8 @@ export enum ButtonMode {
   DIMMED = 4,
   WARNING = 5,
   SUCCESS = 6,
-  CONTROLS = 7
+  CONTROLS = 7,
+  CONTROL_ACTIVE = 8
 }
 
 @Component({
@@ -102,6 +103,13 @@ export class ButtonComponent implements OnInit, OnChanges
     [
       "text-c10-text", "rounded", "hover:bg-gray-200", "hover:bg-opacity-70",
       "p-0", "w-full",
+      "disabled:bg-c-disabled", "disabled:shadow-none",
+      "flex", "items-center", "justify-center"
+    ],
+    // CONTROL_ACTIVE
+    [
+      "bg-gray-300", "text-c10-text", "rounded", "p-0", "w-full",
+      "bg-opacity-70", "hover:bg-opacity-100",
       "disabled:bg-c-disabled", "disabled:shadow-none",
       "flex", "items-center", "justify-center"
     ],

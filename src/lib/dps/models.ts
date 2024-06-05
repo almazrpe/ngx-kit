@@ -2,6 +2,17 @@ export interface DPSConfig {
   pinchZoomFlag: boolean;
   pageNumberTranslation: string;
   noSuchDocPageTranslation: string;
+  imgNotFoundTranslation: string;
+  returnIconPath: string;
+  pageUpIconPath: string;
+  pageDownIconPath: string;
+  clockwiseIconPath: string;
+  counterClockwiseIconPath: string;
+  resetImageIconPath: string;
+  showDPSLControllerIconPath: string;
+  controllerArrowIconPath: string;
+  controllerPlusIconPath: string;
+  controllerMinusIconPath: string;
 }
 
 /**
@@ -20,12 +31,20 @@ export function makeDPSConfig(
 ): DPSConfig
 {
   const defaults: DPSConfig = {
-    pinchZoomFlag:
-      false,
-    pageNumberTranslation:
-      "Page number",
-    noSuchDocPageTranslation:
-      "There is no such document page:",
+    pinchZoomFlag: false,
+    pageNumberTranslation: "Page number",
+    noSuchDocPageTranslation: "There is no such document page:",
+    imgNotFoundTranslation: "Image not found",
+    returnIconPath: "",
+    pageUpIconPath: "",
+    pageDownIconPath: "",
+    clockwiseIconPath: "",
+    counterClockwiseIconPath: "",
+    resetImageIconPath: "",
+    showDPSLControllerIconPath: "",
+    controllerArrowIconPath: "",
+    controllerPlusIconPath: "",
+    controllerMinusIconPath: "",
   };
 
   return {

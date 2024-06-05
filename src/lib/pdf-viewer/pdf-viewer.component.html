@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-2 h-full w-full">
-  <!-- Top Bar -->
+  <!-- Top bar -->
   <div class="px-1 mt-1 flex flex-row w-full justify-between items-center">
-    <!-- Page Number Selector -->
+    <!-- Page number selector -->
     <form
       class="flex flex-row h-full justify-start items-center gap-1"
       [formGroup]="form"
@@ -14,11 +14,11 @@
         [showErrors]="false"
         (inputValue)="onInputValue($event)"
       />
-      <p class="self-center">
+      <p class="self-center select-none">
         <span i18n>из</span> {{pagesCount}}
       </p>
 
-      <!-- Page Navigation Arrows -->
+      <!-- Page navigation arrows -->
       <div
         class="flex flex-row justify-center items-center ml-2 gap-1"
       >
@@ -31,6 +31,7 @@
           <img
             [src]="_config_.pageUpIconPath"
             alt="page up"
+            draggable="false"
             class="w-8"
           >
         </ngx-kit-button>
@@ -43,16 +44,15 @@
           <img
             [src]="_config_.pageDownIconPath"
             alt="page down"
+            draggable="false"
             class="w-8"
           >
         </ngx-kit-button>
       </div>
-      <!---->
     </form>
-    <!---->
 
+    <!-- Zoom control panel -->
     <div class="flex flex-row gap-10">
-      <!-- Zoom Arrows -->
       <div
         class="flex flex-row justify-center items-center ml-2 gap-1"
       >
@@ -65,6 +65,7 @@
           <img
             [src]="_config_.zoomDownIconPath"
             alt="zoom down"
+            draggable="false"
             class="w-9"
           >
         </ngx-kit-button>
@@ -83,11 +84,11 @@
           <img
             [src]="_config_.zoomUpIconPath"
             alt="zoom up"
+            draggable="false"
             class="w-9"
           >
         </ngx-kit-button>
       </div>
-      <!---->
 
       <!-- Back Button -->
       <ngx-kit-button
@@ -98,11 +99,10 @@
         <img
           [src]="_config_.returnIconPath"
           alt="go back"
+          draggable="false"
           class="w-10"
         >
       </ngx-kit-button>
-      <!---->
-
     </div>
   </div>
 
@@ -113,7 +113,6 @@
   >
     <p>{{errorMessageTranslation}}</p>
   </div>
-  <!---->
 
   <!-- Document viewer -->
   <ng-template #docViewer>
@@ -128,5 +127,4 @@
       class="w-full h-screen">
     </pdf-viewer>
   </ng-template>
-  <!---->
 </div>

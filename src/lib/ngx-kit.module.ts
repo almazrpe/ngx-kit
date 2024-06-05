@@ -12,7 +12,7 @@ import {
   StatusCircleComponent
 } from "./status-circle/status-circle.component";
 import { AlertStackComponent } from "./alert/alert-stack.component";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
 import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 import { CapitalizePipe } from "./str/capitalize.pipe";
@@ -47,6 +47,7 @@ import { PinchZoomModule } from "@meddv/ngx-pinch-zoom";
 import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
 import { OnCreateDirective } from "./on-create.directive";
+import { ImageCropperModule } from "ngx-image-cropper";
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { OnCreateDirective } from "./on-create.directive";
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatSelectModule,
@@ -98,6 +100,7 @@ import { OnCreateDirective } from "./on-create.directive";
     MatListModule,
     NgxMatTimepickerModule,
     PdfViewerModule,
+    ImageCropperModule,
     PinchZoomModule
   ],
   exports: [
