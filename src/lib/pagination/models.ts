@@ -132,6 +132,14 @@ export interface PaginationConfig {
   // Paths for icons
   /////////////////////////////////////////////////////////////
   /**
+   * Icon path for white drop filter button
+   */
+  dropFilterWIconPath: string;
+  /**
+   * Icon path for black drop filter button
+   */
+  dropFilterBIconPath: string;
+  /**
    * Icon path for show/hide filters button
    */
   filterIconPath: string;
@@ -188,6 +196,8 @@ export function makePaginationConfig(
     backTxt: "BACK",
     forwardTxt: "FORWARD",
     fullTextSearchTxt: "Full text search...",
+    dropFilterWIconPath: "",
+    dropFilterBIconPath: "",
     filterIconPath: "",
     ascSortIconPath: "",
     descSortIconPath: ""
@@ -523,6 +533,14 @@ export interface FilterInputConfig {
    * Any other attributes of the input component
    */
   [inputOption: string]: any;
+}
+
+/**
+ * Supporting interface to store type and value pairs
+ */
+export interface PaginationFilterTVPair {
+  type: InputType | null;
+  value: any;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

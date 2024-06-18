@@ -7,11 +7,13 @@ import {
   AfterViewInit,
   Input
 } from "@angular/core";
+import { FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { BehaviorSubject, Observable, Subscription, of } from "rxjs";
 import {
   PaginationItem,
   PaginationFilter,
+  PaginationFilterTVPair,
   PaginationConfig,
   PaginationViewType,
   TableColumn,
@@ -99,7 +101,9 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
   public leftSlice: number = 0;
 
   public isFiltersWindowShown: boolean = false;
-  private curFilterValues: Map<number, any> = new Map<number, any>([]);
+  public filtersFormGroup: FormGroup = new FormGroup({});
+  private curFilterValues: Map<number, PaginationFilterTVPair> =
+    new Map<number, PaginationFilterTVPair>();
   private fullTextSearchValue: string | null = null;
 
   public tableColumns: TableColumn[] = [];
@@ -173,6 +177,13 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     );
     this.activePaginationItems$.next(this.allPaginationItems$.value);
     this.disabledPaginationFilters$.next(this.paginationFilters.concat());
+    for (const filter of this.paginationFilters)
+    {
+      this.filtersFormGroup.addControl(
+        String(filter.id),
+        new FormControl(null)
+      );
+    }
     this.refreshPageCnt();
 
     this.updateEventSubscription = this.updateEvent.subscribe({
@@ -225,6 +236,14 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             this.disabledPaginationFilters$.next(
               this.paginationFilters.concat()
             );
+            this.filtersFormGroup = new FormGroup({});
+            for (const filter of this.paginationFilters)
+            {
+              this.filtersFormGroup.addControl(
+                String(filter.id),
+                new FormControl(null)
+              );
+            }
             this.activePaginationFilters$.next([]);
             this.curFilterValues.clear();
             this.isFiltersWindowShown = false;
@@ -302,6 +321,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
   public ngOnDestroy(): void 
   {
     this.updateEventSubscription.unsubscribe();
+  }
+
+  public getFilterFormControl(id: number): FormControl
+  {
+    return this.filtersFormGroup.get(String(id)) as FormControl;
   }
 
   private updateVisualPart(
@@ -415,6 +439,9 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       })
     );
 
+    this.filtersFormGroup.patchValue({
+      [String(filterId)]: null
+    });
     this.curFilterValues.delete(filterId);
     this.refreshPages();
   }
@@ -445,10 +472,28 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.isFiltersWindowShown = true;
   }
 
-  public filterChange(filterId: number, value: any): void
+  public filterChange(
+    filterId: number,
+    pair: PaginationFilterTVPair
+  ): void
   {
-    value = value ?? "";
-    this.curFilterValues.set(filterId, value);
+    if (pair.value == null)
+      this.curFilterValues.delete(filterId);
+    else
+    {
+      switch(pair.type)
+      {
+        case InputType.Date:
+          this.curFilterValues.set(
+            filterId,
+            { type: pair.type, value: pair.value.toDateString() }
+          );
+          break;
+        default:
+          this.curFilterValues.set(filterId, pair);
+          break;
+      }
+    }
     this.refreshPages();
     this.curPage = 0;
     this.leftSlice = 0;
@@ -484,10 +529,29 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
               return false;
             else
             {
-              if (fIVal != this.curFilterValues.get(fid)
-                  && !String(fIVal).toLowerCase().includes(
-                    String(this.curFilterValues.get(fid)).toLowerCase()))
-                return false;
+              const curFilterPair: PaginationFilterTVPair =
+                this.curFilterValues.get(fid) ?? {type: null, value: null};
+              switch(curFilterPair.type)
+              {
+                case null:
+                  break;
+                case InputType.Date:
+                  if (curFilterPair.value !== fIVal)
+                    return false;
+                  break;
+                case InputType.DateRange:
+                  if (fIVal < curFilterPair.value[0])
+                    return false;
+                  if (fIVal > curFilterPair.value[1])
+                    return false;
+                  break;
+                default:
+                  if (fIVal != curFilterPair.value
+                      && !String(fIVal).toLowerCase().includes(
+                        String(curFilterPair.value).toLowerCase()))
+                    return false;
+                  break;
+              }
             }
           }
         }
@@ -678,7 +742,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             break;
           }
           case PaginationAttrType.DATETIME: {
-            if (aAttr!.body.value == bAttr!.body.value)
+            if (aAttr!.body.value.toString() == bAttr!.body.value.toString())
               return this.sortingCondition(a, b, iter + 1);
             else if (aAttr!.body.value > bAttr!.body.value)
               return 1 * modeFactor;
@@ -687,11 +751,15 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             break;
           }
           case PaginationAttrType.DATE: {
-            const aDate: Date = new Date(aAttr!.body.value.toDateString());
-            const bDate: Date = new Date(bAttr!.body.value.toDateString());
-            if (aDate == bDate)
+            if (
+              aAttr!.body.value.toDateString()
+                == aAttr!.body.value.toDateString()
+            )
               return this.sortingCondition(a, b, iter + 1);
-            else if (aDate > bDate)
+            else if (
+              new Date(aAttr!.body.value.toDateString())
+                > new Date(bAttr!.body.value.toDateString())
+            )
               return 1 * modeFactor;
             else
               return -1 * modeFactor;

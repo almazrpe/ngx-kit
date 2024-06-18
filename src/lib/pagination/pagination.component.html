@@ -29,19 +29,26 @@
           />
 
           <div
-            class="flex gap-2 flex-row flex-wrap justify-start"
+            *ngIf="!isFiltersWindowShown"
+            class="flex gap-2 flex-row flex-wrap justify-start select-none"
           >
             <div class="flex flex-row" *ngFor="let filter of data.afilters">
               <div
-                class="px-3 bg-c10 text-white rounded-l
+                class="px-4 my-auto bg-c10 text-white rounded-l
                        cursor-default truncate"
               >
                 {{filter.labelText}}
               </div>
               <div
-                class="px-2 bg-red-50 rounded-r cursor-pointer"
+                class="p-2 bg-red-50 rounded-r cursor-pointer"
                 (click)="dropFilter(filter.id)"
-              >X
+              >
+                <img
+                  class="relative w-2 h-2 before:-top-full before:absolute"
+                  draggable="false"
+                  [src]="data._config_!.dropFilterBIconPath"
+                  [alt]="'x'"
+                >
               </div>
             </div>
           </div>
@@ -57,6 +64,7 @@
         >
           <img
             class="w-5 h-5"
+            draggable="false"
             [src]="data._config_!.filterIconPath"
             [alt]="'👁️'"
           >
@@ -64,26 +72,65 @@
       </div>
 
       <ng-container *ngIf="isFiltersWindowShown">
-        <div class="flex flex-col gap-2 mt-1">
-          <div *ngFor="let filter of data.afilters">
-            <div class="mb-1 text-left">
-              {{filter.labelText}}
-            </div>
-            <ngx-kit-mat-input
-              [type]="filter.inputConfig.type"
-              [placeholder]="filter.inputConfig['placeholder'] != undefined
-                             ? filter.inputConfig['placeholder']
-                             : 'Enter something...'"
-              (inputValue)="filterChange(filter.id, $event)"
-            />
+        <div class="py-2 flex flex-col gap-2 rounded-sm">
+          <div class="w-full flex flex-row gap-2 my-1.5">
+            <ngx-kit-hr
+              class="grow opacity-25"
+            ></ngx-kit-hr>
+            <span class="font-semibold italic " i18n>
+              Фильтры
+            </span>
+            <ngx-kit-hr
+              class="grow opacity-25"
+            ></ngx-kit-hr>
           </div>
 
-          <div class="flex flex-row gap-2 flex-wrap">
+          <div class="w-full flex flex-row gap-2" *ngFor="let filter of data.afilters">
+            <div class="grow flex flex-row bg-gradient-to-r from-c10 rounded">
+              <div
+                class="w-60 my-auto px-4 text-white
+                       cursor-default truncate select-none"
+              >
+                {{filter.labelText}}
+              </div>
+
+              <ngx-kit-mat-input
+                class="grow"
+                [formControl]="getFilterFormControl(filter.id)"
+                [type]="filter.inputConfig.type"
+                [placeholder]="filter.inputConfig['placeholder'] != undefined
+                               ? filter.inputConfig['placeholder']
+                               : 'Enter something...'"
+                (inputValue)="filterChange(
+                  filter.id,
+                  {
+                    type: filter.inputConfig.type,
+                    value: $event
+                  }
+                )"
+              />
+            </div>
+
+            <ngx-kit-button
+              [mode]="BtnMode.DANGER"
+              class="mr-0.5 my-auto select-none"
+              (clickFunc)="dropFilter(filter.id)"
+            >
+              <img
+                class="relative w-3 h-3 before:top-[-70%] before:left-[15%] before:absolute before:text-lg"
+                draggable="false"
+                [src]="data._config_!.dropFilterWIconPath"
+                [alt]="'x'"
+              >
+            </ngx-kit-button>
+          </div>
+
+          <div class="flex flex-row gap-2 flex-wrap mb-1 select-none">
             <div
               class="flex flex-row"
               *ngFor="let filter of data.dfilters">
               <div
-                class="px-3 bg-c10 text-white rounded-l
+                class="px-4 bg-c10 text-white rounded-l
                        cursor-default truncate"
               >
                 {{filter.labelText}}
@@ -169,6 +216,7 @@
                       <div class="w-full flex justify-center">
                         <img
                           class="w-4 h-4"
+                          draggable="false"
                           [src]="data._config_!.ascSortIconPath"
                           [alt]="'⬇️'"
                         >
@@ -182,6 +230,7 @@
                       <div class="w-full flex justify-center">
                         <img
                           class="w-4 h-4"
+                          draggable="false"
                           [src]="data._config_!.descSortIconPath"
                           [alt]="'⬆️'"
                         >
@@ -314,6 +363,7 @@
                                   "item.attr[column.name].body.cssClasses
                                    ?? ['w-4', 'h-4']"
                                 [src]="item.attr[column.name].body.src"
+                                draggable="false"
                               >
                             </span>
                           </ng-container>
@@ -349,6 +399,7 @@
                                 <img
                                   [ngClass]="icon.cssClasses ?? ['w-4', 'h-4']"
                                   [src]="icon.src"
+                                  draggable="false"
                                 >
                               </span>
                             </ng-container>
@@ -401,6 +452,7 @@
                               <img
                                 [ngClass]="item.attr[column.name].body.cssClasses ?? ['w-4', 'h-4']"
                                 [src]="item.attr[column.name].body.imageSrc"
+                                draggable="false"
                               >
                             </ng-container>
 
