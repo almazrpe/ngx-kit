@@ -18,6 +18,7 @@ export enum PopUpType {
 
 export interface PopUpConfig extends UploadFilesInputConfig
 {
+  resetFieldIconPath: string;
 }
 
 /**
@@ -35,7 +36,8 @@ export function makePopUpConfig(
 ): PopUpConfig
 {
   const defaults: PopUpConfig = {
-    ...makeUploadFilesInputConfig({})
+    ...makeUploadFilesInputConfig({}),
+    resetFieldIconPath: ""
   };
 
   return {

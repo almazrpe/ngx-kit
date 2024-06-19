@@ -148,6 +148,13 @@ export class PopUpComponent implements OnInit
     this.popUpService.toggle();
   }
 
+  public clearField(name: string): void
+  {
+    this.form.patchValue({
+      [name]: null
+    });
+  }
+
   public borderClosingCheck(event: MouseEvent): void
   {
     const elem: Element | null =
