@@ -7,6 +7,20 @@ export class OkEvt extends Evt
 {
 }
 
+@code("rxcat_register_req")
+export class RegisterReq extends Req
+{
+  tokens: string[];
+  data: any | null;
+
+  public constructor(args: {tokens: string[], data: any | null})
+  {
+    super(args);
+    this.tokens = args.tokens;
+    this.data = args.data;
+  }
+}
+
 // tmp unused at backend
 // @code("get-doc-req")
 // export class GetDocReq extends Req

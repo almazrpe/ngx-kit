@@ -26,7 +26,7 @@ import { takeOrSkip } from "./rxjs-utils";
 import { ConnService } from "./conn/conn.service";
 import { ArrUtils } from "./arr";
 import {
-  CreateDocReq, DelDocReq, GetDocsReq, UpdDocReq
+  CreateDocReq, DelDocReq, GetDocsReq, RegisterReq, UpdDocReq
 } from "./msg";
 
 export abstract class BusUtils
@@ -328,7 +328,9 @@ export class ClientBus
 
   public init(
     alertSv: AlertService,
-    connSv: ConnService
+    connSv: ConnService,
+    tokens: string[] = [],
+    registerData: {[key: string]: any} = {}
   ): void
   {
     if (this.isInitd)
@@ -353,6 +355,7 @@ export class ClientBus
       next: conn =>
       {
         this.conn = conn;
+        this.registerClient(tokens, registerData);
         if (this.connWrapperSub !== null)
         {
           this.connWrapperSub.unsubscribe();
@@ -367,6 +370,19 @@ export class ClientBus
     });
 
     this.isInitd = true;
+  }
+
+  private registerClient(
+    tokens: string[],
+    data: {[key: string]: any})
+  {
+    let msg = new RegisterReq({tokens: tokens, data: data})
+    let serializedMsg = MsgUtils.serializeJson(
+      msg,
+      0
+    )
+    asrt.run(this.conn !== null)
+    this.conn?.next(serializedMsg)
   }
 
   public sub(
