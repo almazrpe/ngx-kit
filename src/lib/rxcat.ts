@@ -376,6 +376,9 @@ export class ClientBus
     tokens: string[],
     data: {[key: string]: any})
   {
+    // todo:
+    //    sent corrected register reqs once server bus implements it, for now
+    //    just hope for the good
     let msg = new RegisterReq({tokens: tokens, data: data})
     let serializedMsg = MsgUtils.serializeJson(
       msg,
