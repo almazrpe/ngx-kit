@@ -59,7 +59,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * Observable which indicates some part of the component must be updated
    */
-  @Input() public updateEvent: Observable<PaginationPart | null> = of(null);
+  @Input() public updateEvent: Observable<PaginationPart | null> | undefined =
+    of(null);
 
   /**
    * Map object with custom sorting functions (compare-like)
@@ -69,7 +70,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
    * The values of the Map object are functions
    */
   @Input() public customColumnSortingFunctions:
-    Map<string, PaginationSortFunc> =
+    Map<string, PaginationSortFunc> | undefined =
       new Map<string, PaginationSortFunc>();
 
   // Lists of items and filters that are active and on the screen
@@ -186,80 +187,84 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     }
     this.refreshPageCnt();
 
-    this.updateEventSubscription = this.updateEvent.subscribe({
-      next: (part: PaginationPart | null) =>
-      {
-        switch(part)
+    if (this.updateEvent !== undefined)
+      this.updateEventSubscription = this.updateEvent.subscribe({
+        next: (part: PaginationPart | null) =>
         {
-          case PaginationPart.Config:
-            this.config$.next(
-              makePaginationConfig(this.config)
-            );
-            break;
-          case PaginationPart.Items:
-            if (this.config$.value.disabledParts.has(PaginationPart.Items))
-            {
-              const conf: PaginationConfig = this.config$.value;
-              conf.disabledParts.delete(PaginationPart.Items);
-              this.config$.next(conf);
-            }
-
-            setTimeout(() =>
-            {
-              if (this.config$.value.firstColumnOff == false)
+          switch(part)
+          {
+            case PaginationPart.Config:
+              this.config$.next(
+                makePaginationConfig(this.config)
+              );
+              break;
+            case PaginationPart.Items:
+              if (this.config$.value.disabledParts.has(PaginationPart.Items))
               {
-                for (let i in this.paginationItems)
-                {
-                  this.paginationItems[i].attr[DEFAULT_FIRST_COLUMN_NAME] = {
-                    type: PaginationAttrType.STRING,
-                    body: this.paginationItems[i].text
-                  };
-                }
+                const conf: PaginationConfig = this.config$.value;
+                conf.disabledParts.delete(PaginationPart.Items);
+                this.config$.next(conf);
               }
 
-              this.allPaginationItems$.next(
-                this.config$.value.reverseItems == true
-                  ? this.paginationItems.concat().reverse()
-                  : this.paginationItems.concat()
-              );
-              this.refreshPages();
-            }, 100);
-            break;
-          case PaginationPart.Filters:
-            if (this.config$.value.disabledParts.has(PaginationPart.Filters))
-            {
-              const conf: PaginationConfig = this.config$.value;
-              conf.disabledParts.delete(PaginationPart.Filters);
-              this.config$.next(conf);
-            }
+              setTimeout(() =>
+              {
+                if (this.config$.value.firstColumnOff == false)
+                {
+                  for (let i in this.paginationItems)
+                  {
+                    this.paginationItems[i].attr[DEFAULT_FIRST_COLUMN_NAME] =
+                    {
+                      type: PaginationAttrType.STRING,
+                      body: this.paginationItems[i].text
+                    };
+                  }
+                }
 
-            this.disabledPaginationFilters$.next(
-              this.paginationFilters.concat()
-            );
-            this.filtersFormGroup = new FormGroup({});
-            for (const filter of this.paginationFilters)
-            {
-              this.filtersFormGroup.addControl(
-                String(filter.id),
-                new FormControl(null)
+                this.allPaginationItems$.next(
+                  this.config$.value.reverseItems == true
+                    ? this.paginationItems.concat().reverse()
+                    : this.paginationItems.concat()
+                );
+                this.refreshPages();
+              }, 100);
+              break;
+            case PaginationPart.Filters:
+              if (this.config$.value.disabledParts.has(
+                PaginationPart.Filters
+              ))
+              {
+                const conf: PaginationConfig = this.config$.value;
+                conf.disabledParts.delete(PaginationPart.Filters);
+                this.config$.next(conf);
+              }
+
+              this.disabledPaginationFilters$.next(
+                this.paginationFilters.concat()
               );
-            }
-            this.activePaginationFilters$.next([]);
-            this.curFilterValues.clear();
-            this.isFiltersWindowShown = false;
-            this.refreshPages();
-            break;
-          case PaginationPart.SearchField:
-          case PaginationPart.FirstHr:
-          case PaginationPart.SecondHr:
-          case PaginationPart.Footer:
-            this.updateVisualPart(part);
-            break;
-          default:
-            break;
+              this.filtersFormGroup = new FormGroup({});
+              for (const filter of this.paginationFilters)
+              {
+                this.filtersFormGroup.addControl(
+                  String(filter.id),
+                  new FormControl(null)
+                );
+              }
+              this.activePaginationFilters$.next([]);
+              this.curFilterValues.clear();
+              this.isFiltersWindowShown = false;
+              this.refreshPages();
+              break;
+            case PaginationPart.SearchField:
+            case PaginationPart.FirstHr:
+            case PaginationPart.SecondHr:
+            case PaginationPart.Footer:
+              this.updateVisualPart(part);
+              break;
+            default:
+              break;
+          }
         }
-      }
-    });
+      });
   }
 
   public ngAfterViewInit(): void
@@ -320,7 +325,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
   public ngOnDestroy(): void 
   {
-    this.updateEventSubscription.unsubscribe();
+    this.updateEventSubscription?.unsubscribe();
   }
 
   public getFilterFormControl(id: number): FormControl
@@ -628,10 +633,10 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
     const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
 
-    if (this.customColumnSortingFunctions.has(chosenColumnName))
+    if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false)
     {
       const func: PaginationSortFunc | undefined =
-        this.customColumnSortingFunctions.get(chosenColumnName);
+        this.customColumnSortingFunctions!.get(chosenColumnName);
 
       let res: number | undefined = undefined;
       try

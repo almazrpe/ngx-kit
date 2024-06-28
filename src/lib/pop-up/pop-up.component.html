@@ -80,7 +80,7 @@
     <div *ngSwitchCase="type == PopUpType.Form">
       <div class="w-full flex items-center gap-2 justify-between px-1">
         <div class="text-xl self-center cursor-default select-none" i18n>
-          {{title}}
+          {{ title }}
         </div>
 
         <ngx-kit-button
@@ -235,6 +235,49 @@
           </ng-container>
         </table>
       </form>
+    </div>
+
+    <div
+      *ngSwitchCase="type == PopUpType.Pagination"
+      class="w-full flex flex-col justify-center items-center"
+    >
+      <div class="w-full flex items-center gap-10 justify-between px-1">
+        <div
+          class="flex flex-col gap-0.5 ml-2 self-center
+                 cursor-default select-none"
+        >
+          <span class="text-xl">{{ title }}</span>
+          <span
+            class="italic"
+            *ngIf="paginationData.subtitle !== undefined"
+          >
+            {{ paginationData.subtitle }}
+          </span>
+        </div>
+
+        <ngx-kit-button
+          [mode]="ButtonMode.DANGER"
+          (clickFunc)="closePopUp()"
+        >
+          <img
+            [src]="_config_.abortIconPath"
+            alt="x"
+            draggable="false"
+            class="w-4 before:text-xl"
+          >
+        </ngx-kit-button>
+      </div>
+
+      <ngx-kit-hr class="w-full"></ngx-kit-hr>
+
+      <ngx-kit-pagination
+        class="w-[100%] overflow-auto"
+        [paginationItems]="paginationData.items"
+        [paginationFilters]="paginationData.filters ?? []"
+        [config]="paginationData.config ?? {}"
+        [customColumnSortingFunctions]="paginationData.sortFuncs"
+        [updateEvent]="paginationData.updateEvt"
+      />
     </div>
   </div>
 </div>

@@ -15,6 +15,7 @@ import {
   PopUpWindow,
   PopUpResult,
   PopUpDescriptorField,
+  PopUpPaginationData,
   PopUpChoosingBtn
 } from "./models";
 
@@ -36,6 +37,7 @@ export class PopUpComponent implements OnInit
   public fields: PopUpFormField[];
   public controls: FormControl[];
   public choosingButtons: PopUpChoosingBtn[];
+  public paginationData: PopUpPaginationData;
   public formFieldsDescriptor:
     ((data: any) => PopUpDescriptorField[]) | null =
       null;
@@ -130,6 +132,7 @@ export class PopUpComponent implements OnInit
         this.fields = window.fields;
         this.controls = this.getAllFormControls();
         this.choosingButtons = window.choosingButtons ?? [];
+        this.paginationData = window.paginationData ?? { items: [] };
       },
       error: (err: Error) =>
       {

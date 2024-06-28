@@ -6,6 +6,13 @@ import {
   makeUploadFilesInputConfig
 } from "../input/upload-files-input/models";
 import { InputValidationErrorCode  } from "../input/mat-input/error-content";
+import {
+  PaginationItem,
+  PaginationFilter,
+  PaginationConfig,
+  PaginationSortFunc,
+  PaginationPart
+} from "../pagination/models"
 import { ValidatorFn, FormControl } from "@angular/forms";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -13,7 +20,8 @@ export enum PopUpType {
   Empty = 0,
   YesNo = 1,
   ChoosingBtn = 2,
-  Form = 3
+  Form = 3,
+  Pagination = 4
 }
 
 export interface PopUpConfig extends UploadFilesInputConfig
@@ -79,6 +87,15 @@ export interface PopUpChoosingBtn {
   extraCssClasses?: string[];
 }
 
+export interface PopUpPaginationData {
+  items: PaginationItem[];
+  filters?: PaginationFilter[];
+  config?: Partial<PaginationConfig>;
+  sortFuncs?: Map<string, PaginationSortFunc>;
+  updateEvt?: Observable<PaginationPart | null>;
+  subtitle?: string;
+}
+
 export interface PopUpWindow {
   windowNum: number;
   type: PopUpType;
@@ -86,6 +103,7 @@ export interface PopUpWindow {
   formFieldsDescriptor?: (data: any) => PopUpDescriptorField[];
   fields?: PopUpFormField[];
   choosingButtons?: PopUpChoosingBtn[];
+  paginationData?: PopUpPaginationData;
 }
 
 export interface PopUpResult {

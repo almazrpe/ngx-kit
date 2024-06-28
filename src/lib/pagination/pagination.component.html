@@ -1,5 +1,7 @@
 <ngx-kit-block
   class="w-screen"
+  [extraClass]="data._config_!.disabledParts.has(PagPart.SearchField)
+    && data._config_!.disabledParts.has(PagPart.Footer) ? '!p-0' : ''"
   *ngIf="{
     _config_: config$ | async,
     items: allPaginationItems$ | async,
