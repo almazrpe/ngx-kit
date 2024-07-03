@@ -47,7 +47,8 @@ export abstract class BusUtils
   ): Observable<TRetUdto>
   {
     return ClientBus.ie.pub$(req, opts).pipe(
-      map(rae => ArrUtils.getOnlyFirstOrErr((rae.evt as any).udtos))
+      // warning is no more for arr.length > 1
+      map(rae => ArrUtils.getFirst((rae.evt as any).udtos, false))
     );
   }
 
