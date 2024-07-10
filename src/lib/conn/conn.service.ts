@@ -47,7 +47,7 @@ export class ConnService
 
   public getHttpUrl(): string
   {
-    return this.storageSv.getItem(
+    return "http://" + this.storageSv.getItem(
       this.storageKey, this.storageHostPortItemKey);
   }
 }
