@@ -44,4 +44,10 @@ export class ConnService
       this.storageHostPortItemKey,
       val);
   }
+
+  public getHttpUrl(): string
+  {
+    return this.storageSv.getItem(
+      this.storageKey, this.storageHostPortItemKey);
+  }
 }
