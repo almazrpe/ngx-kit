@@ -380,13 +380,13 @@ export class ClientBus
     // todo:
     //    sent corrected register reqs once server bus implements it, for now
     //    just hope for the good
-    let msg = new RegisterReq({tokens: tokens, data: data})
+    let msg = new RegisterReq({tokens: tokens, data: data});
     let serializedMsg = MsgUtils.serializeJson(
       msg,
       0
-    )
-    asrt.run(this.conn !== null)
-    this.conn?.next(serializedMsg)
+    );
+    asrt.run(this.conn !== null);
+    this.conn?.next(serializedMsg);
   }
 
   public sub(

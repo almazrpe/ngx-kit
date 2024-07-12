@@ -12,7 +12,7 @@ import {
   PaginationConfig,
   PaginationSortFunc,
   PaginationPart
-} from "../pagination/models"
+} from "../pagination/models";
 import { ValidatorFn, FormControl } from "@angular/forms";
 import { BehaviorSubject, Observable } from "rxjs";
 

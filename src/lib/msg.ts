@@ -10,10 +10,10 @@ export class OkEvt extends Evt
 @code("rxcat_register_req")
 export class RegisterReq extends Req
 {
-  tokens: string[];
-  data: any | null;
+  public tokens: string[];
+  public data: any | null;
 
-  public constructor(args: {tokens: string[], data: any | null})
+  public constructor(args: {tokens: string[]; data: any | null})
   {
     super(args);
     this.tokens = args.tokens;
