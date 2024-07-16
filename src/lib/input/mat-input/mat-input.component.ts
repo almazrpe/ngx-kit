@@ -63,6 +63,10 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
    */
   @Input() public fillingOptions: Array<T> | undefined = undefined;
   /**
+   * Whether keyboard typed value in regular form field must be prohibited.
+   */
+  @Input() public autocompleteRequired: boolean = false;
+  /**
    * Whether error messages must be displayed
    * (by default, they are displayed).
    */

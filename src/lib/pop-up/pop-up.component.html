@@ -162,6 +162,7 @@
                     ? field.fillingOptions.value
                     : []
                   "
+                  [autocompleteRequired]="field.autocompleteRequired ?? false"
                   [showErrors]="field.showErrors ?? true"
                   [customErrorMessages]="field.customErrorMessages"
                   (complete)="form.valid ? sendForm() : null"

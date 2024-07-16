@@ -4,6 +4,7 @@ export {
   Err,
   NotFoundErr,
   DuplicateNameErr,
+  UniqueFieldErr,
   TypeExpectErr,
   AlreadyProcessedErr,
   UnsupportedErr,

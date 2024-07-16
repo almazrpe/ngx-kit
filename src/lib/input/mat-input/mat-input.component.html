@@ -380,7 +380,7 @@
       #main
     >
     <mat-autocomplete
-      requireSelection
+      [requireSelection]="autocompleteRequired"
       hideSingleSelectionIndicator
       (optionSelected)="sendInputMockEvent($event.option.value)"
       #auto="matAutocomplete"

@@ -8,6 +8,14 @@ export abstract class StringUtils
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
+  public static ellipsisStrIfNeeded(s: string, limit: number): string
+  {
+    if (s.length > limit)
+      return s.slice(0, limit - 3) + "...";
+    else
+      return s;
+  }
+
   public static getTitledValue(title?: string, value?: string): string
   {
     if (title === undefined && value === undefined)

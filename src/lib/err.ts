@@ -22,6 +22,15 @@ export class DuplicateNameErr extends Err
   }
 }
 
+@code("unique.field.err")
+export class UniqueFieldErr extends Err
+{
+  public constructor(s: any)
+  {
+    super(`${s}`);
+  }
+}
+
 @code("type-expect-err")
 export class TypeExpectErr extends Err
 {
