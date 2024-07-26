@@ -610,10 +610,20 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.refreshPageCnt();
   }
 
-  public goLink(route: string | null): void
+  public useRouteOrFunction (item: PaginationItem): void
   {
-    if (route != null)
-      this.router.navigate([route]);
+    if (item.altClickFunc != undefined)
+    {
+      if (item.route != null)
+        item.altClickFunc(item.route);
+      else
+        item.altClickFunc(item);
+    }
+    else
+    {
+      if (item.route != null)
+        this.router.navigate([item.route]);
+    }
   }
 
   private sortingCondition(a: PaginationItem,

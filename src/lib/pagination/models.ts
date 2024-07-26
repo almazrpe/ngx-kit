@@ -230,6 +230,15 @@ export interface PaginationItem {
    */
   route: string | null;
   /**
+   * Function that must be used instead of routing
+   * if an user will interact with this PaginationItem
+   * data: string = route
+   * (in case parameter "route" of this pagination item is not null)
+   * data: PaginationItem = this.item
+   * (in case parameter "route" of this pagination item is null)
+   */
+  altClickFunc?: (data: string | PaginationItem) => void;
+  /**
     * Map object that determines the element's response
     * to the hidden filters
     * key - id of some PaginationFilter that was sent to the component

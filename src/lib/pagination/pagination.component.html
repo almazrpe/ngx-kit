@@ -278,9 +278,9 @@
                       && whiteRowCheck(i, data._config_!),
                   'hover:bg-c10-half cursor-pointer':
                     data._config_!.viewType == PagViewType.Table
-                      && item.route != null
+                      && (item.route != null || item.altClickFunc != null)
                 }"
-                (click)="goLink(item.route)"
+                (click)="useRouteOrFunction(item)"
               >
                 <!-- NO TABLE VIEW -->
                 <ng-container
@@ -292,7 +292,7 @@
                         data._config_!.viewType == PagViewType.Tiles
                     }"
                     [extraCssClasses]="['h-full']"
-                    (clickFunc)="goLink(item.route)"
+                    (clickFunc)="useRouteOrFunction(item)"
                   >
                     {{item.text}}
                   </ngx-kit-button>
