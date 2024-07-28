@@ -255,6 +255,28 @@
                         {{column.name}}
                       </div>
                     </div>
+
+                    <div
+                      *ngIf="column.header == PagColTag.ImgHeader"
+                      class="w-full flex"
+                      [ngClass]="
+                        chosenColumnCheck(
+                          column,
+                          [SortColMode.DESC, SortColMode.ASC]
+                        ) == true
+                          ? 'justify-center text-center'
+                          : column.alignFlexClass
+                      "
+                    >
+                      <img
+                        *ngIf="data._config_!.columnHeaderIconPaths.get(
+                          column.name
+                        ) as imgSrc"
+                        [src]="imgSrc"
+                        class="w-6 h-6"
+                        draggable="false"
+                      >
+                    </div>
                   </div>
                 </th>
               </ng-container>

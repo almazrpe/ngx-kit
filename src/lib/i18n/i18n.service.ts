@@ -40,10 +40,13 @@ export class I18nService
   }
 
   public getTranslation(
-    code: string,
+    code: string | null,
     options?: TranslationOptions
   ): string
   {
+    if (code === null)
+      return "???";
+
     if (this.translationMapByLang === undefined)
     {
       throw new PleaseDefineError(

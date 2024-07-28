@@ -151,6 +151,11 @@ export interface PaginationConfig {
    * Path for desc sorting icon
    */
   descSortIconPath: string;
+  /**
+   * Paths for column header images
+   * (in case column has PaginationColumnTag.ImgHeader)
+   */
+  columnHeaderIconPaths: Map<string,string>;
 }
 
 /**
@@ -200,7 +205,8 @@ export function makePaginationConfig(
     dropFilterBIconPath: "",
     filterIconPath: "",
     ascSortIconPath: "",
-    descSortIconPath: ""
+    descSortIconPath: "",
+    columnHeaderIconPaths: new Map<string,string>()
   };
 
   return {
