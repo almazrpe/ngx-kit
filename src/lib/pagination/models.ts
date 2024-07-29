@@ -152,10 +152,10 @@ export interface PaginationConfig {
    */
   descSortIconPath: string;
   /**
-   * Paths for column header images
-   * (in case column has PaginationColumnTag.ImgHeader)
+   * Settings for custom table column headers
+   * (in case column has PaginationColumnTag.CustomHeader)
    */
-  columnHeaderIconPaths: Map<string,string>;
+  customTColumnHeaders: Map<string, PaginationTColumnHeader>;
 }
 
 /**
@@ -206,7 +206,7 @@ export function makePaginationConfig(
     filterIconPath: "",
     ascSortIconPath: "",
     descSortIconPath: "",
-    columnHeaderIconPaths: new Map<string,string>()
+    customTColumnHeaders: new Map<string, PaginationTColumnHeader>(),
   };
 
   return {
@@ -572,7 +572,7 @@ export interface TableColumn {
   wordBreakClass: string;
   sorting: boolean;
   header: PaginationColumnTag.NameHeader
-    | PaginationColumnTag.ImgHeader
+    | PaginationColumnTag.CustomHeader
     | PaginationColumnTag.NoHeader;
 }
 
@@ -582,6 +582,18 @@ export interface TableColumn {
 export interface SortTableColumn {
   column: TableColumn;
   mode: SortColumnMode;
+}
+
+/**
+ * Interface for setting custom header for some column
+ */
+export interface PaginationTColumnHeader {
+  leftText?: string;
+  imgSrc?: string;
+  rightText?: string;
+  gapClass?: string;
+  imgExtraCssClasses?: string[];
+  textExtraCssClasses?: string[];
 }
 
 /**
@@ -600,7 +612,7 @@ export enum PaginationColumnTag {
   WordBreakWords = 8,
   WordBreakAll = 9,
   NameHeader = 10,
-  ImgHeader = 11,
+  CustomHeader = 11,
   NoHeader = 12
 }
 
@@ -667,7 +679,7 @@ export function makeTableColumnSettings(
           settings.sorting = false;
           break;
         case PaginationColumnTag.NameHeader:
-        case PaginationColumnTag.ImgHeader:
+        case PaginationColumnTag.CustomHeader:
         case PaginationColumnTag.NoHeader:
           settings.header = tag;
           break;

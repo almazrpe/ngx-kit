@@ -87,7 +87,10 @@
             ></ngx-kit-hr>
           </div>
 
-          <div class="w-full flex flex-row gap-2" *ngFor="let filter of data.afilters">
+          <div
+            class="w-full flex flex-row gap-2"
+            *ngFor="let filter of data.afilters"
+          >
             <div class="grow flex flex-row bg-gradient-to-r from-c10 rounded">
               <div
                 class="w-60 my-auto px-4 text-white
@@ -256,27 +259,51 @@
                       </div>
                     </div>
 
-                    <div
-                      *ngIf="column.header == PagColTag.ImgHeader"
-                      class="w-full flex"
-                      [ngClass]="
-                        chosenColumnCheck(
-                          column,
-                          [SortColMode.DESC, SortColMode.ASC]
-                        ) == true
-                          ? 'justify-center text-center'
-                          : column.alignFlexClass
-                      "
+                    <ng-container
+                      *ngIf="column.header == PagColTag.CustomHeader"
                     >
-                      <img
-                        *ngIf="data._config_!.columnHeaderIconPaths.get(
+                      <div
+                        *ngIf="data._config_!.customTColumnHeaders.get(
                           column.name
-                        ) as imgSrc"
-                        [src]="imgSrc"
-                        class="w-6 h-6"
-                        draggable="false"
+                        ) as colHeader"
+                        class="w-full flex"
+                        [ngClass]="
+                          chosenColumnCheck(
+                            column,
+                            [SortColMode.DESC, SortColMode.ASC]
+                          ) == true
+                            ? 'justify-center text-center'
+                            : column.alignFlexClass
+                        "
                       >
-                    </div>
+                        <div
+                          class="flex flex-row"
+                          [ngClass]="colHeader.gapClass != undefined
+                            ? [colHeader.gapClass]
+                            : ['gap-0.5']"
+                        >
+                          <div
+                            *ngIf="colHeader.leftText != undefined"
+                            [ngClass]="colHeader.textExtraCssClasses ?? []"
+                          >
+                            {{colHeader.leftText}}
+                          </div>
+                          <img
+                            *ngIf="colHeader.imgSrc != undefined"
+                            [src]="colHeader.imgSrc"
+                            [ngClass]="colHeader.imgExtraCssClasses ?? []"
+                            class="w-5 h-5"
+                            draggable="false"
+                          >
+                          <div
+                            *ngIf="colHeader.rightText != undefined"
+                            [ngClass]="colHeader.textExtraCssClasses ?? []"
+                          >
+                            {{colHeader.rightText}}
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
                   </div>
                 </th>
               </ng-container>

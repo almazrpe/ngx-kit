@@ -66,6 +66,7 @@ export {
   PaginationFilter,
   FilterInputConfig,
   PaginationColumnTag,
+  PaginationTColumnHeader,
   PaginationPart,
   makePaginationColumnTags,
   PaginationSortFunc,
