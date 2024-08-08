@@ -266,7 +266,7 @@
                         *ngIf="data._config_!.customTColumnHeaders.get(
                           column.name
                         ) as colHeader"
-                        class="w-full flex"
+                        class="w-full flex shrink-0"
                         [ngClass]="
                           chosenColumnCheck(
                             column,
@@ -277,7 +277,7 @@
                         "
                       >
                         <div
-                          class="flex flex-row"
+                          class="flex flex-row shrink-0 mx-1.5"
                           [ngClass]="colHeader.gapClass != undefined
                             ? [colHeader.gapClass]
                             : ['gap-0.5']"
@@ -355,12 +355,15 @@
                     <td
                       *ngIf="column.disabled == false"
                       class="px-3 py-1.5"
-                      [ngSwitch]="true"
+                      [ngClass]="itemHasAttr(item, column.name)
+                        ? item.attr[column.name].extraCssClasses ?? []
+                        : []"
                     >
                       <div
-                        *ngIf="item.attr[column.name] != undefined"
+                        *ngIf="itemHasAttr(item, column.name)"
                         class="flex items-center"
                         [ngClass]="[column.alignFlexClass]"
+                        [ngSwitch]="true"
                         (onCreate)="setRowFixedHeight(cellRef)"
                         NgxKitOnCreate
                         #cellRef
@@ -384,6 +387,7 @@
                         <!-- ICON -->
                         <div
                           *ngSwitchCase="column.type === PagAttrType.ICON"
+                          class="flex"
                         >
                           <ng-container
                             *ngIf="item.attr[column.name].body
@@ -394,7 +398,8 @@
                               [mode]="CircleMode.IMAGE"
                               [imgSrc]="item.attr[column.name].body.src"
                               [inputCssClasses]=
-                                "item.attr[column.name].body.cssClasses ?? null"
+                                "item.attr[column.name].body.cssClasses
+                                  ?? null"
                             >
                             </ngx-kit-status-circle>
                           </ng-container>
@@ -553,7 +558,11 @@
         </table>
       </div>
 
-      <ng-container *ngIf="isTableOverflowing">
+      <ng-container
+        *ngIf="data._config_!.disabledParts.has(
+                 PagPart.TableOverflowButtons
+               ) == false && isTableOverflowing"
+      >
         <div class="flex flex-row justify-between mt-2 mb-1">
           <ngx-kit-button
             class="flex justify-center h-16"

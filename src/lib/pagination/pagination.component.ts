@@ -31,6 +31,7 @@ import {
   PaginationPart,
   makePaginationConfig
 } from "./models";
+import { DTUtils } from "../dt/utils";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
 import { StatusCircleMode } from "../status-circle/status-circle.component";
@@ -267,6 +268,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       });
   }
 
+  public itemHasAttr(item: PaginationItem, attrName: string): boolean
+  {
+    return Object.prototype.hasOwnProperty.call(item.attr, attrName);
+  }
+
   public ngAfterViewInit(): void
   {
     if (this.config$.value.tableFixedHeight != null)
@@ -491,7 +497,22 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         case InputType.Date:
           this.curFilterValues.set(
             filterId,
-            { type: pair.type, value: pair.value.toDateString() }
+            {
+              type: pair.type,
+              value: DTUtils.getComparativeDateString(pair.value)
+            }
+          );
+          break;
+        case InputType.DateRange:
+          this.curFilterValues.set(
+            filterId,
+            {
+              type: pair.type,
+              value: [
+                DTUtils.getComparativeDateString(pair.value[0]),
+                DTUtils.getComparativeDateString(pair.value[1])
+              ]
+            }
           );
           break;
         default:

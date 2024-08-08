@@ -18,6 +18,7 @@ export class LabelComponent implements OnInit, AfterViewInit
   @Input() public title: string = "...";
   @Input() public bgColor: string | undefined = undefined;
   @Input() public textColor: string | undefined = undefined;
+  @Input() public extraCssClasses: string[] | null = null;
   @Input() public isShrunk: boolean = false;
 
   public ngOnInit(): void

@@ -273,6 +273,10 @@ export interface PaginationItem {
 export interface PaginationAttr {
   type: PaginationAttrType;
   body: any;
+  /**
+   * Additional css classes for more pleasant table cell view of this attr
+   */
+  extraCssClasses?: string[];
 }
 
 /**
@@ -738,6 +742,7 @@ export enum PaginationPart {
   Filters = 2,
   SearchField = 3,
   FirstHr = 4,
-  SecondHr = 5,
-  Footer = 6
+  TableOverflowButtons = 5,
+  SecondHr = 6,
+  Footer = 7
 }
