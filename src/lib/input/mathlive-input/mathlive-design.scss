@@ -1,0 +1,54 @@
+::ng-deep math-field::part(menu-toggle) {
+  display: none;
+}
+
+::ng-deep math-field:focus-within::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  border-color: var(--mdc-outlined-text-field-focus-outline-color);
+  border-style: solid;
+}
+
+::ng-deep math-field {
+  position: relative;
+  width: 100%;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  border-color: var(--mdc-outlined-text-field-outline-color);
+  border-style: solid;
+  --caret-color: var(--mdc-outlined-text-field-caret-color);
+  --selection-background-color: #e95420;
+  --contains-highlight-background-color: transparent;
+  --selection-color: #ffffff;
+  --primary: var(--c10);
+}
+
+::ng-deep math-field:hover {
+  border-color: var(--mdc-outlined-text-field-hover-outline-color);
+}
+
+::ng-deep math-field:focus-within {
+  outline: 0;
+  border-color: var(--mdc-outlined-text-field-focus-outline-color);
+}
+
+::ng-deep math-field::part(container) {
+  padding-left: 0.875rem;
+}
+
+::ng-deep math-field::part(virtual-keyboard-toggle) {
+  fill: black;
+}
+
+::ng-deep math-field::part(placeholder) {
+  width: 10rem;
+  height: 10rem;
+  display: block;
+  background-color: var(--c10);
+}

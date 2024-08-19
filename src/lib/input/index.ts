@@ -3,6 +3,8 @@ export * from "./input.component";
 export * from "./errors";
 export * from "./mat-input/error-content";
 export * from "./mat-input/mat-input.component";
+export * from "./mathlive-input/models";
+export * from "./mathlive-input/mathlive-input.component";
 export * from "./selected-input/selected-input";
 export * from "./selected-input/selected-input.service";
 export * from "./selected-input/value-validator";

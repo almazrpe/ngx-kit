@@ -48,6 +48,8 @@ import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
 import { OnCreateDirective } from "./on-create.directive";
 import { ImageCropperModule } from "ngx-image-cropper";
+import { MathliveInputComponent }
+  from "./input/mathlive-input/mathlive-input.component";
 
 @NgModule({
   declarations: [
@@ -75,7 +77,8 @@ import { ImageCropperModule } from "ngx-image-cropper";
     LabelComponent,
     RefreshComponent,
     PdfViewerComponent,
-    OnCreateDirective
+    OnCreateDirective,
+    MathliveInputComponent
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -119,6 +122,7 @@ import { ImageCropperModule } from "ngx-image-cropper";
     CapitalizePipe,
     PaginationComponent,
     MatInputComponent,
+    MathliveInputComponent,
     UploadFilesInputComponent,
     PopUpComponent,
     LabelComponent,
