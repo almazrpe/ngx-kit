@@ -1,4 +1,4 @@
-import { VirtualKeyboardLayout } from "mathlive";
+import { VirtualKeyboardLayout, Keybinding } from "mathlive";
 
 /**
  * Output math formats supported by mathlive.
@@ -25,17 +25,65 @@ export enum MathliveOutputFormat {
  * for missing fields
  */
 export interface MathliveInputConfig {
+  /**
+   * Initial value in the input field
+   */
   initialValue: string;
+  /**
+   * Path to directory with default mathlive fonts
+   * (custom fonts restricted)
+   */
   fontsDirectory: string | null;
+  /**
+   * Path to directory with mathlive sound effects
+   */
   soundsDirectory: string | null;
+  /**
+   * The locale (language + region) to use for
+   * string localization in the component
+   */
   locale: string;
+  /**
+   * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
+   */
   smartMode: boolean;
+  /**
+   * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
+   */
   smartFence: boolean;
+  /**
+   * @see https://cortexjs.io/docs/mathlive/#(ParseMode%3Atype)
+   */
   parseMode: "math" | "text" | "latex";
+  /**
+   * @see https://cortexjs.io/docs/mathlive/#(LayoutOptions%3Atype)
+   */
   letterShapeStyle: "auto" | "tex" | "iso" | "french" | "upright";
+  /**
+   * Tooltip for the virtual keyboard button
+   */
   virtualKeyboardTxt: string;
+  /**
+   * List of formats that should be used for inputValue events
+   */
   outputFormats: MathliveOutputFormat[];
+  /**
+   * Chars that should be identified as variables
+   */
+  variableChars: string;
+  /**
+   * Rule that should be used for identification of multi character variables
+   */
+  variableRegex: RegExp | null;
+  /**
+   * Chars that should be expelled
+   */
   restrictedChars: string;
+  /**
+   * Additional bindings for regular keyboard
+   * (e.g. when you need to trigger some latex command throw keys)
+   */
+  additionalKeybindings: Keybinding[];
 }
 
 /**
@@ -53,19 +101,20 @@ export function makeMathliveInputConfig(
 ): MathliveInputConfig
 {
   const defaults: MathliveInputConfig = {
-    initialValue: "\\frac{\\sin(x)}{\\cos(x)}",
-    fontsDirectory: "assets/ngx-kit/mathlive-fonts",
+    initialValue: "",
+    fontsDirectory: null,
     soundsDirectory: null,
-    locale: "ru-RU",
+    locale: "en-EN",
     smartMode: false,
     smartFence: false,
     parseMode: "math",
-    letterShapeStyle: "upright",
-    virtualKeyboardTxt: "Виртуальная клавиатура",
+    letterShapeStyle: "iso",
+    virtualKeyboardTxt: "Virtual keyboard",
     outputFormats: [MathliveOutputFormat.Latex, MathliveOutputFormat.MathML],
-    restrictedChars:
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-      + ";:[{.<>|`~'}]_&^%$#@!."
+    variableChars: "",
+    variableRegex: null,
+    restrictedChars: "",
+    additionalKeybindings: []
   };
 
   return {
@@ -78,13 +127,15 @@ export function makeMathliveInputConfig(
  * Default layout for mathlive virtual keyboard
  */
 export const mathliveDefaultVirtualKeyboardLayout: VirtualKeyboardLayout = {
-  label: "1",
+  label: "default",
   rows: [
     [
-      "+", "-", "\\times", "\\frac{#@}{#?}",
-      "\\sqrt{#0}", //"#@^{#?}",
+      "+", "-", "\\times",
+      //"\\frac{#@}{#?}",
+      //"\\sqrt{#0}",
+      "#@^{#?}",
     ],
     ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
-    ["\\pi", "\\exp", ",", "(", ")"],
+    ["\\pi", "\\exp", ".", "(", ")"],
   ]
 };

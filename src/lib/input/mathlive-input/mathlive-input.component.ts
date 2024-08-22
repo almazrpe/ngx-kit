@@ -36,7 +36,6 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
    * so make sure it will be BLUR between changes
    */
   @Input() public virtualKeyboardLayouts: Array<VirtualKeyboardLayout> = [
-    //"greek",
     mathliveDefaultVirtualKeyboardLayout
   ];
   /**
@@ -96,30 +95,27 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
     this.mainElementRef.nativeElement.appendChild(this.mathfield);
     // Disable menu
     this.mathfield.menuItems = [];
-    // Setup keybindings
+    // Setup keybindings for regular keyboard
     this.mathfield.keybindings = [
       // Preserve default keybindings like CTRL+Z
       ...this.mathfield.keybindings,
-      // Restrict to use '\' for raw latex input
-      {
-         "key": "\\",
-         "command": [],
-      },
-      {
-         "key": "\"",
-         "command": [],
-      },
-      {
-         "key": ",",
-         "command": ["insert", ","],
-      },
-      {
-         "key": "?",
-         "command": ["insert", ","],
-      }
-    ].concat(
-      Array.from(this._config_.restrictedChars).map(
-        (char: string) => 
+      // Add additional keybindings from _config_.additionalKeybindings
+      // (e.g. when you need to trigger some latex command throw keys)
+      ...this._config_.additionalKeybindings,
+      // Recognize all chars from _config_.variableChars as variables
+      // using \\mathit command as a shell
+      ...Array.from(this._config_.variableChars).map(
+        (char: string) =>
+        {
+          return {
+             "key": char,
+             "command": ["insert", `\\mathit{${char}`],
+          };
+        }
+      ),
+      // Restrict to use all chars from _config_.restrictedChars
+      ...Array.from(this._config_.restrictedChars).map(
+        (char: string) =>
         {
           return {
              "key": char,
@@ -127,9 +123,16 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
           };
         }
       )
-    );
-    // Disable shortcuts like 'pi' which transforms into \pi
+    ];
+    // Disable shortcuts like 'pi' which transforms into \\pi
     this.mathfield.inlineShortcuts = {};
+    // Define and intercept multi character variables
+    if (this._config_.variableRegex != null)
+      this.mathfield.onInlineShortcut = (_mf, s) => 
+      {
+        if (this._config_.variableRegex!.test(s)) return `\\mathit{${s}}`;
+        return "";
+      };
 
     // Add extra styles for shadow root
     let style = document.createElement("style");
