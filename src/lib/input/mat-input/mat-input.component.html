@@ -187,6 +187,10 @@
         [errorStateMatcher]="matcher"
         [placeholder]="placeholder ? placeholder.split('\n')[0] : ''"
         [attr.list]="attrList"
+        (dateInput)="manageDateRangeInput(
+          [main.value?.start, main.value?.end]
+        )"
+        (dateChange)="onTouched()"
         #extra_1
       >
       <input
@@ -201,7 +205,9 @@
           : ''
         "
         [attr.list]="attrList"
-        (dateInput)="sendInputMockEvent([main.value?.start, main.value?.end])"
+        (dateInput)="manageDateRangeInput(
+          [main.value?.start, main.value?.end]
+        )"
         (dateChange)="onTouched()"
         #extra_2
       >

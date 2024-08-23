@@ -207,6 +207,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
     second: new FormControl(null),
   });
   public filteredAutocompleteOptions: Array<T>;
+  public alreadySentInputFlag: boolean = false;
 
   // Imported for html
   public InputType: any = InputType;
@@ -288,6 +289,19 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
   public getFirstSupportFormControl(): FormControl
   {
     return this.supportFormGroup.get("first") as FormControl;
+  }
+
+  public manageDateRangeInput(values: any[]): void
+  {
+    if (this.alreadySentInputFlag == false)
+    {
+      this.alreadySentInputFlag = true;
+      this.sendInputMockEvent(values);
+      setTimeout(() =>
+      {
+        this.alreadySentInputFlag = false;
+      }, 500);
+    }
   }
 
   public filterAutocomplete(event: any): void
