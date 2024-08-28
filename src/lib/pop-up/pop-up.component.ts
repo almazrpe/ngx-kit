@@ -170,6 +170,9 @@ export class PopUpComponent implements OnInit
       document.elementFromPoint(event.clientX, event.clientY);
     if (elem != null && elem.id == "pop-up-container")
     {
+      if (this._config_.closeUsingBtnOnly == true)
+        return;
+
       if (this.type == PopUpType.Form)
       {
         if (this.form.valid == false)

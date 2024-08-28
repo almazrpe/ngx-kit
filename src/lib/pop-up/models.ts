@@ -33,6 +33,7 @@ export enum PopUpType {
 export interface PopUpConfig
 extends UploadFilesInputConfig, MathliveInputConfig
 {
+  closeUsingBtnOnly: boolean;
   resetFieldIconPath: string;
 }
 
@@ -53,6 +54,7 @@ export function makePopUpConfig(
   const defaults: PopUpConfig = {
     ...makeUploadFilesInputConfig(),
     ...makeMathliveInputConfig(),
+    closeUsingBtnOnly: false,
     resetFieldIconPath: ""
   };
 
