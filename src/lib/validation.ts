@@ -100,7 +100,7 @@ export abstract class CustomValidators
         hasWrongVar = re.test(control.value);
       }
 
-      return hasWrongVar ? { latexvarsizemin: true } : null;
+      return hasWrongVar ? { latexvarsizemin: {"minSize": minSize} } : null;
     };
   }
 }
