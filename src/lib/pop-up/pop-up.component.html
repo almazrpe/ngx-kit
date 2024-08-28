@@ -148,52 +148,74 @@
                 </div>
               </div>
 
-              <div
-                *ngIf="(field.fileUploadType ?? false) == false"
-                class="flex flex-row gap-3"
-              >
-                <ngx-kit-mat-input
-                  class="grow"
-                  [formControl]="getFormControl(field.name)"
-                  [type]="field.type ?? InputType.Text"
-                  [localizedName]="field.localizedName ?? 'noname'"
-                  [placeholder]="field.placeholder ?? ''"
-                  [fillingOptions]="field.fillingOptions != null
-                    ? field.fillingOptions.value
-                    : []
-                  "
-                  [autocompleteRequired]="field.autocompleteRequired ?? false"
-                  [showErrors]="field.showErrors ?? true"
-                  [customErrorMessages]="field.customErrorMessages"
-                  (complete)="form.valid ? sendForm() : null"
-                />
-
-                <ngx-kit-button
-                  [mode]="ButtonMode.HEADER"
-                  type="button"
-                  class="flex mr-2"
-                  (clickFunc)="clearField(field.name)"
-                >
-                  <img
-                    [src]="_config_.resetFieldIconPath"
-                    alt="x"
-                    draggable="false"
-                    class="w-6 h-6 text-black relative
-                           before:top-[-25%] before:left-[30%]
-                           before:absolute before:text-2xl"
+              <ng-container [ngSwitch]="field.type ?? InputType.Text">
+                <ng-container *ngSwitchCase="InputType.Document">
+                  <ngx-kit-upload-files-input
+                    *ngIf="getFormControl(field.name) as control"
+                    [control]="control"
+                    [fileExtensions]="field.fileUploadExtensions"
+                    [checkFunc]="field.fileUploadCheckFunc"
+                    [config]="uploadFilesInputConfig()"
                   >
-                </ngx-kit-button>
-              </div>
+                  </ngx-kit-upload-files-input>
+                </ng-container>
 
-              <ngx-kit-upload-files-input
-                *ngIf="(field.fileUploadType ?? false) == true
-                  && getFormControl(field.name) as control"
-                [control]="control"
-                [fileExtensions]="field.fileUploadExtensions"
-                [checkFunc]="field.fileUploadCheckFunc"
-                [config]="uploadFilesInputConfig()"
-              >
-              </ngx-kit-upload-files-input>
+                <div
+                  *ngSwitchCase="InputType.Formula"
+                  class="flex flex-row gap-3"
+                >
+                  <ngx-kit-mathlive-input
+                    class="grow"
+                    [formControl]="getFormControl(field.name)"
+                    [virtualKeyboardLayouts]="field.mathliveVKLayouts
+                      ?? undefined"
+                    [customErrorMessages]="field.customErrorMessages"
+                    [config]="mathliveInputConfig()"
+                    (complete)="form.valid ? sendForm() : null"
+                  />
+                  <ng-container *ngTemplateOutlet="resetButton"></ng-container>
+                </div>
+
+                <div
+                  *ngSwitchDefault
+                  class="flex flex-row gap-3"
+                >
+                  <ngx-kit-mat-input
+                    class="grow"
+                    [formControl]="getFormControl(field.name)"
+                    [type]="field.type ?? InputType.Text"
+                    [localizedName]="field.localizedName ?? 'noname'"
+                    [placeholder]="field.placeholder ?? ''"
+                    [fillingOptions]="field.fillingOptions != null
+                      ? field.fillingOptions.value
+                      : []
+                    "
+                    [autocompleteRequired]="field.autocompleteRequired ?? false"
+                    [showErrors]="field.showErrors ?? true"
+                    [customErrorMessages]="field.customErrorMessages"
+                    (complete)="form.valid ? sendForm() : null"
+                  />
+                  <ng-container *ngTemplateOutlet="resetButton"></ng-container>
+                </div>
+
+                <ng-template #resetButton>
+                  <ngx-kit-button
+                    [mode]="ButtonMode.HEADER"
+                    type="button"
+                    class="flex mr-2"
+                    (clickFunc)="clearField(field.name)"
+                  >
+                    <img
+                      [src]="_config_.resetFieldIconPath"
+                      alt="x"
+                      draggable="false"
+                      class="w-6 h-6 text-black relative
+                             before:top-[-25%] before:left-[30%]
+                             before:absolute before:text-2xl"
+                    >
+                  </ngx-kit-button>
+                </ng-template>
+              </ng-container>
             </div>
           </ng-container>
         </ng-container>

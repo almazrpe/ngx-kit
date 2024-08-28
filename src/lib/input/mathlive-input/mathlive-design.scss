@@ -2,6 +2,17 @@
   display: none;
 }
 
+::ng-deep math-field::after {
+  content: inherit;
+  display: block;
+  width: 100%;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: #ff0000;
+}
+
 ::ng-deep math-field:focus-within::before {
   content: "";
   width: 100%;
@@ -11,7 +22,7 @@
   top: 0px;
   border-radius: 0.25rem;
   border-width: 1px;
-  border-color: var(--mdc-outlined-text-field-focus-outline-color);
+  border-color: inherit;
   border-style: solid;
 }
 

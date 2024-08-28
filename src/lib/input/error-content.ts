@@ -14,7 +14,9 @@ export enum InputValidationErrorCode {
   Pattern = "pattern",
   // Custom validation errors from validation.ts
   RequiredAutocomplete = "requiredautocomplete",
-  Whitespace = "whitespace"
+  NoWhitespace = "nowhitespace",
+  LatexVarStartNoUnderscore = "latexvarstartnounderscore",
+  LatexVarSizeMin = "latexvarsizemin"
 }
 
 /**
@@ -29,14 +31,14 @@ export function getDefaultErrorMessage(errorName: string, error: any): string
     case InputValidationErrorCode.RequiredTrue:
       return "The field must be checked";
     case InputValidationErrorCode.Min:
-      return `The value must be below ${error["min"]}`;
+      return `The value mustn't be below ${error["min"]}`;
     case InputValidationErrorCode.Max:
-      return `The value must be above ${error["max"]}`;
+      return `The value mustn't be above ${error["max"]}`;
     case InputValidationErrorCode.MinLength:
-      return ("The number of characters must be " +
+      return ("The number of characters mustn't be " +
               `below ${error["requiredLength"]}`);
     case InputValidationErrorCode.MaxLength:
-      return ("The number of characters must be " +
+      return ("The number of characters mustn't be " +
               `above ${error["requiredLength"]}`);
     case InputValidationErrorCode.Email:
       return "The field contains an incorrect email";
@@ -44,8 +46,12 @@ export function getDefaultErrorMessage(errorName: string, error: any): string
       return "The field is filled in incorrectly";
     case InputValidationErrorCode.RequiredAutocomplete:
       return "You must choose a suggested option";
-    case InputValidationErrorCode.Whitespace:
+    case InputValidationErrorCode.NoWhitespace:
       return "Whitespaces are restricted for this field";
+    case InputValidationErrorCode.LatexVarStartNoUnderscore:
+      return "Variables mustn't begin with underscore characters";
+    case InputValidationErrorCode.LatexVarSizeMin:
+      return `Length of variable names mustn't be below ${error["minSize"]}`;
     default:
       return "The field contains an error";
   }

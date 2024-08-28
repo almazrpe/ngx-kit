@@ -18,7 +18,6 @@ export {
   code
 } from "./fcode";
 
-export { InputValidationErrorCode } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
 
@@ -88,7 +87,7 @@ export { NumUtils } from "./num";
 export { ObjectUtils } from "./obj";
 export { QueueUtils } from "./queue";
 export { URLUtils } from "./url";
-export { ValidationUtils, FormValidationUtils } from "./validation";
+export { ValidationUtils, CustomValidators } from "./validation";
 export { WebsocketCall } from "./websocket-call";
 
 export { LocalStorageUtils } from "./client-storage";

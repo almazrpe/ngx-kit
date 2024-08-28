@@ -23,5 +23,8 @@ export enum InputType {
   Time = "time",
   Check = "check",
   RadioList = "radiolist",
-  CheckList = "checklist"
+  CheckList = "checklist",
+  // NOT in mat-input COMPONENT:
+  Document = "document",  // upload-files-input
+  Formula = "formula"     // mathlive-input
 }

@@ -13,12 +13,12 @@ export abstract class ValidationUtils
   }
 }
 
-export abstract class FormValidationUtils
+export abstract class CustomValidators
 {
   /**
    * Handles whitespaces in form fields.
    */
-  public static validateWhitespace(
+  public static noWhitespace(
     control: AbstractControl
   ): ValidationErrors | null
   {
@@ -32,7 +32,7 @@ export abstract class FormValidationUtils
     if (typeof hasWhitespace == "boolean" &&
         hasWhitespace == true)
     {
-      return { whitespace: true };
+      return { nowhitespace: true };
     }
     else
     {
@@ -43,7 +43,7 @@ export abstract class FormValidationUtils
   /**
    * Handles cases when autocomplete is required in form fields.
    */
-  public static requiredAutocompleteValidator(
+  public static requiredAutocomplete(
     options: any[] | BehaviorSubject<any[]>
   ): ValidatorFn 
   {
@@ -63,6 +63,44 @@ export abstract class FormValidationUtils
         else
           return { requiredautocomplete: true };
       }
+    };
+  }
+
+  /**
+   * Handles latex variables whose first character is underscore
+   */
+  public static latexVarStartNoUnderscore(
+    control: AbstractControl
+  ): ValidationErrors | null
+  {
+    let hasWrongVar: boolean = false;
+
+    if (typeof control.value == "string")
+    {
+      hasWrongVar = /\\mathit{(\\_.*?)}/.test(control.value);
+    }
+
+    return hasWrongVar ? { latexvarstartnounderscore: true } : null;
+  }
+
+  /**
+   * Handles latex variables whose size is lower than minSize
+   */
+  public static latexVarSizeMin(
+    minSize: number
+  ): ValidatorFn
+  {
+    const re = new RegExp(`\\mathit{(.{1,${minSize - 1}}?)}`);
+    return (control: AbstractControl): ValidationErrors | null =>
+    {
+      let hasWrongVar: boolean = false;
+
+      if (typeof control.value == "string")
+      {
+        hasWrongVar = re.test(control.value);
+      }
+
+      return hasWrongVar ? { latexvarsizemin: true } : null;
     };
   }
 }

@@ -5,7 +5,13 @@ import {
   UploadFilesInputConfig,
   makeUploadFilesInputConfig
 } from "../input/upload-files-input/models";
-import { InputValidationErrorCode  } from "../input/mat-input/error-content";
+import {
+  MathliveInputConfig,
+  makeMathliveInputConfig,
+  MathliveVKLayout,
+  MathliveVKName
+} from "../input/mathlive-input/models";
+import { InputValidationErrorCode  } from "../input/error-content";
 import {
   PaginationItem,
   PaginationFilter,
@@ -24,7 +30,8 @@ export enum PopUpType {
   Pagination = 4
 }
 
-export interface PopUpConfig extends UploadFilesInputConfig
+export interface PopUpConfig
+extends UploadFilesInputConfig, MathliveInputConfig
 {
   resetFieldIconPath: string;
 }
@@ -44,7 +51,8 @@ export function makePopUpConfig(
 ): PopUpConfig
 {
   const defaults: PopUpConfig = {
-    ...makeUploadFilesInputConfig({}),
+    ...makeUploadFilesInputConfig(),
+    ...makeMathliveInputConfig(),
     resetFieldIconPath: ""
   };
 
@@ -59,7 +67,6 @@ export interface PopUpFormField {
   value: any;
   name: string;
   type?: InputType;
-  fileUploadType?: boolean;
   localizedName?: string;
   placeholder?: string;
   validators?: ValidatorFn[];
@@ -78,6 +85,7 @@ export interface PopUpFormField {
   fileUploadCheckFunc?: (
     files: UploadFileObject[]
   ) => Observable<UploadFileObject[] | null>;
+  mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
 }
 
 export interface PopUpChoosingBtn {

@@ -1,4 +1,8 @@
-import { VirtualKeyboardLayout, Keybinding } from "mathlive";
+import {
+  VirtualKeyboardLayout,
+  VirtualKeyboardName,
+  Keybinding
+} from "mathlive";
 
 /**
  * Output math formats supported by mathlive.
@@ -25,10 +29,6 @@ export enum MathliveOutputFormat {
  * for missing fields
  */
 export interface MathliveInputConfig {
-  /**
-   * Initial value in the input field
-   */
-  initialValue: string;
   /**
    * Path to directory with default mathlive fonts
    * (custom fonts restricted)
@@ -101,7 +101,6 @@ export function makeMathliveInputConfig(
 ): MathliveInputConfig
 {
   const defaults: MathliveInputConfig = {
-    initialValue: "",
     fontsDirectory: null,
     soundsDirectory: null,
     locale: "en-EN",
@@ -124,13 +123,19 @@ export function makeMathliveInputConfig(
 }
 
 /**
+ * Type definitions for more appropriate naming
+ */
+export type MathliveVKLayout = VirtualKeyboardLayout;
+export type MathliveVKName = VirtualKeyboardName;
+
+/**
  * Default layout for mathlive virtual keyboard
  */
-export const mathliveDefaultVirtualKeyboardLayout: VirtualKeyboardLayout = {
+export const mathliveDefaultVKLayout: MathliveVKLayout = {
   label: "default",
   rows: [
     [
-      "+", "-", "\\times",
+      "+", "-", "*",
       //"\\frac{#@}{#?}",
       //"\\sqrt{#0}",
       "#@^{#?}",

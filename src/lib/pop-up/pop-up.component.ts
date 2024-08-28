@@ -3,8 +3,9 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
+import { MathliveInputConfig } from "../input/mathlive-input/models";
 import { ButtonMode } from "../button/button.component";
-import { FormValidationUtils } from "../validation";
+import { CustomValidators } from "../validation";
 import { I18nService } from "../i18n/i18n.service";
 import { PopUpService } from "./pop-up.service";
 import {
@@ -82,7 +83,7 @@ export class PopUpComponent implements OnInit
                 field.value, 
                 (field.validators ?? []).concat(
                   field.autocompleteRequired === true 
-                    ? FormValidationUtils.requiredAutocompleteValidator(
+                    ? CustomValidators.requiredAutocomplete(
                       field.fillingOptions
                     ) 
                     : []
@@ -144,6 +145,11 @@ export class PopUpComponent implements OnInit
   public uploadFilesInputConfig(): UploadFilesInputConfig
   {
     return this._config_ as UploadFilesInputConfig;
+  }
+
+  public mathliveInputConfig(): MathliveInputConfig
+  {
+    return this._config_ as MathliveInputConfig;
   }
 
   public closePopUp(): void

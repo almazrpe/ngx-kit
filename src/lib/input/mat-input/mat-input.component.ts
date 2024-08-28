@@ -39,7 +39,7 @@ import {
   InputValidationErrorCode,
   getDefaultErrorMessage,
   InputErrorStateMatcher,
-} from "./error-content";
+} from "../error-content";
 
 @Component({
   selector: "ngx-kit-mat-input",

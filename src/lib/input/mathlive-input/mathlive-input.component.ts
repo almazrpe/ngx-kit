@@ -7,16 +7,30 @@ import {
   AfterViewInit,
   EventEmitter,
   Input,
-  Output
+  Output,
+  Optional,
+  Self
 } from "@angular/core";
-import { Observable, of, Subscription } from "rxjs";
-import { MathfieldElement, VirtualKeyboardLayout } from "mathlive";
+import {
+  ControlValueAccessor,
+  NgControl,
+  NgForm,
+  FormGroupDirective
+} from "@angular/forms";
+import { Observable, of, Subscription, BehaviorSubject } from "rxjs";
+import { MathfieldElement } from "mathlive";
+import {
+  InputValidationErrorCode,
+  getDefaultErrorMessage
+} from "../error-content";
 import { getShadowRootExtraStyles } from "./shadow-root-design";
 import {
   MathliveInputConfig,
   makeMathliveInputConfig,
   MathliveOutputFormat,
-  mathliveDefaultVirtualKeyboardLayout
+  MathliveVKLayout,
+  mathliveDefaultVKLayout,
+  MathliveVKName
 } from "./models";
 
 @Component({
@@ -24,7 +38,8 @@ import {
   templateUrl: "./mathlive-input.component.html",
   styleUrls: ["./mathlive-design.scss"]
 })
-export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
+export class MathliveInputComponent
+implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
 {
   /**
    * Configuration object (or just some part of it) for the component
@@ -35,14 +50,19 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
    * The keyboard refreshes on FOCUSIN event
    * so make sure it will be BLUR between changes
    */
-  @Input() public virtualKeyboardLayouts: Array<VirtualKeyboardLayout> = [
-    mathliveDefaultVirtualKeyboardLayout
-  ];
+  @Input() public virtualKeyboardLayouts:
+    Array<MathliveVKLayout | MathliveVKName> | undefined = undefined;
   /**
    * Object that allows you to add any latex string at the current
    * caret position in the input field
    */
   @Input() public addLatexEvent: Observable<string | null> = of(null);
+  /**
+   * Custom messages for validation errors.
+   * Will be used instead of default messages if defined.
+   */
+  @Input() public customErrorMessages:
+    Map<InputValidationErrorCode, string> | undefined = undefined;
 
   /**
    * Emits an event whenever the value changes.
@@ -73,6 +93,26 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
   public mathfield: MathfieldElement;
   public _config_: MathliveInputConfig;
   private addLatexEventSubscription: Subscription;
+  /* eslint-disable */
+  public onChange: (value: any) => void = (_: any) => {};
+  public onTouched: () => void = () => {};
+  /* eslint-enable */
+  public touched: boolean = false;
+  public errorState: boolean = false;
+  private errorMsg$: BehaviorSubject<string | null> =
+    new BehaviorSubject<string | null>(null);
+
+  public constructor(
+    @Optional() @Self() public ngControl: NgControl,
+    @Optional() private _parentForm: NgForm,
+    @Optional() private _parentFormGroup: FormGroupDirective,
+  )
+  {
+    if (this.ngControl != null)
+    {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   public ngOnInit(): void
   {
@@ -90,7 +130,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
     this.mathfield.smartMode = this._config_.smartMode;
     this.mathfield.smartFence = this._config_.smartFence;
     this.mathfield.mode = this._config_.parseMode;
-    this.mathfield.value = this._config_.initialValue;
+    this.mathfield.value = "";
 
     this.mainElementRef.nativeElement.appendChild(this.mathfield);
     // Disable menu
@@ -109,7 +149,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
         {
           return {
              "key": char,
-             "command": ["insert", `\\mathit{${char}`],
+             "command": ["insert", `\\mathit{${char}}`],
           };
         }
       ),
@@ -145,11 +185,14 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
     {
       this.focus.emit();
       window.mathVirtualKeyboard.layouts =
-        this.virtualKeyboardLayouts;
+        this.virtualKeyboardLayouts
+          ?? [mathliveDefaultVKLayout];
     });
 
     this.mathfield.addEventListener("focusout", () => 
     {
+      this.touched = true;
+      this.onTouched();
       this.blur.emit();
     });
 
@@ -161,6 +204,8 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
 
     this.mathfield.addEventListener("input", () => 
     {
+      this.onChange(this.mathfield.getValue("latex"));
+      this.checkValidation();
       this.inputValue.emit(
         this._config_.outputFormats.map(
           (format: MathliveOutputFormat) => this.mathfield.getValue(format)
@@ -179,10 +224,108 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
             );
         }
       });
+
+    this.errorMsg$.subscribe({
+      next: (err: string | null) =>
+      {
+        if (err == null)
+          this.mathfield.style.cssText = `
+            content: "";
+            padding-bottom: 0rem;
+          `;
+        else
+          this.mathfield.style.cssText = `
+            content: "${err}";
+            padding-bottom: 0.375rem;
+            border-color:
+              var(--mdc-outlined-text-field-error-outline-color) !important;
+          `;
+      }
+    });
+  }
+
+  private checkValidation(): void
+  {
+    if (this.ngControl != null)
+    {
+      const { errors } = this.ngControl;
+      if (errors != null)
+      {
+        const errorName: string = Object.keys(errors)[0];
+        if (this.customErrorMessages !== undefined
+          && this.customErrorMessages.has(
+            errorName as InputValidationErrorCode
+          )
+        )
+          this.errorMsg$.next(this.customErrorMessages.get(
+            errorName as InputValidationErrorCode
+          ) ?? "");
+        else
+          return this.errorMsg$.next(
+            getDefaultErrorMessage(errorName, errors[errorName])
+          );
+      }
+      else
+        this.errorMsg$.next(null);
+    }
   }
 
   public ngOnDestroy(): void
   {
     this.addLatexEventSubscription?.unsubscribe();
+  }
+
+  public writeValue(val: string | null, firstTime?: boolean): void
+  {
+    if (this.mathfield !== undefined)
+    {
+      this.mathfield.setValue(val ?? "");
+      if (firstTime !== false)
+        this.checkValidation();
+    }
+    else
+      setTimeout(() =>
+      {
+        this.writeValue(val, false);
+      }, 100);
+  }
+
+  public registerOnChange(fn: any): void
+  {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: any): void
+  {
+    this.onTouched = fn;
+  }
+
+  public ngDoCheck(): void
+  {
+    if (this.ngControl != null)
+    {
+      this.updateErrorState();
+    }
+  }
+
+  private updateErrorState(): void
+  {
+    const parent: NgForm | FormGroupDirective | null =
+      this._parentFormGroup != null
+        ? this._parentFormGroup
+        : (this._parentForm != null
+          ? this._parentForm
+          : null);
+
+    const oldState: boolean = this.errorState;
+    const newState: boolean =
+      (this.ngControl == null ? false : (this.ngControl.invalid ?? false))
+        && (this.touched || (parent != null && parent.submitted));
+
+    if (oldState !== newState)
+    {
+      this.errorState = newState;
+      this.checkValidation();
+    }
   }
 }
