@@ -11,12 +11,6 @@ import
   ReplaySubject,
   Subscription
 } from "rxjs";
-import
-{
-  NotFoundErr,
-  AlreadyProcessedErr,
-  InpErr
-} from "./err";
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
 import { takeOrSkip } from "./rxjs-utils";

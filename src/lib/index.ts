@@ -1,23 +1,5 @@
 export { DocumentPageExtension } from "./dps/document-page-extension";
 
-export {
-  Err,
-  NotFoundErr,
-  DuplicateNameErr,
-  UniqueFieldErr,
-  TypeExpectErr,
-  AlreadyProcessedErr,
-  UnsupportedErr,
-  InpErr,
-  LockErr,
-} from "./err";
-
-export {
-  AnyConstructor,
-  FcodeCore,
-  code
-} from "./fcode";
-
 export { InputValidationErrorCode } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
@@ -96,9 +78,6 @@ export {
   EventPlus, EventPlusCreate, EventPlusUtils
 } from "./event-plus";
 export { conditionValidatorWrapper } from "./condition.validator";
-export {
-  Dto, Udto, Fdto
-} from "./dto";
 
 export { StringUtils } from "./str/utils";
 export {
