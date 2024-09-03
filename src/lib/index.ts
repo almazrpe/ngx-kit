@@ -70,8 +70,6 @@ export { PopUpService } from "./pop-up/pop-up.service";
 
 export { NumUtils } from "./num";
 export { ObjectUtils } from "./obj";
-export { QueueUtils } from "./queue";
-export { URLUtils } from "./url";
 export { ValidationUtils, FormValidationUtils } from "./validation";
 export { WebsocketCall } from "./websocket-call";
 
@@ -125,8 +123,7 @@ export {
 } from "./i18n/translation";
 export * from "./log";
 export * from "./arr";
-export * from "./check";
-export * from "./mongo";
+export * from "./quco";
 export * from "./connection";
 export * from "./pop-up";
 export * from "./refresh";
