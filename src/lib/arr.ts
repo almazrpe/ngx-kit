@@ -1,10 +1,10 @@
-import { NotFoundErr } from "./err";
+import { panic } from "./copper";
 import { log } from "./log";
 
 export abstract class ArrUtils {
   public static getFirst<T>(arr: T[], is_warned: boolean = true): T {
     if (arr.length == 0) {
-      throw new NotFoundErr("arr contents");
+      panic("arr contents are not found");
     }
     if (arr.length > 1 && is_warned) {
       log.warn(

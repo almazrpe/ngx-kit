@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
 import { TranslationOptions } from "./options";
-import { NotFoundError, PleaseDefineError } from "../errors";
 import { I18nConfig } from "./config";
 import { TranslationMapByLang } from "./translation";
 import { TranslationModifier } from "./modifier";
-import { BaseError } from "../errors";
+import { panic } from "../../public-api";
 
 @Injectable({
   providedIn: "root"
@@ -38,10 +37,7 @@ export class I18nService {
     options?: TranslationOptions
   ): string {
     if (this.translationMapByLang === undefined) {
-      throw new PleaseDefineError(
-        "translation retrieve",
-        "config.translationMapByLang"
-      );
+      panic("translation map by language is not defined");
     }
 
     let finalOptions: TranslationOptions = {};
@@ -70,16 +66,13 @@ export class I18nService {
         || this.translationMapByLang[finalLang][code][finalModifier]
           === undefined
       ) {
-        throw new BaseError();
+        panic()
       }
       translation =
         this.translationMapByLang[finalLang][code][finalModifier];
     } catch {
       if (finalOptions.fallback === undefined) {
-        throw new NotFoundError(
-          "a translation for code " + code,
-          finalOptions
-        );
+        panic("not found translation for code " + code)
       }
       translation = finalOptions.fallback;
     }

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { IStorage } from "./models";
-import { NotFoundErr } from "../err";
 import { Observable, ReplaySubject } from "rxjs";
+import { assert, panic } from "../../public-api";
 
 /**
  * Synchronizes a key-val storage with rxjs.
@@ -25,7 +25,7 @@ export class StorageService {
 
   public removeStorage(key: string): IStorage<any> {
     if (!(key in this.storages)) {
-      throw new NotFoundErr("key " + key);
+      panic("key " + key + " is not found");
     }
     let storage = this.storages[key];
     delete this.storages[key];
@@ -49,7 +49,7 @@ export class StorageService {
     itemKey: string,
     initVal?: T): Observable<T> {
     if (!(storageKey in this.storages) || !(storageKey in this.items)) {
-      throw new NotFoundErr("storage with key " + storageKey);
+      panic("storage with key " + storageKey + " is not found");
     }
     if (itemKey in this.items[storageKey]) {
       throw new Error("item key " + itemKey + " already registered");
@@ -81,7 +81,7 @@ export class StorageService {
   public getItem$<T>(
     storageKey: string, itemKey: string, defaultVal?: T): Observable<T> {
     if (!(storageKey in this.storages) || !(storageKey in this.items)) {
-      throw new NotFoundErr("storage with key " + storageKey);
+      panic("storage with key " + storageKey + " is not found");
     }
     this.getItem(storageKey, itemKey, defaultVal);
     let subj = this.items[storageKey][itemKey];
@@ -90,7 +90,7 @@ export class StorageService {
 
   public getItem<T>(storageKey: string, itemKey: string, defaultVal?: T): T {
     if (!(storageKey in this.storages) || !(storageKey in this.items)) {
-      throw new NotFoundErr("storage with key " + storageKey);
+      panic("storage with key " + storageKey + " is not found");
     }
     let storageVal = this.storages[storageKey].get(itemKey);
     if (!(itemKey in this.items[storageKey])) {
@@ -99,7 +99,7 @@ export class StorageService {
         defaultVal = storageVal;
       }
       if (defaultVal === undefined) {
-        throw new NotFoundErr("item with key " + itemKey);
+        panic("item with key " + itemKey + "is not found");
       }
       this.addItem$(storageKey, itemKey, defaultVal);
       return this.getItem(storageKey, itemKey);
@@ -110,7 +110,7 @@ export class StorageService {
 
   public setItemVal(storageKey: string, itemKey: string, val: any): void {
     if (!(storageKey in this.storages) || !(storageKey in this.items)) {
-      throw new NotFoundErr("storage with key " + storageKey);
+      panic("storage with key " + storageKey + "is not found");
     }
     if (!(itemKey in this.items[storageKey])) {
       this.addItem$(storageKey, itemKey, val);

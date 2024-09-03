@@ -2,7 +2,7 @@
  * Extended functionality for client-side browser storages.
  */
 
-import { NotFoundError, TypeExpectError } from "./errors";
+import { panic } from "./copper";
 
 // TODO(ryzhovalex):
 //    in order to implement the session storage utils, consider creating a
@@ -18,13 +18,13 @@ export abstract class LocalStorageUtils {
     const rawobj: string | null = localStorage.getItem(key);
 
     if (rawobj === null) {
-      throw new NotFoundError("object with key", key);
+      panic("object with key " + key + " is not found");
     }
 
     const result: object = JSON.parse(rawobj);
 
     if (typeof result !== "object") {
-      throw new TypeExpectError("result", "object", typeof result);
+      panic(`invalid type of object ${result}`);
     }
 
     return result;
@@ -37,7 +37,7 @@ export abstract class LocalStorageUtils {
     const result: object = this.getObject(key);
 
     if (!Array.isArray(result)) {
-      throw new TypeExpectError("result", "array", typeof result);
+      panic(`invalid type of object ${result}`);
     }
 
     return result;
@@ -48,11 +48,9 @@ export abstract class LocalStorageUtils {
    */
   public static getBaseObject(key: string): object {
     const result: object = this.getObject(key);
-
     if (Array.isArray(result)) {
-      throw new TypeExpectError("result", "base object", typeof result);
+      panic(`invalid type of object ${result}`);
     }
-
     return result;
   }
 

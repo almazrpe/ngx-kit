@@ -11,7 +11,6 @@ import
 } from "rxjs";
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
-import { takeOrSkip } from "./rxjs-utils";
 import { ConService } from "./connection/connection.service";
 import { assert, Err, ErrCls, Ok, panic, Res, resultifyPipe } from "./copper";
 import {uuid4} from "./uuid";

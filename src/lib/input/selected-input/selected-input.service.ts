@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
 import { SelectedInput, SelectedInputEvent, ValueHost }
   from "./selected-input";
-import { InputError } from "../errors";
+import { panic } from "ngx-kit/copper";
 
 /**
  * Manages the state of the selected input.
@@ -64,18 +64,15 @@ export class SelectedInputService {
         isSelected: false
       });
     } catch (error) {
-      if (error instanceof InputError) {
-        return;
-      } else {
-        throw error;
-      }
+      // TODO: better throw unrecognized errs here
+      return;
     }
     this.selectedInput = null;
   }
 
   private checkCanSend(): SelectedInput<any> {
     if (this.selectedInput === null) {
-      throw new InputError("cannot send value: no selected input");
+      panic("cannot send value: no selected input");
     } else {
       return this.selectedInput;
     }

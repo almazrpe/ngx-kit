@@ -1,3 +1,5 @@
+import { ErrCls, ErrFromNative } from "./copper";
+
 export abstract class log {
   public static debug(...args: any[]): void {
     console.debug(args.map(a => JSON.stringify(a)).join(","));
@@ -16,8 +18,10 @@ export abstract class log {
   }
 
   public static track(err: any, msg: string = "tracked"): void {
-    const emsg: string =
-      err.name + ": " + (err.message !== "" ? err.message : "<empty-msg>");
+    if (!(err instanceof ErrCls)) {
+      err = ErrFromNative(err);
+    }
+    let emsg = err.display();
 
     const stack = err.stack;
     if (stack !== undefined) {
