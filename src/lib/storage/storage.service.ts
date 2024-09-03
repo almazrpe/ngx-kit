@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { IStorage } from "./models";
 import { NotFoundErr } from "../err";
 import { Observable, ReplaySubject } from "rxjs";
-import { asrt } from "../asrt";
 
 /**
  * Synchronizes a key-val storage with rxjs.

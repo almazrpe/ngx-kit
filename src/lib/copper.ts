@@ -1,6 +1,6 @@
 //! Provides the core functionality for a better typescript experience.
 
-import { Observable, ObservableInput, UnaryFunction, catchError, map, of, pipe } from "rxjs";
+import { Observable, UnaryFunction, catchError, map, of, pipe } from "rxjs";
 
 export interface ResItem<T = any> {
     is_ok(): this is OkCls<T>;
@@ -65,7 +65,7 @@ export class ErrCls extends Error implements ResItem {
         if (this.msg === undefined) {
             return this.code;
         }
-        return `${this.code}:: ${this.msg}`
+        return `${this.code}:: ${this.msg}`;
     }
 
     public is(code: string): boolean {
@@ -92,8 +92,7 @@ export class ErrCls extends Error implements ResItem {
         throw this;
     }
 
-    public static from_native(err: Error): ErrCls
-    {
+    public static from_native(err: Error): ErrCls {
         return new ErrCls(err.message, ecode.Err);
     }
 }

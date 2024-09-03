@@ -15,8 +15,8 @@ export abstract class log {
     console.error(msg);
   }
 
-  public static track(err: any): void {
-    const msg: string =
+  public static track(err: any, msg: string = "tracked"): void {
+    const emsg: string =
       err.name + ": " + (err.message !== "" ? err.message : "<empty-msg>");
 
     const stack = err.stack;
@@ -25,6 +25,6 @@ export abstract class log {
       // fmsg = fmsg + "\n\t-> " + stack.trimEnd().replaceAll("\n", "\n\t-> ");
     }
 
-    console.error(msg);
+    console.error(msg + "; " + emsg);
   }
 }

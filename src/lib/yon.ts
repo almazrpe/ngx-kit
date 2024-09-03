@@ -62,13 +62,13 @@ export interface PubOpts {
   /// Publications that are supplied with lsid will be sent as responses.
   _lsid?: string;
 }
-const DEFAULT_PUB_OPTS: PubOpts = {
+export const DEFAULT_PUB_OPTS: PubOpts = {
   skipNet: false,
   skipInner: false,
   _lsid: undefined
 }
 
-function ser(msg: Msg, codeid: number): Bmsg {
+function ser(sid: string, msg: Msg, codeid: number): Bmsg {
   let is_err: boolean | undefined = msg instanceof Err;
   if (!is_err) {
     is_err = undefined;
@@ -76,7 +76,7 @@ function ser(msg: Msg, codeid: number): Bmsg {
 
   assert(codeid > 1, "must not include static codeids");
   return new Bmsg(
-    uuid4(),
+    sid,
     codeid,
     msg,
     // client cannot send msg with lsid, for now
@@ -232,13 +232,28 @@ export class Bus {
   public pub(
     code: string,
     msg: Msg,
-    fn: SubFn,
+    fn?: SubFn,
     opts: PubOpts = DEFAULT_PUB_OPTS
   ): Res<undefined> {
+    if (opts._lsid !== undefined && fn !== undefined) {
+      return Err("cannot provide both lsid and sub function")
+    }
+
     // SEND ORDER
     //    1. Net
     //    2. Inner
     //    3. As response
+
+    let codeData = this.codesData.get(code)
+    if (codeData === undefined) {
+      return Err("cannot find code " + code)
+    }
+    codeData.lastMsg = msg
+
+    let sid = uuid4();
+    if (fn !== undefined) {
+      this.awaitingResponse.set(sid, fn);
+    }
 
     // send to net
     if (!opts.skipNet) {
@@ -246,11 +261,12 @@ export class Bus {
       if (codeid.is_err()) {
         return codeid;
       }
-      let serMsg = ser(msg, codeid.ok);
-      log.info("NET::SEND | " + JSON.stringify(serMsg));
+      let bmsg = ser(sid, msg, codeid.ok);
+
+      log.info("NET::SEND | " + JSON.stringify(bmsg));
 
       if (this.con !== null) {
-        this.con.next(serMsg);
+        this.con.next(bmsg);
       } else {
         log.err("tried to emit msg, but con is null");
       }
@@ -286,45 +302,58 @@ export class Bus {
     return Ok(index);
   }
 
+  public getCodeByCodeid(codeid: number): Res<string> {
+    if (codeid > this.codes.length - 1) {
+      return Err(`no codeid ${codeid}`)
+    }
+    return Ok(this.codes[codeid])
+  }
+
+  private welcome(raw: any): void {
+      let codes = raw.codes;
+      if (codes === undefined) {
+        panic("incorrect welcome message composition: " + raw);
+      }
+      this.codes = codes;
+      this.codesData.clear();
+      for (let code of this.codes) {
+        this.codesData.set(code, {lastMsg: undefined, subs: new Map()})
+      }
+      this.isWelcomeRecvd = true;
+  }
+
   private recv(raw: any): void {
     log.info("NET::RECV | " + raw);
     let bmsg_r = de(raw);
     if (bmsg_r.is_err()) {
       log.track(bmsg_r);
+      return
     }
 
     if (!this.isWelcomeRecvd) {
-      const initdMsg = bmsg as any;
-      const indexedMcodes = initdMsg["indexedMcodes"];
-      const indexedErrcodes = initdMsg["indexedErrcodes"];
-
-      if (indexedMcodes === undefined || indexedErrcodes === undefined) {
-        log.catch(new Error(
-          "expected initd msg, got " + JSON.stringify(initdMsg)
-        ));
-        return;
-      }
-
-      this.indexedMcodes = indexedMcodes;
-      this.indexedErrcodes = indexedErrcodes;
-      this.isWelcomeRecvd = true;
-      while (this.execWhenInitdEvtReceived.length > 0) {
-        this.execWhenInitdEvtReceived.dequeue()();
-      }
-      return;
+      this.welcome(raw);
+      return
     }
 
-    const msg = MsgUtils.tryDeserializeJson(
-      bmsg, this.indexedMcodes, this.indexedErrcodes
-    );
-    if (msg === null) {
-      return;
+    let msg_r = de(raw)
+    if (msg_r.is_err()) {
+      log.track(msg_r, "bus receive")
+      return
     }
-    if (msg instanceof ErrEvt && msg.err === undefined) {
-      // create generic err for unhandled err codes
-      msg.err = Error(msg.errmsg);
+    let msg = msg_r.ok
+    let codeid = msg.codeid
+    let code_r = this.getCodeByCodeid(codeid)
+    if (msg_r.is_err()) {
+      log.track(msg_r, `codeid ${codeid} unpack`)
+      return
     }
-    this.pub(msg, undefined, { isNetSendSkipped: true });
+    this.pub(
+      code_r.ok as string,
+      msg,
+      undefined,
+      // disallow duplicate net resending
+      { ...DEFAULT_PUB_OPTS, skipNet: true }
+    )
   }
 
   private recvErr(err: any): void {
