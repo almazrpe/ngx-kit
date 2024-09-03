@@ -1,6 +1,6 @@
 import { code } from "./fcode";
 import { Query } from "./mongo";
-import { Evt, Req } from "./rxcat";
+import { Evt, Req } from "./yon";
 
 @code("ok-evt")
 export class OkEvt extends Evt

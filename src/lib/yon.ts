@@ -3,19 +3,16 @@ import { v4 as uuid } from "uuid";
 import { asrt } from "./asrt";
 import { log } from "./log";
 import { Queue } from "queue-typescript";
-import {
+import
+{
   catchError,
   map,
   Observable,
   ReplaySubject,
   Subscription
 } from "rxjs";
-import {
-  AnyConstructor,
-  code,
-  FcodeCore
-} from "./fcode";
-import {
+import
+{
   NotFoundErr,
   AlreadyProcessedErr,
   InpErr
@@ -25,241 +22,109 @@ import { AlertService } from "./alert/alert.service";
 import { takeOrSkip } from "./rxjs-utils";
 import { ConnService } from "./conn/conn.service";
 import { ArrUtils } from "./arr";
-import {
+import
+{
   CreateDocReq, DelDocReq, GetDocsReq, RegisterReq, UpdDocReq
 } from "./msg";
 
-export abstract class BusUtils
+export interface Msg
 {
-  public static pubGetDocsReq$<TRetUdto>(
-    req: GetDocsReq,
-    opts: PubOpts = {}
-  ): Observable<TRetUdto[]>
-  {
-    return ClientBus.ie.pub$(req, opts).pipe(
-      map(rae => (rae.evt as any).udtos)
-    );
-  }
 
-  public static pubGetDocReq$<TRetUdto>(
-    req: GetDocsReq,
-    opts: PubOpts = {}
-  ): Observable<TRetUdto>
-  {
-    return ClientBus.ie.pub$(req, opts).pipe(
-      // warning is no more for arr.length > 1
-      map(rae => ArrUtils.getFirst((rae.evt as any).udtos, false))
-    );
-  }
-
-  public static pubCreateDocReq$<TRetUdto>(
-    req: CreateDocReq,
-    opts: PubOpts = {}
-  ): Observable<TRetUdto>
-  {
-    return ClientBus.ie.pub$(req, opts).pipe(
-      map(rae => (rae.evt as any).udto)
-    );
-  }
-
-  public static pubUpdDocReq$<TRetUdto>(
-    req: UpdDocReq,
-    opts: PubOpts = {}
-  ): Observable<TRetUdto>
-  {
-    return ClientBus.ie.pub$(
-      req, opts
-    ).pipe(map(rae => (rae.evt as any).udto));
-  }
-
-  public static pubDelDocReq$(
-    req: DelDocReq,
-    opts: PubOpts = {}
-  ): Observable<void>
-  {
-    return ClientBus.ie.pub$(req, opts)
-      .pipe(
-        map(_ => { return; })
-      );
-  }
 }
 
-
-interface ReqAndRaction
+export class Bmsg
 {
-  req: Req;
-  raction: PubAction;
-}
-
-export class Msg
-{
-  public msid: string;
+  public sid: string;
+  public msg: Msg;
+  public lsid: string | undefined;
+  public is_err: boolean | undefined;
 
   public constructor(
-    args?: any
+    msg: any,
+    lsid?: string,
+    is_err?: boolean,
   )
   {
-    if (args?.msid === undefined)
+    this.sid = uuid4();
+    this.msg = msg;
+    this.lsid = lsid;
+    this.is_err = is_err;
+  }
+}
+
+export function uuid4(): string
+{
+  return uuid().replaceAll("-", "");
+}
+
+export function serializeMsg(msg: Bmsg, codeid: number): Rawmsg
+{
+  const data: any = Object.assign({}, msg);
+
+  // remove unecessary fields
+  const keysToDel: string[] = [];
+  Object.keys(data).forEach((k) =>
+  {
+    if (data[k] === undefined || data[k] === null)
     {
-      this.msid = MsgUtils.genUuid();
-      return;
+      keysToDel.push(k);
     }
-    this.msid = args.msid;
-  }
-}
+  });
 
-export interface Rawmsg
-{
-  msid: string;
-  mcodeid: number;
-  rsid?: string;
-}
-
-export class Evt extends Msg
-{
-  public rsid: string | undefined;
-
-  public constructor(
-    args?: any
-  )
+  for (const k in keysToDel)
   {
-    super(args);
-    this.rsid = args?.rsid;
-  }
-}
-
-export class Req extends Msg
-{
-}
-
-export interface ErrEvtArgs
-{
-  errmsg: string;
-  isThrownByPubAction: boolean | undefined;
-  err: Error;
-}
-
-@code("err-evt")
-export class ErrEvt extends Evt
-{
-  public errcodeid: number | undefined;
-  public errmsg: string;
-  public isThrownByPubAction: boolean | undefined;
-
-  /**
-    * Since only server can throw err evts, client need to deserialize them
-    * to an aux field, if they have an according err class registered for
-    * this errcodeid.
-    *
-    * If client cannot find an according err, the base class is initialized
-    * with errmsg.
-    */
-  public err: Error;
-
-  public constructor(
-    args: ErrEvtArgs
-  )
-  {
-    super(args);
-    this.errmsg = args.errmsg;
-    this.isThrownByPubAction = args.isThrownByPubAction;
-    this.err = args.err;
-  }
-}
-
-export abstract class MsgUtils
-{
-  public static genUuid(): string
-  {
-    return uuid().replaceAll("-", "");
+    delete data[k];
   }
 
-  public static isMsg(obj: any): obj is Msg
+  asrt.run("sid" in data);
+  asrt.run(codeid >= 0);
+  data["mcodeid"] = codeid;
+  return data as Rawmsg;
+}
+
+export function tryDeserializeJson(
+  rawmsg: Rawmsg,
+  indexedMcodes: string[][],
+  indexedErrcodes: string[][]
+): Bmsg | null
+{
+  const allMcodes = indexedMcodes[rawmsg.codeid];
+  const constructor = FcodeCore.ie.tryGetConstructorForAnyCodes(allMcodes);
+  if (allMcodes.includes("initd-client-evt"))
   {
-    return (
-      "msid" in obj
-      && "mcode" in obj
+    log.warn("duplicate initd-client-evt msg => discard");
+    return null;
+  }
+  if (constructor === undefined)
+  {
+    log.err("no constructor for any of mcodes " + allMcodes);
+    return null;
+  }
+
+  const fdata: any = { ...rawmsg };
+  if ("errcodeid" in fdata)
+  {
+    const allErrcodes = indexedErrcodes[fdata["errcodeid"]];
+    const errConstructor = FcodeCore.ie.tryGetConstructorForAnyCodes(
+      allErrcodes
     );
+
+    const errmsg = fdata["errmsg"];
+    let errf: Error = new Error(errmsg);
+    if (errConstructor !== undefined)
+    {
+      errf = new errConstructor(errmsg);
+    }
+    fdata["err"] = errf;
   }
 
-  public static isEvt(obj: any): obj is Evt
+  if ("mcodeid" in fdata)
   {
-    return this.isMsg(obj);
+    delete fdata["mcodeid"];
   }
 
-  public static isReq(obj: any): obj is Req
-  {
-    return this.isMsg(obj);
-  }
-
-  public static serializeJson(msg: Msg, mcodeid: number): Rawmsg
-  {
-    const data: any = Object.assign({}, msg);
-
-    // remove unecessary fields
-    const keysToDel: string[] = [];
-    Object.keys(data).forEach((k) =>
-    {
-      if (data[k] === undefined || data[k] === null)
-      {
-        keysToDel.push(k);
-      }
-    });
-
-    for (const k in keysToDel)
-    {
-      delete data[k];
-    }
-
-    asrt.run("msid" in data);
-    asrt.run(mcodeid >= 0);
-    data["mcodeid"] = mcodeid;
-    return data as Rawmsg;
-  }
-
-  public static tryDeserializeJson(
-    rawmsg: Rawmsg,
-    indexedMcodes: string[][],
-    indexedErrcodes: string[][]
-  ): Msg | null
-  {
-    const allMcodes = indexedMcodes[rawmsg.mcodeid];
-    const constructor = FcodeCore.ie.tryGetConstructorForAnyCodes(allMcodes);
-    if (allMcodes.includes("initd-client-evt"))
-    {
-      log.warn("duplicate initd-client-evt msg => discard");
-      return null;
-    }
-    if (constructor === undefined)
-    {
-      log.err("no constructor for any of mcodes " + allMcodes);
-      return null;
-    }
-
-    const fdata: any = { ...rawmsg };
-    if ("errcodeid" in fdata)
-    {
-      const allErrcodes = indexedErrcodes[fdata["errcodeid"]];
-      const errConstructor = FcodeCore.ie.tryGetConstructorForAnyCodes(
-        allErrcodes
-      );
-
-      const errmsg = fdata["errmsg"];
-      let errf: Error = new Error(errmsg);
-      if (errConstructor !== undefined)
-      {
-        errf = new errConstructor(errmsg);
-      }
-      fdata["err"] = errf;
-    }
-
-    if ("mcodeid" in fdata)
-    {
-      delete fdata["mcodeid"];
-    }
-
-    return new constructor(fdata);
-  }
+  return new constructor(fdata);
+}
 }
 
 export interface ReqAndEvt<TReq = Req, TEvt = Evt>
@@ -273,7 +138,7 @@ export interface SubActionAndOpts
   action: SubAction;
   opts: SubOpts;
 }
-export type SubAction = (msg: Msg) => void;
+export type SubAction = (msg: Bmsg) => void;
 export type PubAction = (req: Req, evt: Evt) => void;
 
 export interface SubOpts
@@ -292,11 +157,11 @@ export type MsgType = any;
 // todo: for now we simplify, and consider this bus only as a client one.
 //       In future this should conform to uniform bus, but configured as client
 //       one.
-export class ClientBus
+export class Bus
 {
-  private static _ie: ClientBus;
+  private static _ie: Bus;
 
-  public static get ie(): ClientBus
+  public static get ie(): Bus
   {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return this._ie || (this._ie = new this());
@@ -309,7 +174,7 @@ export class ClientBus
   private nextSubId: number = 0;
   private subidToMcode: { [key: number]: string } = {};
   private subidToSubActionAndOpts: { [key: number]: SubActionAndOpts } = {};
-  private mcodeToLastMsg: { [key: string]: Msg } = {};
+  private mcodeToLastMsg: { [key: string]: Bmsg } = {};
 
   private indexedMcodes: string[][] = [];
   private indexedErrcodes: string[][] = [];
@@ -331,7 +196,7 @@ export class ClientBus
     alertSv: AlertService,
     connSv: ConnService,
     tokens: string[] = [],
-    registerData: {[key: string]: any} = {}
+    registerData: { [key: string]: any } = {}
   ): void
   {
     if (this.isInitd)
@@ -375,12 +240,12 @@ export class ClientBus
 
   private registerClient(
     tokens: string[],
-    data: {[key: string]: any})
+    data: { [key: string]: any })
   {
     // todo:
     //    sent corrected register reqs once server bus implements it, for now
     //    just hope for the good
-    let msg = new RegisterReq({tokens: tokens, data: data});
+    let msg = new RegisterReq({ tokens: tokens, data: data });
     let serializedMsg = MsgUtils.serializeJson(
       msg,
       0
@@ -418,7 +283,7 @@ export class ClientBus
       }
     }
 
-    return (() => {this.unsub(subid);});
+    return (() => { this.unsub(subid); });
   }
 
   public unsub(subid: number): boolean
@@ -448,7 +313,7 @@ export class ClientBus
       subject$.next({ req: req, evt: evt });
     };
 
-    this.pub(req as Msg, pubaction as PubAction, opts);
+    this.pub(req as Bmsg, pubaction as PubAction, opts);
     return subject$.asObservable().pipe(
       // todo: tmp catch until ngx-kit implements normal err handler
       catchError(e =>
@@ -476,7 +341,7 @@ export class ClientBus
   }
 
   public pub(
-    msg: Msg,
+    msg: Bmsg,
     pubaction: PubAction | undefined = undefined,
     opts: PubOpts = {} as PubOpts
   ): void
@@ -517,11 +382,11 @@ export class ClientBus
     // RESOLVE PUBACTION
     if (msg instanceof Req && pubaction !== undefined)
     {
-      if (msg.msid in this.rsidToReqAndAction)
+      if (msg.sid in this.rsidToReqAndAction)
       {
-        throw new AlreadyProcessedErr(msg.msid);
+        throw new AlreadyProcessedErr(msg.sid);
       }
-      this.rsidToReqAndAction[msg.msid] = { req: msg, raction: pubaction };
+      this.rsidToReqAndAction[msg.sid] = { req: msg, raction: pubaction };
     }
 
     // SEND ORDER
@@ -536,7 +401,7 @@ export class ClientBus
         msg,
         mcodeid
       );
-      log.info("send: " +  JSON.stringify(serializedMsg));
+      log.info("send: " + JSON.stringify(serializedMsg));
 
       if (this.conn !== null)
       {
@@ -589,7 +454,7 @@ export class ClientBus
     this.tryInvokeRaction(reqAndRaction.raction, reqAndRaction.req, evt);
   }
 
-  private tryInvokeAction(action: SubAction, msg: Msg): boolean
+  private tryInvokeAction(action: SubAction, msg: Bmsg): boolean
   {
     try
     {
@@ -621,9 +486,9 @@ export class ClientBus
 
   private receiveConnRawmsg(rawmsg: Rawmsg): void
   {
-    log.info("receive: " +  JSON.stringify(rawmsg));
+    log.info("receive: " + JSON.stringify(rawmsg));
 
-    if (!("msid" in rawmsg))
+    if (!("sid" in rawmsg))
     {
       return;
     }

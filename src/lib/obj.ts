@@ -4,4 +4,9 @@ export abstract class ObjectUtils
   {
     return Object.keys(obj).length === 0;
   }
+
+  public static isEmpty2(obj: object): boolean
+  {
+    return Object.keys(obj).length === 0;
+  }
 }
