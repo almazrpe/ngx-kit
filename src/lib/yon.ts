@@ -204,9 +204,9 @@ export class Bus {
   }
 
   /// Publishes msg and awaits for the response.
-  public pub$(
+  public pub$<T>(
     code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
-  ): Observable<Res<Msg>> {
+  ): Observable<Res<T>> {
     const subject$ = new ReplaySubject<Msg>();
     const subfn = (msg: Msg): void => subject$.next(msg);
     this.pub(code, msg, subfn, opts);
@@ -230,10 +230,10 @@ export class Bus {
   }
 
   /// Publish msg and calls the provided function when the response arrives.
-  public pub(
+  public pub<T = any>(
     code: string,
     msg: Msg,
-    fn?: SubFn,
+    fn?: SubFn<T>,
     opts: PubOpts = DEFAULT_PUB_OPTS
   ): Res<undefined> {
     if (opts._lsid !== undefined && fn !== undefined) {
