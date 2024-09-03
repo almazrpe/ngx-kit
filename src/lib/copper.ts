@@ -158,11 +158,22 @@ export function resultifyPipe<T>():
     );
 }
 
-export function securePipe<T>():
-        UnaryFunction<Observable<Res<T>>, Observable<Res<T>>> {
+export type RxPipe<TInp, TOut> = UnaryFunction<
+    Observable<TInp>, Observable<TOut>
+>
+
+export function securePipe<T>(): RxPipe<Res<T>, Res<T>> {
     return pipe(
         catchError(err => {
             return of(ErrFromNative(err));
+        })
+    );
+}
+
+export function unwrapPipe<T>(): RxPipe<Res<T>, T> {
+    return pipe(
+        map(val => {
+            return val.unwrap()
         })
     );
 }

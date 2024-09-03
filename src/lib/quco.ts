@@ -1,5 +1,5 @@
 import { Observable, map, pipe } from "rxjs";
-import { Bus, Err, Ok, Res } from "../public-api";
+import { Bus, Err, Ok, Res, unwrapPipe } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
@@ -48,7 +48,7 @@ export namespace quco {
         )
     }
 
-    export function get$<T>(
+    export function getMany$<T>(
         collection: Collection,
         sq: SearchQuery
     ): Observable<Res<T[]>> {
@@ -60,6 +60,45 @@ export namespace quco {
             }
         ).pipe(
             unpackUnits()
+        )
+    }
+
+    export function getOne$<T>(
+        collection: Collection,
+        sq: SearchQuery
+    ): Observable<Res<T>> {
+        return Bus.ie.pub$(
+            CODE_PREFIX + "get",
+            {
+                collection: collection,
+                sq: sq
+            }
+        ).pipe(
+            unpackFirstUnit()
+        )
+    }
+
+    export function getOneUnwrap$<T>(
+        collection: Collection,
+        sq: SearchQuery
+    ): Observable<T> {
+        return getOne$<T>(
+            collection,
+            sq
+        ).pipe(
+            unwrapPipe()
+        )
+    }
+
+    export function getManyUnwrap$<T>(
+        collection: Collection,
+        sq: SearchQuery
+    ): Observable<T[]> {
+        return getMany$<T>(
+            collection,
+            sq
+        ).pipe(
+            unwrapPipe()
         )
     }
 
