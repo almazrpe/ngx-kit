@@ -14,7 +14,7 @@ export namespace time {
   /**
    * Converts UNIX timestamp to current local Date.
   */
-  export function convertTimeToLocal(timestamp: number): Date {
+  export function toLocal(timestamp: number): Date {
     return new Date(timestamp * 1000);
   }
 }
