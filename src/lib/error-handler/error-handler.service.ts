@@ -1,8 +1,7 @@
 import { Injectable, NgZone } from "@angular/core";
-import {log} from "../log"
+import {log} from "../log";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
-import { TranslationOptions } from "../i18n/options";
 import {
   I18nService
 } from "../i18n/i18n.service";

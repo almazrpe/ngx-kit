@@ -1,9 +1,7 @@
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 import { log } from "./log";
-import { Queue } from "queue-typescript";
 import
 {
-  catchError,
   map,
   Observable,
   ReplaySubject,
@@ -66,7 +64,7 @@ export const DEFAULT_PUB_OPTS: PubOpts = {
   skipNet: false,
   skipInner: false,
   _lsid: undefined
-}
+};
 
 function ser(sid: string, msg: Msg, codeid: number): Bmsg {
   let is_err: boolean | undefined = msg instanceof Err;
@@ -237,7 +235,7 @@ export class Bus {
     opts: PubOpts = DEFAULT_PUB_OPTS
   ): Res<undefined> {
     if (opts._lsid !== undefined && fn !== undefined) {
-      return Err("cannot provide both lsid and sub function")
+      return Err("cannot provide both lsid and sub function");
     }
 
     // SEND ORDER
@@ -245,11 +243,11 @@ export class Bus {
     //    2. Inner
     //    3. As response
 
-    let codeData = this.codesData.get(code)
+    let codeData = this.codesData.get(code);
     if (codeData === undefined) {
-      return Err("cannot find code " + code)
+      return Err("cannot find code " + code);
     }
-    codeData.lastMsg = msg
+    codeData.lastMsg = msg;
 
     let sid = uuid4();
     if (fn !== undefined) {
@@ -305,9 +303,9 @@ export class Bus {
 
   public getCodeByCodeid(codeid: number): Res<string> {
     if (codeid > this.codes.length - 1) {
-      return Err(`no codeid ${codeid}`)
+      return Err(`no codeid ${codeid}`);
     }
-    return Ok(this.codes[codeid])
+    return Ok(this.codes[codeid]);
   }
 
   private welcome(raw: any): void {
@@ -318,7 +316,7 @@ export class Bus {
       this.codes = codes;
       this.codesData.clear();
       for (let code of this.codes) {
-        this.codesData.set(code, {lastMsg: undefined, subs: new Map()})
+        this.codesData.set(code, {lastMsg: undefined, subs: new Map()});
       }
       this.isWelcomeRecvd = true;
   }
@@ -328,25 +326,25 @@ export class Bus {
     let bmsg_r = de(raw);
     if (bmsg_r.is_err()) {
       log.track(bmsg_r);
-      return
+      return;
     }
 
     if (!this.isWelcomeRecvd) {
       this.welcome(raw);
-      return
+      return;
     }
 
-    let msg_r = de(raw)
+    let msg_r = de(raw);
     if (msg_r.is_err()) {
-      log.track(msg_r, "bus receive")
-      return
+      log.track(msg_r, "bus receive");
+      return;
     }
-    let msg = msg_r.ok
-    let codeid = msg.codeid
-    let code_r = this.getCodeByCodeid(codeid)
+    let msg = msg_r.ok;
+    let codeid = msg.codeid;
+    let code_r = this.getCodeByCodeid(codeid);
     if (msg_r.is_err()) {
-      log.track(msg_r, `codeid ${codeid} unpack`)
-      return
+      log.track(msg_r, `codeid ${codeid} unpack`);
+      return;
     }
     this.pub(
       code_r.ok as string,
@@ -354,7 +352,7 @@ export class Bus {
       undefined,
       // disallow duplicate net resending
       { ...DEFAULT_PUB_OPTS, skipNet: true }
-    )
+    );
   }
 
   private recvErr(err: any): void {

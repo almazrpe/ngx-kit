@@ -66,13 +66,13 @@ export class I18nService {
         || this.translationMapByLang[finalLang][code][finalModifier]
           === undefined
       ) {
-        panic()
+        panic();
       }
       translation =
         this.translationMapByLang[finalLang][code][finalModifier];
     } catch {
       if (finalOptions.fallback === undefined) {
-        panic("not found translation for code " + code)
+        panic("not found translation for code " + code);
       }
       translation = finalOptions.fallback;
     }
