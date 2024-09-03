@@ -155,7 +155,7 @@ export class DatalistComponent implements
   private spawnUnmatchAlert(value: any): void {
     this.alertService.spawn({
       level: AlertLevel.Warning,
-      message: `Entered value ${value} does not match any option from the list`
+      msg: `Entered value ${value} does not match any option from the list`
     });
   }
 

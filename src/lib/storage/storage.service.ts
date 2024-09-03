@@ -30,7 +30,7 @@ export class StorageService {
     }
     let storage = this.storages[key];
     delete this.storages[key];
-    asrt.run(key in this.items);
+    assert(key in this.items);
     for (let itemKey in this.items[key]) {
       this.items[key][itemKey].complete();
     }

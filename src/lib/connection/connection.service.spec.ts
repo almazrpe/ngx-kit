@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 
-import { ConnService } from "./conn.service";
+import { ConService } from "./connection.service";
 
-describe("ConnService", () => {
-  let service: ConnService;
+describe("ConService", () => {
+  let service: ConService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ConnService);
+    service = TestBed.inject(ConService);
   });
 
   it("should be created", () => {

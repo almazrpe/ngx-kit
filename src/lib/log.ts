@@ -1,8 +1,4 @@
-import { LogData } from "./models";
-
 export abstract class log {
-  public static onLog: (log: LogData) => void = _ => {};
-
   public static debug(...args: any[]): void {
     console.debug(args.map(a => JSON.stringify(a)).join(","));
   }
@@ -19,8 +15,8 @@ export abstract class log {
     console.error(msg);
   }
 
-  public static catch(err: any): void {
-    const fmsg: string =
+  public static track(err: any): void {
+    const msg: string =
       err.name + ": " + (err.message !== "" ? err.message : "<empty-msg>");
 
     const stack = err.stack;
@@ -29,6 +25,6 @@ export abstract class log {
       // fmsg = fmsg + "\n\t-> " + stack.trimEnd().replaceAll("\n", "\n\t-> ");
     }
 
-    console.error(fmsg);
+    console.error(msg);
   }
 }

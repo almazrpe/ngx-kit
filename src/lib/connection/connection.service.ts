@@ -5,7 +5,7 @@ import { StorageService } from "../../public-api";
 @Injectable({
   providedIn: "root"
 })
-export class ConnService {
+export class ConService {
   // first initialized by the app
   public serverHostPort$: Observable<string>;
   public serverWsUrl$: Observable<string>;
@@ -19,7 +19,7 @@ export class ConnService {
 
   public init(
     storageKey: string,
-    storageHostPortItemKey: string = "conn_hostport",
+    storageHostPortItemKey: string = "con_hostport",
     defaultHostPort?: string) {
     this.storageKey = storageKey;
     this.storageHostPortItemKey = storageHostPortItemKey;

@@ -70,7 +70,7 @@ export class UploadFilesInputComponent implements OnInit {
             if (acceptedFilenames.has(filename)) {
               this.alertService.spawn({
                 level: AlertLevel.Warning,
-                message:
+                msg:
                   `«${filename}» ${this._config_.filenameRepeatTranslation}`
               });
               return false;
@@ -88,7 +88,7 @@ export class UploadFilesInputComponent implements OnInit {
       if (splitFilename.length < 2) {
         this.alertService.spawn({
           level: AlertLevel.Warning,
-          message:
+          msg:
             `«${obj.file.name}» ${this._config_.unknownExtensionTranslation}`
         });
         return false;
@@ -102,7 +102,7 @@ export class UploadFilesInputComponent implements OnInit {
         ) {
           this.alertService.spawn({
             level: AlertLevel.Warning,
-            message:
+            msg:
               `«${obj.file.name}» ${this._config_.wrongExtensionTranslation}`
           });
           return false;

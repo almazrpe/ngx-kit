@@ -49,7 +49,7 @@ export class ErrorHandlerService {
       level: AlertLevel.Error,
       // the result is already capitalized if the according translation
       // option given (or by default)
-      message: res + ` (${errorCode})`
+      msg: res + ` (${errorCode})`
     }));
 
     console.error(error);

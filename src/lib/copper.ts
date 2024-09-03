@@ -1,11 +1,13 @@
-//! Provides core functionality for better typescript experience.
+//! Provides the core functionality for a better typescript experience.
+
+import { Observable, ObservableInput, UnaryFunction, catchError, map, of, pipe } from "rxjs";
 
 export interface ResItem<T = any> {
-    is_ok: () => this is OkCls<T>;
-    is_err: () => this is ErrCls;
-    ok: () => T | undefined;
-    err: () => ErrCls | undefined;
-    unwrap: () => T;
+    is_ok(): this is OkCls<T>;
+    is_err(): this is ErrCls;
+    get ok(): T | undefined;
+    get err(): ErrCls | undefined;
+    unwrap(): T;
 }
 
 export function Ok<T>(val: T): OkCls<T> {
@@ -35,21 +37,17 @@ export class OkCls<T> implements ResItem<T> {
         return false;
     }
 
-    public ok(): T {
+    public get ok(): T {
         return this.val;
     }
 
-    public err(): undefined {
+    public get err(): undefined {
         return;
     }
 
     public unwrap(): T {
         return this.val;
     }
-}
-
-export function panic(msg?: string): never {
-    throw new ErrCls(msg, ecode.Panic);
 }
 
 // TODO: support stacktrace
@@ -61,6 +59,13 @@ export class ErrCls extends Error implements ResItem {
         super();
         this.code = code;
         this.msg = msg;
+    }
+
+    public display() {
+        if (this.msg === undefined) {
+            return this.code;
+        }
+        return `${this.code}:: ${this.msg}`
     }
 
     public is(code: string): boolean {
@@ -75,11 +80,11 @@ export class ErrCls extends Error implements ResItem {
         return true;
     }
 
-    public ok(): undefined {
+    public get ok(): undefined {
         return;
     }
 
-    public err(): this {
+    public get err(): this {
         return this;
     }
 
@@ -114,7 +119,51 @@ export function resultify<T>(fn: () => T): Res<T> {
         let r = fn();
         return Ok(r);
     } catch (err) {
-        return ErrCls.from_native(err as Error);
+        return ErrFromNative(err as Error);
     }
 }
 
+/// Wraps function raised error into `Err(e)`, or returns the retval as it is.
+///
+/// Useful to ensure that result-based function never throws.
+export function secure<T>(fn: () => Res<T>): Res<T> {
+    try {
+        return fn();
+    } catch (err) {
+        return ErrFromNative(err as Error);
+    }
+}
+
+export function panic(msg?: string): never {
+    throw new ErrCls(msg, ecode.Panic);
+}
+
+export function assert(condition: boolean, msg?: string): void {
+    if (!condition) {
+        panic(msg);
+    }
+}
+
+export function resultifyPipe<T>():
+        UnaryFunction<Observable<Res<T>>, Observable<Res<T>>> {
+    return pipe(
+        catchError(err => {
+            return of(ErrFromNative(err));
+        }),
+        map(v => {
+            if (!(v instanceof OkCls) && !(v instanceof ErrCls)) {
+                return Ok(v);
+            }
+            return v;
+        })
+    );
+}
+
+export function securePipe<T>():
+        UnaryFunction<Observable<Res<T>>, Observable<Res<T>>> {
+    return pipe(
+        catchError(err => {
+            return of(ErrFromNative(err));
+        })
+    );
+}

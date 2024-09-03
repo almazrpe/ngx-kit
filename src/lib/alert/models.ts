@@ -6,7 +6,7 @@ export enum AlertLevel {
 
 export interface Alert {
   level: AlertLevel;
-  message: string;
+  msg: string;
 }
 
 export interface AlertUrls
