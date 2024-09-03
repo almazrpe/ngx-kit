@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { DPSComponent } from "./dps.component";
 
-describe("DpsComponent", () => 
-{
+describe("DpsComponent", () => {
   let component: DPSComponent;
   let fixture: ComponentFixture<DPSComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ DPSComponent ]
     })
@@ -19,8 +17,7 @@ describe("DpsComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

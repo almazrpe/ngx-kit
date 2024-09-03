@@ -46,8 +46,7 @@ import { StringUtils } from "../str/utils";
   ],
 })
 export class DatalistComponent implements
-    OnInit, ControlValueAccessor, OnChanges
-{
+    OnInit, ControlValueAccessor, OnChanges {
   @Input() public inputType: InputType = InputType.Text;
   @Input() public labelText: string;
   @Input() public options: DatalistOption[];
@@ -73,8 +72,7 @@ export class DatalistComponent implements
     private keyboardService: KeyboardService
   ) {}
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.datalistId = StringUtils.makeid();
     this.options$.next(this.options);
     this.form = new FormGroup({
@@ -82,24 +80,20 @@ export class DatalistComponent implements
     });
   }
 
-  public ngOnChanges(changes: SimpleChanges): void
-  {
-    if (changes["options"] != undefined)
-    {
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes["options"] != undefined) {
       this.options$.next(changes["options"].currentValue);
     }
   }
 
-  public onInputValue(value: any): void
-  {
+  public onInputValue(value: any): void {
     const isValueMatched: boolean = this.isValueMatchedToOptions(value);
     this.setDatalistMatched.emit(isValueMatched);
     // do not spawn an unmatch alert on typing
     this.emitSelectedConditionally(value, isValueMatched, false);
   }
 
-  public onBlur(): void
-  {
+  public onBlur(): void {
     const value: any = this.form.controls["main"].value;
     // spawn an unmatch alert only on leaving the input
     this.emitSelectedConditionally(
@@ -113,8 +107,7 @@ export class DatalistComponent implements
     value: any,
     isValueMatched: boolean,
     isUnmatchAlertSpawned: boolean
-  ): void
-  {
+  ): void {
     const isValueDefined: boolean =
       value !== ""
       && value !== null
@@ -122,38 +115,30 @@ export class DatalistComponent implements
 
     if (
       !isValueMatched && isValueDefined
-    )
-    {
+    ) {
       // alert should be spawned only on closed keyboard, to not distract user
       // on typing, since he will unfocus the target field to type new data
-      if (!this.keyboardService.isEnabledValue && isUnmatchAlertSpawned)
-      {
+      if (!this.keyboardService.isEnabledValue && isUnmatchAlertSpawned) {
         this.spawnUnmatchAlert(value);
       }
-    }
-    else if (isValueDefined)
-    {
+    } else if (isValueDefined) {
       this.emitSelectedOption(value);
     }
   }
 
-  public writeValue(value: any): void
-  {
+  public writeValue(value: any): void {
     this.form.controls["main"].setValue(value);
   }
 
-  public registerOnChange(fn: any): void
-  {
+  public registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  public registerOnTouched(fn: any): void
-  {
+  public registerOnTouched(fn: any): void {
     this.onTouch = fn;
   }
 
-  public setDisabledState(isDisabled: boolean): void
-  {
+  public setDisabledState(isDisabled: boolean): void {
     this.isEnabled$.next(!isDisabled);
   }
 
@@ -161,27 +146,23 @@ export class DatalistComponent implements
 
   public onTouch: () => void;
 
-  private emitSelectedOption(value: any): void
-  {
+  private emitSelectedOption(value: any): void {
     this.select.emit(
       this.findOptionByValue(value)
     );
   }
 
-  private spawnUnmatchAlert(value: any): void
-  {
+  private spawnUnmatchAlert(value: any): void {
     this.alertService.spawn({
       level: AlertLevel.Warning,
       message: `Entered value ${value} does not match any option from the list`
     });
   }
 
-  private findOptionByValue(value: string): DatalistOption
-  {
+  private findOptionByValue(value: string): DatalistOption {
     return (
       this.options.find(option => option.value === value)
-      || ((): any =>
-      {
+      || ((): any => {
         throw new Error(`couldn't find option with value ${value}`);
       })()
     );
@@ -190,8 +171,7 @@ export class DatalistComponent implements
   /**
    * Checks if current input value exists in options provided.
    */
-  private isValueMatchedToOptions(value: any): boolean
-  {
+  private isValueMatchedToOptions(value: any): boolean {
     return this.options.map(option => option.value).includes(value);
   }
 }

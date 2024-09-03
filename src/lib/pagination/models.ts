@@ -179,8 +179,7 @@ export enum PaginationViewType {
  */
 export function makePaginationConfig(
   options?: Partial<PaginationConfig>
-): PaginationConfig
-{
+): PaginationConfig {
   const defaults: PaginationConfig = {
     viewType: PaginationViewType.Table,
     firstColumnOff: false,
@@ -299,13 +298,11 @@ export enum PaginationAttrType {
 /**
  * Function for checking that PaginationAttr object is correct
  */
-export function paginationAttrTypeChecker(attr: PaginationAttr): boolean
-{
+export function paginationAttrTypeChecker(attr: PaginationAttr): boolean {
   if (attr.body == null || attr.body == undefined)
     return false;
 
-  switch (attr.type)
-  {
+  switch (attr.type) {
     case PaginationAttrType.BOOLEAN:
       return typeof attr.body == "boolean";
       break;
@@ -324,8 +321,7 @@ export function paginationAttrTypeChecker(attr: PaginationAttr): boolean
     case PaginationAttrType.ICONS:
       return attr.body instanceof Array
              && attr.body.length > 0
-             && attr.body.map((icon: any) =>
-             {
+             && attr.body.map((icon: any) => {
                return (icon as PaginationIcon).priority !== undefined
                 && typeof (icon as PaginationIcon).priority == "number"
                 && (icon as PaginationIcon).src !== undefined
@@ -341,8 +337,7 @@ export function paginationAttrTypeChecker(attr: PaginationAttr): boolean
     case PaginationAttrType.LABELS:
       return attr.body instanceof Array
              && attr.body.length > 0
-             && attr.body.map((label: any) =>
-             {
+             && attr.body.map((label: any) => {
                return (label as PaginationLabel).priority !== undefined
                 && typeof (label as PaginationLabel).priority == "number"
                 && (label as PaginationLabel).title !== undefined
@@ -626,12 +621,10 @@ export enum PaginationColumnTag {
  */
 export function makePaginationColumnTags(
   obj: object
-): Map<string,Set<PaginationColumnTag>>
-{
+): Map<string,Set<PaginationColumnTag>> {
   return new Map<string,Set<PaginationColumnTag>>(
     Object.entries(obj).map(
-      ([columnName, tags]: [string, PaginationColumnTag[]]) => 
-      {
+      ([columnName, tags]: [string, PaginationColumnTag[]]) => {
         return [columnName, new Set<PaginationColumnTag>(tags)];
       })
   );
@@ -643,15 +636,11 @@ export function makePaginationColumnTags(
  */
 export function makeTableColumnSettings(
   tags?: Set<PaginationColumnTag>
-): TableColumn
-{
+): TableColumn {
   const settings: Partial<TableColumn> = {};
-  if (tags !== undefined)
-  {
-    for (let tag of tags)
-    {
-      switch(tag)
-      {
+  if (tags !== undefined) {
+    for (let tag of tags) {
+      switch(tag) {
         case PaginationColumnTag.Enabled:
           settings.disabled = false;
           break;

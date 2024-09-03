@@ -1,8 +1,7 @@
 import { Queue } from "queue-typescript";
 
 
-export abstract class QueueUtils
-{
+export abstract class QueueUtils {
   /**
    * Clear given queue.
    *
@@ -12,15 +11,13 @@ export abstract class QueueUtils
    * @param queue Queue to be cleared
    * @return Cleared queue
    */
-  public static clearQueue<Type>(queue: Queue<Type>): Queue<Type>
-  {
+  public static clearQueue<Type>(queue: Queue<Type>): Queue<Type> {
     while (queue.length > 0) queue.dequeue();
 
     return queue;
   }
 
-  public static isEmpty(obj: object): boolean
-  {
+  public static isEmpty(obj: object): boolean {
     return Object.keys(obj).length === 0;
   }
 }

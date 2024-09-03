@@ -5,8 +5,7 @@ import { Component, OnInit } from "@angular/core";
   templateUrl: "./hr.component.html",
   styleUrls: [],
 })
-export class HrComponent implements OnInit
-{
+export class HrComponent implements OnInit {
 
   //constructor() { }
 

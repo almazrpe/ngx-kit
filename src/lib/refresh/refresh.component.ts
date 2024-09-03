@@ -5,15 +5,13 @@ import { ButtonMode } from "../button/button.component";
   selector: "ngx-kit-refresh",
   templateUrl: "./refresh.component.html"
 })
-export class RefreshComponent
-{
+export class RefreshComponent {
   @Input()
   public iconSelectors: string;
   @Input()
   public btnMode: ButtonMode = ButtonMode.DEFAULT;
 
-  public refresh()
-  {
+  public refresh() {
     location.reload();
   }
 }

@@ -1,7 +1,6 @@
 import { AbstractControl } from "@angular/forms";
 
-export abstract class FormUtils
-{
+export abstract class FormUtils {
   /**
    * Retrieve name of the given form control.
    *
@@ -9,8 +8,7 @@ export abstract class FormUtils
    * @return Name of the form control specified
    * @see https://stackoverflow.com/a/46259916
    */
-  public static getControlName(control: AbstractControl): string | null
-  {
+  public static getControlName(control: AbstractControl): string | null {
     const formGroup: any = control["_parent"].controls;
     return Object.keys(formGroup)
       .find(name => control === formGroup[name]) ?? null;

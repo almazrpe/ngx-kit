@@ -13,8 +13,7 @@ export enum CallEvent {
   templateUrl: "./alert-stack.component.html",
   styleUrls: []
 })
-export class AlertStackComponent implements OnInit
-{
+export class AlertStackComponent implements OnInit {
   @Input() public alertLivingTime: number = 5;
   @Input() public maxQueueLen: number = 3;
   @Input() public urls: AlertUrls = {
@@ -32,29 +31,26 @@ export class AlertStackComponent implements OnInit
     private alertService: AlertService
   ) {}
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.alertService.alerts$.subscribe({
-      next: (alert: Alert) =>
-      {
+      next: (alert: Alert) => {
         this.add(alert);
       },
-      error: (err: Error) =>
-      {
+      error: (err: Error) => {
         throw err;
       }
     });
 
     this.alertService.componentCall$.subscribe({
       next: event => this.call(event),
-      error: err => {throw err;}
+      error: err => {
+throw err;
+}
     });
   }
 
-  private call(event: CallEvent): void
-  {
-    switch (event)
-    {
+  private call(event: CallEvent): void {
+    switch (event) {
       case CallEvent.CLEAR:
         this.clear();
         break;
@@ -64,16 +60,13 @@ export class AlertStackComponent implements OnInit
   }
 
   // Clear all alerts
-  private clear(): void
-  {
+  private clear(): void {
     QueueUtils.clearQueue<Alert>(this.alertQueue);
     this.disableClearingTimer();
   }
 
-  private add(alert: Alert): void
-  {
-    if (this.alertQueue.length + 1 > this.maxQueueLen)
-    {
+  private add(alert: Alert): void {
+    if (this.alertQueue.length + 1 > this.maxQueueLen) {
       // Dequeue oldest element instantly
       this.alertQueue.dequeue();
     }
@@ -88,10 +81,8 @@ export class AlertStackComponent implements OnInit
    *
    * Only one timer should be active at a time to avoid concurrency.
    */
-  private startClearingTimer(): void
-  {
-    if (!this.isClearingTimerActive)
-    {
+  private startClearingTimer(): void {
+    if (!this.isClearingTimerActive) {
       this.isClearingTimerActive = true;
       this.clearingTimer = setTimeout(
         this.removeOldestByTimer.bind(this), this.alertLivingTime * 1000
@@ -100,28 +91,23 @@ export class AlertStackComponent implements OnInit
   }
 
   // Immediatelly manually disable clearing timer
-  private disableClearingTimer(): void
-  {
+  private disableClearingTimer(): void {
     clearTimeout(this.clearingTimer);
     this.isClearingTimerActive = false;
   }
 
-  private removeOldestByTimer(): void
-  {
+  private removeOldestByTimer(): void {
     this.alertQueue.dequeue();
     this.isClearingTimerActive = false;
 
-    if (this.alertQueue.length > 0)
-    {
+    if (this.alertQueue.length > 0) {
       // Start new cleans recursively until all items are gone
       this.startClearingTimer();
     }
   }
 
-  public getAlertIconURL(alert: Alert): string
-  {
-    switch (alert.level)
-    {
+  public getAlertIconURL(alert: Alert): string {
+    switch (alert.level) {
       case AlertLevel.Info:
         return this.urls.info;
       case AlertLevel.Warning:

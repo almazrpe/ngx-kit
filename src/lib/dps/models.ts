@@ -28,8 +28,7 @@ export interface DPSConfig {
  */
 export function makeDPSConfig(
   options?: Partial<DPSConfig>
-): DPSConfig
-{
+): DPSConfig {
   const defaults: DPSConfig = {
     pinchZoomFlag: false,
     pageNumberTranslation: "Page number",

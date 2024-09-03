@@ -41,8 +41,7 @@ export interface PopUpConfig extends UploadFilesInputConfig
  */
 export function makePopUpConfig(
   options?: Partial<PopUpConfig>
-): PopUpConfig
-{
+): PopUpConfig {
   const defaults: PopUpConfig = {
     ...makeUploadFilesInputConfig({}),
     resetFieldIconPath: ""

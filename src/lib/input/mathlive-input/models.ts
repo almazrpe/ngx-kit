@@ -98,8 +98,7 @@ export interface MathliveInputConfig {
  */
 export function makeMathliveInputConfig(
   options?: Partial<MathliveInputConfig>
-): MathliveInputConfig
-{
+): MathliveInputConfig {
   const defaults: MathliveInputConfig = {
     initialValue: "",
     fontsDirectory: null,

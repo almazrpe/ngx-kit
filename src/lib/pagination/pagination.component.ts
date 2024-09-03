@@ -43,8 +43,7 @@ const DEFAULT_FIRST_COLUMN_NAME: string = "###NAME###";
   templateUrl: "./pagination.component.html",
   styleUrls: []
 })
-export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
-{
+export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * List of items for the pagination
    */
@@ -123,8 +122,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     private router: Router,
   ) {}
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.config$.next(makePaginationConfig(this.config));
 
     if (this.config$.value.firstColumnOff == false)
@@ -135,10 +133,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       });
 
     this.paginationItems.forEach(
-      (item: PaginationItem, index: number) =>
-      {
-        for (const key in item.attr)
-        {
+      (item: PaginationItem, index: number) => {
+        for (const key in item.attr) {
           if (
             item.attr[key] == null
             || item.attr[key] == undefined
@@ -147,13 +143,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             continue;
           else
             if (undefined == this.tableColumns.find(
-              (column: TableColumn) =>
-              {
+              (column: TableColumn) => {
                 return column.name == key
                        && column.type == item.attr[key].type;
               }
-            ))
-            {
+            )) {
               this.config$.value;
               this.tableColumns.push({
                 ...makeTableColumnSettings(
@@ -179,8 +173,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     );
     this.activePaginationItems$.next(this.allPaginationItems$.value);
     this.disabledPaginationFilters$.next(this.paginationFilters.concat());
-    for (const filter of this.paginationFilters)
-    {
+    for (const filter of this.paginationFilters) {
       this.filtersFormGroup.addControl(
         String(filter.id),
         new FormControl(null)
@@ -190,29 +183,23 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (this.updateEvent !== undefined)
       this.updateEventSubscription = this.updateEvent.subscribe({
-        next: (part: PaginationPart | null) =>
-        {
-          switch(part)
-          {
+        next: (part: PaginationPart | null) => {
+          switch(part) {
             case PaginationPart.Config:
               this.config$.next(
                 makePaginationConfig(this.config)
               );
               break;
             case PaginationPart.Items:
-              if (this.config$.value.disabledParts.has(PaginationPart.Items))
-              {
+              if (this.config$.value.disabledParts.has(PaginationPart.Items)) {
                 const conf: PaginationConfig = this.config$.value;
                 conf.disabledParts.delete(PaginationPart.Items);
                 this.config$.next(conf);
               }
 
-              setTimeout(() =>
-              {
-                if (this.config$.value.firstColumnOff == false)
-                {
-                  for (let i in this.paginationItems)
-                  {
+              setTimeout(() => {
+                if (this.config$.value.firstColumnOff == false) {
+                  for (let i in this.paginationItems) {
                     this.paginationItems[i].attr[DEFAULT_FIRST_COLUMN_NAME] =
                     {
                       type: PaginationAttrType.STRING,
@@ -232,8 +219,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             case PaginationPart.Filters:
               if (this.config$.value.disabledParts.has(
                 PaginationPart.Filters
-              ))
-              {
+              )) {
                 const conf: PaginationConfig = this.config$.value;
                 conf.disabledParts.delete(PaginationPart.Filters);
                 this.config$.next(conf);
@@ -243,8 +229,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                 this.paginationFilters.concat()
               );
               this.filtersFormGroup = new FormGroup({});
-              for (const filter of this.paginationFilters)
-              {
+              for (const filter of this.paginationFilters) {
                 this.filtersFormGroup.addControl(
                   String(filter.id),
                   new FormControl(null)
@@ -268,38 +253,30 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       });
   }
 
-  public itemHasAttr(item: PaginationItem, attrName: string): boolean
-  {
+  public itemHasAttr(item: PaginationItem, attrName: string): boolean {
     return Object.prototype.hasOwnProperty.call(item.attr, attrName);
   }
 
-  public ngAfterViewInit(): void
-  {
-    if (this.config$.value.tableFixedHeight != null)
-    {
+  public ngAfterViewInit(): void {
+    if (this.config$.value.tableFixedHeight != null) {
       this.tableRef.nativeElement.style.height =
         this.config$.value.tableFixedHeight;
     }
 
-    if (this.config$.value.tbodyFixedHeight != null)
-    {
+    if (this.config$.value.tbodyFixedHeight != null) {
       this.tableBodyRef.nativeElement.style.height =
         this.config$.value.tbodyFixedHeight;
     }
   }
 
-  public setRowFixedHeight(cellRef: HTMLDivElement): void
-  {
-    if (this.config$.value.rowFixedHeight != null)
-    {
+  public setRowFixedHeight(cellRef: HTMLDivElement): void {
+    if (this.config$.value.rowFixedHeight != null) {
       cellRef.style.height = this.config$.value.rowFixedHeight;
     }
   }
 
-  public setTextCellStyles(column: TableColumn): string[]
-  {
-    switch(this.config$.value.rowsLineClamp)
-    {
+  public setTextCellStyles(column: TableColumn): string[] {
+    switch(this.config$.value.rowsLineClamp) {
       case 1:
         return ["line-clamp-1"].concat([column.wordBreakClass]);
       case 2:
@@ -320,8 +297,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
   public setColumnFixedWidth(
     colRef: HTMLTableColElement,
     colObj: TableColumn
-  ): void
-  {
+  ): void {
     const colWidth: string | undefined =
       this.config$.value.columnFixedWidths.get(colObj.name);
 
@@ -329,13 +305,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       colRef.style.width = colWidth;
   }
 
-  public ngOnDestroy(): void 
-  {
+  public ngOnDestroy(): void {
     this.updateEventSubscription?.unsubscribe();
   }
 
-  public getFilterFormControl(id: number): FormControl
-  {
+  public getFilterFormControl(id: number): FormControl {
     return this.filtersFormGroup.get(String(id)) as FormControl;
   }
 
@@ -344,8 +318,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       | PaginationPart.FirstHr
       | PaginationPart.SecondHr
       | PaginationPart.Footer
-  ): void
-  {
+  ): void {
     const conf: PaginationConfig = this.config$.value;
     if (conf.disabledParts.has(part))
       conf.disabledParts.delete(part);
@@ -354,8 +327,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.config$.next(conf);
   }
 
-  private refreshPageCnt(): void
-  {
+  private refreshPageCnt(): void {
     const itemCntPerPage: number = this.config$.value.itemCntPerPage > 0
       ? this.config$.value.itemCntPerPage
       : 1;
@@ -366,8 +338,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       )
       : 1;
 
-    if (this.config$.value.addEmptyItemsOnLastPage == true)
-    {
+    if (this.config$.value.addEmptyItemsOnLastPage == true) {
       const newPagItems: Array<PaginationItem> = new Array<PaginationItem>(
         itemCntPerPage - (
           this.activePaginationItems$.value.length - (
@@ -376,8 +347,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         )
       );
 
-      for (let i = 0; i < newPagItems.length; i += 1)
-      {
+      for (let i = 0; i < newPagItems.length; i += 1) {
         newPagItems[i] = {
           text: "",
           route: null,
@@ -393,30 +363,25 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  public getNextPage(): void
-  {
+  public getNextPage(): void {
     this.curPage+=1;
-    if (this.curPage >= this.config$.value.visiblePagesCnt - 2)
-    {
+    if (this.curPage >= this.config$.value.visiblePagesCnt - 2) {
       this.leftSlice+=1;
       if (this.leftSlice > this.pageCnt - this.config$.value.visiblePagesCnt)
         this.leftSlice = this.pageCnt - this.config$.value.visiblePagesCnt;
     }
   }
 
-  public getPreviousPage(): void
-  {
+  public getPreviousPage(): void {
     this.curPage-=1;
-    if (this.curPage < this.pageCnt - this.config$.value.visiblePagesCnt + 2)
-    {
+    if (this.curPage < this.pageCnt - this.config$.value.visiblePagesCnt + 2) {
       this.leftSlice-=1;
       if (this.leftSlice < 0)
         this.leftSlice = 0;
     }
   }
 
-  public getPage(pageNum: number): void
-  {
+  public getPage(pageNum: number): void {
     this.curPage = pageNum;
     this.leftSlice = this.curPage - this.config$.value.visiblePagesCnt + 3;
     if (this.leftSlice > this.pageCnt - this.config$.value.visiblePagesCnt)
@@ -425,16 +390,13 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       this.leftSlice = 0;
   }
 
-  public toggleFiltersWindow(): void
-  {
+  public toggleFiltersWindow(): void {
     this.isFiltersWindowShown = !this.isFiltersWindowShown;
   }
 
-  public dropFilter(filterId: number): void
-  {
+  public dropFilter(filterId: number): void {
     const filter: PaginationFilter | undefined =
-      this.paginationFilters.find(filter=>
-      {
+      this.paginationFilters.find(filter=> {
         return filter.id == filterId;
       });
 
@@ -444,8 +406,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       );
 
     this.activePaginationFilters$.next(
-      this.activePaginationFilters$.value.filter(f =>
-      {
+      this.activePaginationFilters$.value.filter(f => {
         return f.id !== filterId;
       })
     );
@@ -457,25 +418,20 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.refreshPages();
   }
 
-  public addFilter(filterId: number): void
-  {
-    for (const filter of this.activePaginationFilters$.value)
-    {
+  public addFilter(filterId: number): void {
+    for (const filter of this.activePaginationFilters$.value) {
       if (filter.id == filterId)
         return;
     }
 
     this.disabledPaginationFilters$.next(
-      this.disabledPaginationFilters$.value.filter(filter =>
-      {
-        if (filter.id == filterId)
-        {
+      this.disabledPaginationFilters$.value.filter(filter => {
+        if (filter.id == filterId) {
           this.activePaginationFilters$.next(
             this.activePaginationFilters$.value.concat([filter])
           );
           return false;
-        }
-        else
+        } else
           return true;
       })
     );
@@ -486,14 +442,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
   public filterChange(
     filterId: number,
     pair: PaginationFilterTVPair
-  ): void
-  {
+  ): void {
     if (pair.value == null)
       this.curFilterValues.delete(filterId);
-    else
-    {
-      switch(pair.type)
-      {
+    else {
+      switch(pair.type) {
         case InputType.Date:
           this.curFilterValues.set(
             filterId,
@@ -525,8 +478,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.leftSlice = 0;
   }
 
-  public setFullTextSearchVal(value: string | null): void
-  {
+  public setFullTextSearchVal(value: string | null): void {
     this.fullTextSearchValue =
       value == null || value.length == 0
         ? null
@@ -536,29 +488,22 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.leftSlice = 0;
   }
 
-  private refreshPages(): void
-  {
+  private refreshPages(): void {
     this.sortChosenColumns = [];
 
     this.activePaginationItems$.next(
-      this.allPaginationItems$.value.filter(item =>
-      {
-        if (this.curFilterValues.size == 0) {}
-        else if (item.filterValues === null)
+      this.allPaginationItems$.value.filter(item => {
+        if (this.curFilterValues.size == 0) {} else if (item.filterValues === null)
           return false;
-        else
-        {
-          for (const fid of this.curFilterValues.keys())
-          {
+        else {
+          for (const fid of this.curFilterValues.keys()) {
             const fIVal: any = item.filterValues.get(fid);
             if (fIVal === undefined)
               return false;
-            else
-            {
+            else {
               const curFilterPair: PaginationFilterTVPair =
                 this.curFilterValues.get(fid) ?? {type: null, value: null};
-              switch(curFilterPair.type)
-              {
+              switch(curFilterPair.type) {
                 case null:
                   break;
                 case InputType.Date:
@@ -582,17 +527,12 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
           }
         }
 
-        if (this.fullTextSearchValue != null)
-        {
-          for (const column of this.tableColumns)
-          {
-            for (const key in item.attr)
-            {
-              if (key == column.name)
-              {
+        if (this.fullTextSearchValue != null) {
+          for (const column of this.tableColumns) {
+            for (const key in item.attr) {
+              if (key == column.name) {
                 let attrStr: string;
-                switch(item.attr[key].type)
-                {
+                switch(item.attr[key].type) {
                   case PaginationAttrType.DATETIME:
                     attrStr = defaultDateTimeFormatters.get(
                       PaginationAttrType.DATETIME)!.format(
@@ -614,8 +554,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
                 if (attrStr.toLowerCase().includes(
                   this.fullTextSearchValue.toLowerCase())
-                )
-                {
+                ) {
                   return true;
                 }
               }
@@ -631,17 +570,13 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     this.refreshPageCnt();
   }
 
-  public useRouteOrFunction (item: PaginationItem): void
-  {
-    if (item.altClickFunc != undefined)
-    {
+  public useRouteOrFunction (item: PaginationItem): void {
+    if (item.altClickFunc != undefined) {
       if (item.route != null)
         item.altClickFunc(item.route);
       else
         item.altClickFunc(item);
-    }
-    else
-    {
+    } else {
       if (item.route != null)
         this.router.navigate([item.route]);
     }
@@ -649,8 +584,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
   private sortingCondition(a: PaginationItem,
     b: PaginationItem,
-    iter: number): number
-  {
+    iter: number): number {
     if (iter < 0 || iter >= this.sortChosenColumns.length)
       return 0;
 
@@ -664,37 +598,30 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
     const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
 
-    if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false)
-    {
+    if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false) {
       const func: PaginationSortFunc | undefined =
         this.customColumnSortingFunctions!.get(chosenColumnName);
 
       let res: number | undefined = undefined;
-      try
-      {
+      try {
         res = func == undefined
           ? undefined
           : func(aAttr, bAttr, modeFactor);
-      }
-      catch (error: any)
-      {
+      } catch (error: any) {
         console.log(error);
         console.log("Custom column sort function for " +
                     `the column '${chosenColumnName}' doesn't work!`);
       }
 
-      if (res == undefined || typeof res != "number")
-      {
+      if (res == undefined || typeof res != "number") {
         console.log("Custom column sort function for " +
                     `the column '${chosenColumnName}' doesn't work!`);
         return this.sortingCondition(a, b, iter + 1);
-      }
-      else if (res == 0)
+      } else if (res == 0)
         return this.sortingCondition(a, b, iter + 1);
       else
         return res;
-    }
-    else if (aAttr == undefined && bAttr == undefined)
+    } else if (aAttr == undefined && bAttr == undefined)
       return this.sortingCondition(a, b, iter + 1);
     else if (aAttr != undefined && bAttr == undefined)
       return (modeFactor == 1
@@ -704,8 +631,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
       return (modeFactor == 1
         ? 1 * modeFactor
         : -1 * modeFactor);
-    else
-    {
+    else {
       const aCheck: boolean = paginationAttrTypeChecker(aAttr!);
       const bCheck: boolean = paginationAttrTypeChecker(bAttr!);
       if (aCheck == false && bCheck == false
@@ -724,10 +650,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         return (modeFactor == 1
           ? 1 * modeFactor
           : -1 * modeFactor);
-      else
-      {
-        switch(chosenColumnType)
-        {
+      else {
+        switch(chosenColumnType) {
           case PaginationAttrType.BUTTON:
           case PaginationAttrType.LABEL:
           case PaginationAttrType.ICON: {
@@ -741,8 +665,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
           }
           case PaginationAttrType.LABELS:
           case PaginationAttrType.ICONS: {
-            if (modeFactor > 0)
-            {
+            if (modeFactor > 0) {
               const aBest: number = Math.max(...aAttr!.body.map(
                 (item: PaginationIcon | PaginationLabel): number =>
                   item.priority
@@ -757,9 +680,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                 return 1;
               else
                 return -1;
-            }
-            else
-            {
+            } else {
               const aWorst: number = Math.min(...aAttr!.body.map(
                 (item: PaginationIcon | PaginationLabel): number =>
                   item.priority
@@ -834,10 +755,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  public sortPaginationItems(chosenColumn: TableColumn, event: any): void
-  {
-    if (event.shiftKey == false)
-    {
+  public sortPaginationItems(chosenColumn: TableColumn, event: any): void {
+    if (event.shiftKey == false) {
       const oldSortColumn: SortTableColumn | undefined =
         this.sortChosenColumns.find(scolumn =>
           scolumn.column.name == chosenColumn.name);
@@ -850,64 +769,50 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
           : (oldSortColumn.mode + 1) % 3
       }];
 
-      if (this.sortChosenColumns[0].mode != SortColumnMode.OFF)
-      {
+      if (this.sortChosenColumns[0].mode != SortColumnMode.OFF) {
         const items: PaginationItem[] =
           this.activePaginationItems$.value.concat();
-        items.sort((a, b) =>
-        {
+        items.sort((a, b) => {
           return this.sortingCondition(a, b, 0);
         });
         this.activePaginationItems$.next(items);
-      }
-      else 
-      {
+      } else {
         this.refreshPages();
       }
-    }
-    else
-    {
+    } else {
       const oldSortColumnIndex: number =
-        this.sortChosenColumns.findIndex(scolumn =>
-        {
+        this.sortChosenColumns.findIndex(scolumn => {
           return scolumn.column.name == chosenColumn.name;
         });
 
-      if (oldSortColumnIndex != -1)
-      {
+      if (oldSortColumnIndex != -1) {
         this.sortChosenColumns[oldSortColumnIndex].mode =
           (this.sortChosenColumns[oldSortColumnIndex].mode + 1) % 3;
 
         if (this.sortChosenColumns[oldSortColumnIndex].mode ==
               SortColumnMode.OFF)
           this.sortChosenColumns.splice(oldSortColumnIndex, 1);
-      }
-      else
-      {
+      } else {
         this.sortChosenColumns.push({
           column: chosenColumn,
           mode: SortColumnMode.ASC
         });
       }
 
-      if (this.sortChosenColumns.length != 0)
-      {
+      if (this.sortChosenColumns.length != 0) {
         const items: PaginationItem[] =
           this.activePaginationItems$.value.concat();
-        items.sort((a, b) =>
-        {
+        items.sort((a, b) => {
           return this.sortingCondition(a, b, 0);
         });
         this.activePaginationItems$.next(items);
-      }
-      else
+      } else
         this.refreshPages();
     }
   }
 
   public chosenColumnCheck (column: TableColumn,
-    modes: SortColumnMode[]): boolean
-  {
+    modes: SortColumnMode[]): boolean {
     const sortColumn: SortTableColumn | undefined =
       this.sortChosenColumns.find(scolumn =>
         scolumn.column.name == column.name);
@@ -915,24 +820,21 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
     return sortColumn == undefined ? false : modes.includes(sortColumn.mode);
   }
 
-  public whiteRowCheck(itemInd: number, config: PaginationConfig): boolean
-  {
+  public whiteRowCheck(itemInd: number, config: PaginationConfig): boolean {
     if (config.itemCntPerPage % 2 == 0 || this.curPage % 2 == 0)
       return itemInd % 2 == 1;
     else
       return itemInd % 2 == 0;
   }
 
-  public scrollTableRight(event: any): void
-  {
+  public scrollTableRight(event: any): void {
     const elem: HTMLElement = (event.target.parentElement.parentElement
       .parentElement.getElementsByTagName("table")[0]
       .parentElement);
     elem.scrollLeft -= this.tableScrollingSpeed;
   }
 
-  public scrollTableLeft(event: any): void
-  {
+  public scrollTableLeft(event: any): void {
     const elem: HTMLElement = (event.target.parentElement.parentElement
       .parentElement.getElementsByTagName("table")[0]
       .parentElement);

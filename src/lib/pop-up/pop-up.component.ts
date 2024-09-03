@@ -25,8 +25,7 @@ import {
   styles: [
   ]
 })
-export class PopUpComponent implements OnInit
-{
+export class PopUpComponent implements OnInit {
   @Input() public config: Partial<PopUpConfig> = {};
   @Output() public onComplete: EventEmitter<PopUpResult> =
     new EventEmitter<PopUpResult>();
@@ -57,22 +56,18 @@ export class PopUpComponent implements OnInit
     public translation: I18nService
   ) {}
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this._config_ = makePopUpConfig(this.config);
     this.popUpService.popUpWindow$.subscribe({
-      next: (window: PopUpWindow) =>
-      {
+      next: (window: PopUpWindow) => {
         this.windowNum = window.windowNum;
         this.type = window.type;
         this.title = window.title;
 
         window.fields = window.fields ?? [];
-        if (this.type == PopUpType.Form)
-        {
+        if (this.type == PopUpType.Form) {
           this.form = new FormGroup({});
-          window.fields.forEach((field: PopUpFormField) =>
-          {
+          window.fields.forEach((field: PopUpFormField) => {
             if (field.fillingOptions == undefined)
               field.fillingOptions = new BehaviorSubject<any[]>([]);
 
@@ -93,8 +88,7 @@ export class PopUpComponent implements OnInit
               }
             );
 
-            if (field.fillingFunction != undefined)
-            {
+            if (field.fillingFunction != undefined) {
               if (field.hideField == undefined)
                 field.hideField = new BehaviorSubject<boolean>(true);
 
@@ -111,8 +105,7 @@ export class PopUpComponent implements OnInit
             }
           });
 
-          if (window.formFieldsDescriptor != null)
-          {
+          if (window.formFieldsDescriptor != null) {
             this.formFieldsDescriptor = window.formFieldsDescriptor;
             this.descriptorFields = this.formFieldsDescriptor(null);
             this.form.valueChanges.subscribe(
@@ -121,9 +114,7 @@ export class PopUpComponent implements OnInit
                   ? this.formFieldsDescriptor(data)
                   : []
             );
-          }
-          else
-          {
+          } else {
             this.formFieldsDescriptor = null;
             this.descriptorFields = [];
           }
@@ -134,59 +125,48 @@ export class PopUpComponent implements OnInit
         this.choosingButtons = window.choosingButtons ?? [];
         this.paginationData = window.paginationData ?? { items: [] };
       },
-      error: (err: Error) =>
-      {
+      error: (err: Error) => {
         throw err;
       }
     });
   }
 
-  public uploadFilesInputConfig(): UploadFilesInputConfig
-  {
+  public uploadFilesInputConfig(): UploadFilesInputConfig {
     return this._config_ as UploadFilesInputConfig;
   }
 
-  public closePopUp(): void
-  {
+  public closePopUp(): void {
     this.popUpService.toggle();
   }
 
-  public clearField(name: string): void
-  {
+  public clearField(name: string): void {
     this.form.patchValue({
       [name]: null
     });
   }
 
-  public borderClosingCheck(event: MouseEvent): void
-  {
+  public borderClosingCheck(event: MouseEvent): void {
     const elem: Element | null =
       document.elementFromPoint(event.clientX, event.clientY);
-    if (elem != null && elem.id == "pop-up-container")
-    {
-      if (this.type == PopUpType.Form)
-      {
+    if (elem != null && elem.id == "pop-up-container") {
+      if (this.type == PopUpType.Form) {
         if (this.form.valid == false)
           this.closePopUp();
-      }
-      else
+      } else
         this.closePopUp();
     }
   }
 
-  public getFormControl(name: string): FormControl
-  {
+  public getFormControl(name: string): FormControl {
     return this.form.get(name) as FormControl;
   }
 
-  public getAllFormControls(): FormControl[]
-  {
+  public getAllFormControls(): FormControl[] {
     return this.fields.map((field: PopUpFormField) =>
       this.getFormControl(field.name));
   }
 
-  public sendAnswer(ans: any): void
-  {
+  public sendAnswer(ans: any): void {
     this.onComplete.emit({
       windowNum: this.windowNum,
       value: ans
@@ -194,8 +174,7 @@ export class PopUpComponent implements OnInit
     this.closePopUp();
   }
 
-  public sendForm(): void
-  {
+  public sendForm(): void {
     this.onComplete.emit({
       windowNum: this.windowNum,
       value: this.form.value

@@ -1,7 +1,6 @@
 export function getShadowRootExtraStyles(
   virtualKeyboardTooltip: string
-): string
-{
+): string {
   return `
     .ML__caret::after {
       --_caret-width: 1px !important;

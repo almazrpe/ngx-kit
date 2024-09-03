@@ -10,8 +10,7 @@ import { BaseError, NotFoundError } from "../errors";
 @Injectable({
   providedIn: "root"
 })
-export class ErrorHandlerService
-{
+export class ErrorHandlerService {
 
   public constructor(
     private alertService: AlertService,
@@ -19,36 +18,26 @@ export class ErrorHandlerService
     private ngZone: NgZone,
   ) { }
 
-  public handle(error: Error): void
-  {
+  public handle(error: Error): void {
     let errorCode: string;
     const translationOptions: TranslationOptions = {};
 
-    if (error instanceof BaseError)
-    {
+    if (error instanceof BaseError) {
       errorCode = (error as any).Code;
-    }
-    else
-    {
+    } else {
       errorCode = "client-err";
     }
 
     let res: string;
-    try
-    {
+    try {
       res = this.translation.getTranslation(
         errorCode,
         translationOptions
       );
-    }
-    catch (err: any)
-    {
-      if (err instanceof NotFoundError)
-      {
+    } catch (err: any) {
+      if (err instanceof NotFoundError) {
         res = "untranslated error with code \"" + errorCode + "\"";
-      }
-      else
-      {
+      } else {
         res = "unknown error on translation retrieval";
         error = err as Error;
       }

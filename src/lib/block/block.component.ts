@@ -15,8 +15,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 @Directive({
   selector: "[blockContent]"
 })
-export class BlockContentDirective
-{
+export class BlockContentDirective {
   public constructor(public templateRef: TemplateRef<unknown>) {}
 }
 
@@ -25,8 +24,7 @@ export class BlockContentDirective
   templateUrl: "./block.component.html",
   styleUrls: []
 })
-export class BlockComponent implements OnInit, OnChanges
-{
+export class BlockComponent implements OnInit, OnChanges {
   @ContentChild(TemplateRef) public template: TemplateRef<object>;
 
   @Input() public extraClass = "";
@@ -80,16 +78,13 @@ export class BlockComponent implements OnInit, OnChanges
     classes: []
   };
 
-  public ngOnInit(): void
-  {
-    if (this.isLoaded === null)
-    {
+  public ngOnInit(): void {
+    if (this.isLoaded === null) {
       this.isLoaded = false;
     }
 
     this.isLoaded$.subscribe({
-      next: v =>
-      {
+      next: v => {
         v
           ? this.html.classes = this.DefaultClasses
           : this.html.classes = this.LoadingClasses;
@@ -101,24 +96,19 @@ export class BlockComponent implements OnInit, OnChanges
     });
   }
 
-  public ngOnChanges(changes: SimpleChanges): void
-  {
-    if (changes["isLoaded"] != null)
-    {
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes["isLoaded"] != null) {
       this.isLoadedSubject.next(changes["isLoaded"].currentValue);
     }
 
-    if (changes["errorMsg"] != null)
-    {
+    if (changes["errorMsg"] != null) {
       this.errorMsgSubject.next(changes["errorMsg"].currentValue);
     }
   }
 
-  public getRefreshImgNgClasses(): string[]
-  {
+  public getRefreshImgNgClasses(): string[] {
     let imgClasses: Set<string> = new Set<string>(["w-8", "h-8"]);
-    for (const eclass of this.refreshBtnExtraClasses)
-    {
+    for (const eclass of this.refreshBtnExtraClasses) {
       if (eclass.startsWith("!w-"))
         imgClasses.delete("w-8");
 

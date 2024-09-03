@@ -10,8 +10,7 @@ import { InputError } from "../errors";
 @Injectable({
   providedIn: "root"
 })
-export class SelectedInputService
-{
+export class SelectedInputService {
   private _eventBus$: ReplaySubject<SelectedInputEvent<any>> =
     new ReplaySubject<SelectedInputEvent<any>>;
   public eventBus$: Observable<SelectedInputEvent<any>> =
@@ -24,20 +23,15 @@ export class SelectedInputService
   /**
    * Checks if some id is currently selected one.
    */
-  public isSelected(id: string): boolean
-  {
-    if (this.selectedInput !== null)
-    {
+  public isSelected(id: string): boolean {
+    if (this.selectedInput !== null) {
       return id === this.selectedInput.id;
-    }
-    else
-    {
+    } else {
       return false;
     }
   }
 
-  public sendKeyboardValue(value: string): void
-  {
+  public sendKeyboardValue(value: string): void {
     this._eventBus$.next({
       host: ValueHost.KEYBOARD,
       selectedInput: this.checkCanSend(),
@@ -46,8 +40,7 @@ export class SelectedInputService
     });
   }
 
-  public sendInputValue(value: any): void
-  {
+  public sendInputValue(value: any): void {
     this._eventBus$.next({
       host: ValueHost.INPUT,
       selectedInput: this.checkCanSend(),
@@ -56,46 +49,34 @@ export class SelectedInputService
     });
   }
 
-  public select(input: SelectedInput<any>, initialValue: any): void
-  {
+  public select(input: SelectedInput<any>, initialValue: any): void {
     this.selectedInput = input;
     // the host of newly selected input is always INPUT
     this.sendInputValue(initialValue);
   }
 
-  public deselect(): void
-  {
-    try
-    {
+  public deselect(): void {
+    try {
       this._eventBus$.next({
         host: ValueHost.INPUT,
         selectedInput: this.checkCanSend(),
         value: "",
         isSelected: false
       });
-    }
-    catch (error)
-    {
-      if (error instanceof InputError)
-      {
+    } catch (error) {
+      if (error instanceof InputError) {
         return;
-      }
-      else
-      {
+      } else {
         throw error;
       }
     }
     this.selectedInput = null;
   }
 
-  private checkCanSend(): SelectedInput<any>
-  {
-    if (this.selectedInput === null)
-    {
+  private checkCanSend(): SelectedInput<any> {
+    if (this.selectedInput === null) {
       throw new InputError("cannot send value: no selected input");
-    }
-    else
-    {
+    } else {
       return this.selectedInput;
     }
   }

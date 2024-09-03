@@ -19,8 +19,7 @@ import { Event as GeneralRouterEvent } from "@angular/router";
 @Injectable({
   providedIn: "root"
 })
-export class KeyboardService
-{
+export class KeyboardService {
   private keyboard: Keyboard;
 
   private isEnabled: BehaviorSubject<boolean> =
@@ -45,46 +44,36 @@ export class KeyboardService
   public constructor(
     private selectedInputService: SelectedInputService,
     private router: Router
-  )
-  {
+  ) {
     this.enabledLayoutsLength = this.ENABLED_LAYOUTS.length;
 
     this.router.events.subscribe({
-      next: (event: GeneralRouterEvent) =>
-      {
-        if (event instanceof NavigationEnd)
-        {
+      next: (event: GeneralRouterEvent) => {
+        if (event instanceof NavigationEnd) {
           this.clearInterRouteState();
         }
       }
     });
   }
 
-  private clearInterRouteState(): void
-  {
+  private clearInterRouteState(): void {
     this.disable();
     this.selectedInputService.deselect();
   }
 
 
-  public get isEnabledValue(): boolean
-  {
+  public get isEnabledValue(): boolean {
     return this.isEnabled.value;
   }
 
-  public get isBtnEnabledValue(): boolean
-  {
+  public get isBtnEnabledValue(): boolean {
     return this.isBtnEnabled.value;
   }
 
-  public initialize(): Keyboard
-  {
-    if (this.isInitialized)
-    {
+  public initialize(): Keyboard {
+    if (this.isInitialized) {
       throw new Error("already initialized");
-    }
-    else
-    {
+    } else {
       this.isInitialized = true;
     }
 
@@ -95,8 +84,7 @@ export class KeyboardService
     });
 
     this.selectedInputService.eventBus$.subscribe({
-      next: (event: SelectedInputEvent<any>) =>
-      {
+      next: (event: SelectedInputEvent<any>) => {
         this.onSelectedInputEvent(event);
       }
     });
@@ -107,11 +95,9 @@ export class KeyboardService
   /**
    * Selects the next layout for the keyboard.
    */
-  private selectNextLayout(): void
-  {
+  private selectNextLayout(): void {
     this.enabledLayoutIndex++;
-    if (this.enabledLayoutIndex > this.enabledLayoutsLength - 1)
-    {
+    if (this.enabledLayoutIndex > this.enabledLayoutsLength - 1) {
       this.enabledLayoutIndex = 0;
     }
     this.keyboard.setOptions({
@@ -119,32 +105,25 @@ export class KeyboardService
     });
   }
 
-  private onSelectedInputEvent(event: SelectedInputEvent<any>): void
-  {
-    if (event.isSelected == false)
-    {
+  private onSelectedInputEvent(event: SelectedInputEvent<any>): void {
+    if (event.isSelected == false) {
       this.unfocus();
       return;
-    }
-    else if (
+    } else if (
       this.selectedInput === null
       || event.selectedInput.id !== this.selectedInput.id
-    )
-    {
+    ) {
       this.focus(event.selectedInput);
     }
 
-    if (event.host === ValueHost.INPUT)
-    {
-      if (event.value === ValueValidatorEvent.Clear)
-      {
+    if (event.host === ValueHost.INPUT) {
+      if (event.value === ValueValidatorEvent.Clear) {
         this.keyboard.clearInput();
         return;
       }
 
       let stringValue: string = event.value;
-      if (typeof event.value === "number")
-      {
+      if (typeof event.value === "number") {
         stringValue = event.value.toString();
       }
 
@@ -156,9 +135,7 @@ export class KeyboardService
       // by new keyboard input
       this.keyboard.setCaretPosition(null);
 
-    }
-    else if (event.host !== ValueHost.KEYBOARD)
-    {
+    } else if (event.host !== ValueHost.KEYBOARD) {
       throw new Error(`unrecognized input value event host=${event.host}`);
     }
   }
@@ -166,61 +143,49 @@ export class KeyboardService
   /**
    * Focuses a target to input symbols there.
    */
-  private focus(target: SelectedInput<any>): void
-  {
+  private focus(target: SelectedInput<any>): void {
     this.selectedInput = target;
   }
 
-  private unfocus(): void
-  {
+  private unfocus(): void {
     // input itself will handle blur value validation
     this.selectedInput = null;
   }
 
-  public toggle(): void
-  {
+  public toggle(): void {
     this.isEnabled.next(!this.isEnabled.value);
   }
 
-  public enable(): void
-  {
+  public enable(): void {
     this.isEnabled.next(true);
   }
 
-  public disable(): void
-  {
+  public disable(): void {
     this.isEnabled.next(false);
   }
 
-  public toggleBtn(): void
-  {
+  public toggleBtn(): void {
     this.isBtnEnabled.next(!this.isBtnEnabled.value);
   }
 
-  public enableBtn(): void
-  {
+  public enableBtn(): void {
     this.isBtnEnabled.next(true);
   }
 
-  public disableBtn(): void
-  {
+  public disableBtn(): void {
     this.isBtnEnabled.next(false);
   }
 
-  private onChange(value: string): void
-  {
-    if (this.selectedInput === null)
-    {
+  private onChange(value: string): void {
+    if (this.selectedInput === null) {
       throw new Error("no input focused to type into");
     }
 
     this.selectedInputService.sendKeyboardValue(value);
   }
 
-  private onKeyPress(button: string): void
-  {
-    switch (button)
-    {
+  private onKeyPress(button: string): void {
+    switch (button) {
       case "{shift}":
         this.handleShift();
         break;
@@ -235,13 +200,11 @@ export class KeyboardService
     }
   }
 
-  private handleShift(): void
-  {
+  private handleShift(): void {
     this.selectNextLayout();
   }
 
-  private handleCAPS(): void
-  {
+  private handleCAPS(): void {
     const currentLayoutName: string | undefined =
       this.keyboard.options.layoutName;
     const currentShiftToggle: string =

@@ -21,19 +21,17 @@ import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
 import { takeOrSkip } from "./rxjs-utils";
 import { ConnService } from "./conn/conn.service";
-import { ArrUtils } from "./arr";
 import
 {
-  CreateDocReq, DelDocReq, GetDocsReq, RegisterReq, UpdDocReq
+  RegisterReq
 } from "./msg";
 
-export interface Msg
-{
-
+export class Msg {
+  public static code(): string {
+  }
 }
 
-export class Bmsg
-{
+export class Bmsg {
   public sid: string;
   public msg: Msg;
   public lsid: string | undefined;
@@ -43,8 +41,7 @@ export class Bmsg
     msg: any,
     lsid?: string,
     is_err?: boolean,
-  )
-  {
+  ) {
     this.sid = uuid4();
     this.msg = msg;
     this.lsid = lsid;
@@ -52,27 +49,22 @@ export class Bmsg
   }
 }
 
-export function uuid4(): string
-{
+export function uuid4(): string {
   return uuid().replaceAll("-", "");
 }
 
-export function serializeMsg(msg: Bmsg, codeid: number): Rawmsg
-{
+export function serializeMsg(msg: Msg, codeid: number): Bmsg {
   const data: any = Object.assign({}, msg);
 
   // remove unecessary fields
   const keysToDel: string[] = [];
-  Object.keys(data).forEach((k) =>
-  {
-    if (data[k] === undefined || data[k] === null)
-    {
+  Object.keys(data).forEach((k) => {
+    if (data[k] === undefined || data[k] === null) {
       keysToDel.push(k);
     }
   });
 
-  for (const k in keysToDel)
-  {
+  for (const k in keysToDel) {
     delete data[k];
   }
 
@@ -86,24 +78,20 @@ export function tryDeserializeJson(
   rawmsg: Rawmsg,
   indexedMcodes: string[][],
   indexedErrcodes: string[][]
-): Bmsg | null
-{
+): Bmsg | null {
   const allMcodes = indexedMcodes[rawmsg.codeid];
   const constructor = FcodeCore.ie.tryGetConstructorForAnyCodes(allMcodes);
-  if (allMcodes.includes("initd-client-evt"))
-  {
+  if (allMcodes.includes("initd-client-evt")) {
     log.warn("duplicate initd-client-evt msg => discard");
     return null;
   }
-  if (constructor === undefined)
-  {
+  if (constructor === undefined) {
     log.err("no constructor for any of mcodes " + allMcodes);
     return null;
   }
 
   const fdata: any = { ...rawmsg };
-  if ("errcodeid" in fdata)
-  {
+  if ("errcodeid" in fdata) {
     const allErrcodes = indexedErrcodes[fdata["errcodeid"]];
     const errConstructor = FcodeCore.ie.tryGetConstructorForAnyCodes(
       allErrcodes
@@ -111,24 +99,20 @@ export function tryDeserializeJson(
 
     const errmsg = fdata["errmsg"];
     let errf: Error = new Error(errmsg);
-    if (errConstructor !== undefined)
-    {
+    if (errConstructor !== undefined) {
       errf = new errConstructor(errmsg);
     }
     fdata["err"] = errf;
   }
 
-  if ("mcodeid" in fdata)
-  {
+  if ("mcodeid" in fdata) {
     delete fdata["mcodeid"];
   }
 
   return new constructor(fdata);
 }
-}
 
-export interface ReqAndEvt<TReq = Req, TEvt = Evt>
-{
+export interface ReqAndEvt<TReq = Req, TEvt = Evt> {
   req: TReq;
   evt: TEvt;
 }
@@ -157,12 +141,10 @@ export type MsgType = any;
 // todo: for now we simplify, and consider this bus only as a client one.
 //       In future this should conform to uniform bus, but configured as client
 //       one.
-export class Bus
-{
+export class Bus {
   private static _ie: Bus;
 
-  public static get ie(): Bus
-  {
+  public static get ie(): Bus {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return this._ie || (this._ie = new this());
   }
@@ -188,8 +170,7 @@ export class Bus
 
   private rsidToReqAndAction: { [rsid: string]: ReqAndRaction } = {};
 
-  private constructor()
-  {
+  private constructor() {
   }
 
   public init(
@@ -197,10 +178,8 @@ export class Bus
     connSv: ConnService,
     tokens: string[] = [],
     registerData: { [key: string]: any } = {}
-  ): void
-  {
-    if (this.isInitd)
-    {
+  ): void {
+    if (this.isInitd) {
       return;
     }
 
@@ -208,8 +187,7 @@ export class Bus
     this.connSv = connSv;
 
     this.connWrapper$ = this.connSv.serverWsUrl$.pipe(
-      map(url =>
-      {
+      map(url => {
         log.info(`conn ws at ${url + "/rx"}`);
         return webSocket<Rawmsg>(
           url + "/rx"
@@ -218,12 +196,10 @@ export class Bus
     );
 
     this.connWrapper$.subscribe({
-      next: conn =>
-      {
+      next: conn => {
         this.conn = conn;
         this.registerClient(tokens, registerData);
-        if (this.connWrapperSub !== null)
-        {
+        if (this.connWrapperSub !== null) {
           this.connWrapperSub.unsubscribe();
           this.connWrapperSub = null;
         }
@@ -240,8 +216,7 @@ export class Bus
 
   private registerClient(
     tokens: string[],
-    data: { [key: string]: any })
-  {
+    data: { [key: string]: any }) {
     // todo:
     //    sent corrected register reqs once server bus implements it, for now
     //    just hope for the good
@@ -258,11 +233,9 @@ export class Bus
     constructor: AnyConstructor,
     action: SubAction,
     opts: SubOpts = {} as SubOpts
-  ): () => void
-  {
+  ): () => void {
     const mcode = FcodeCore.ie.tryGetActiveCodeForConstructor(constructor);
-    if (mcode === undefined)
-    {
+    if (mcode === undefined) {
       throw new NotFoundErr(constructor);
     }
 
@@ -274,22 +247,20 @@ export class Bus
     this.subidToMcode[subid] = mcode;
     this.subidToSubActionAndOpts[subid] = { action: action, opts: opts };
 
-    if (opts.isLastMsgSkipped === true)
-    {
+    if (opts.isLastMsgSkipped === true) {
       const lastMsg = this.mcodeToLastMsg[mcode];
-      if (lastMsg !== undefined)
-      {
+      if (lastMsg !== undefined) {
         this.tryInvokeAction(action, lastMsg);
       }
     }
 
-    return (() => { this.unsub(subid); });
+    return (() => {
+      this.unsub(subid);
+    });
   }
 
-  public unsub(subid: number): boolean
-  {
-    if (!(subid in this.subidToMcode))
-    {
+  public unsub(subid: number): boolean {
+    if (!(subid in this.subidToMcode)) {
       throw new NotFoundErr(subid);
     }
 
@@ -304,29 +275,24 @@ export class Bus
     req: TReq,
     opts: PubOpts = {} as PubOpts,
     howManyToTake: number = 1
-  ): Observable<ReqAndEvt<TReq, TEvt>>
-  {
+  ): Observable<ReqAndEvt<TReq, TEvt>> {
     const subject$ = new ReplaySubject<ReqAndEvt<TReq, TEvt>>();
 
-    const pubaction = (req: TReq, evt: TEvt): void =>
-    {
+    const pubaction = (req: TReq, evt: TEvt): void => {
       subject$.next({ req: req, evt: evt });
     };
 
     this.pub(req as Bmsg, pubaction as PubAction, opts);
     return subject$.asObservable().pipe(
       // todo: tmp catch until ngx-kit implements normal err handler
-      catchError(e =>
-      {
+      catchError(e => {
         log.catch(e);
         throw e;
       }),
-      map((rae) =>
-      {
+      map((rae) => {
         const evt = rae.evt;
 
-        if (evt instanceof ErrEvt)
-        {
+        if (evt instanceof ErrEvt) {
           this.alertSv.spawn({
             level: AlertLevel.Error,
             message: evt.errmsg
@@ -344,17 +310,14 @@ export class Bus
     msg: Bmsg,
     pubaction: PubAction | undefined = undefined,
     opts: PubOpts = {} as PubOpts
-  ): void
-  {
-    if (!this.isInitdEvtReceived)
-    {
+  ): void {
+    if (!this.isInitdEvtReceived) {
       this.execWhenInitdEvtReceived.enqueue(
         () => this.pub(msg, pubaction, opts)
       );
       return;
     }
-    if (!(msg instanceof Req) && pubaction !== undefined)
-    {
+    if (!(msg instanceof Req) && pubaction !== undefined) {
       throw new InpErr("non-req msg and defined raction");
     }
 
@@ -362,15 +325,13 @@ export class Bus
     const currentMcode = FcodeCore.ie.tryGetActiveCodeForConstructor(
       Object.getPrototypeOf(msg).constructor
     );
-    if (currentMcode === undefined)
-    {
+    if (currentMcode === undefined) {
       throw new NotFoundErr("mcode for constructor");
     }
     const mcodeid = this.indexedMcodes.findIndex(
       (codes: string[]) => codes.includes(currentMcode)
     );
-    if (mcodeid < 0)
-    {
+    if (mcodeid < 0) {
       const err = Error(
         `mcode ${currentMcode} is found locally,`
         + " but does not exist in remote"
@@ -380,10 +341,8 @@ export class Bus
     }
 
     // RESOLVE PUBACTION
-    if (msg instanceof Req && pubaction !== undefined)
-    {
-      if (msg.sid in this.rsidToReqAndAction)
-      {
+    if (msg instanceof Req && pubaction !== undefined) {
+      if (msg.sid in this.rsidToReqAndAction) {
         throw new AlreadyProcessedErr(msg.sid);
       }
       this.rsidToReqAndAction[msg.sid] = { req: msg, raction: pubaction };
@@ -395,31 +354,24 @@ export class Bus
     //    3. As response
 
     // send to net
-    if (opts.isNetSendSkipped !== true)
-    {
+    if (opts.isNetSendSkipped !== true) {
       const serializedMsg = MsgUtils.serializeJson(
         msg,
         mcodeid
       );
       log.info("send: " + JSON.stringify(serializedMsg));
 
-      if (this.conn !== null)
-      {
+      if (this.conn !== null) {
         this.conn.next(serializedMsg);
-      }
-      else
-      {
+      } else {
         log.err("tried to emit msg, but conn is null");
       }
     }
 
     // send to inner
-    if (opts.isInnerSendSkipped !== true)
-    {
-      for (const [subid, existingMcode] of Object.entries(this.subidToMcode))
-      {
-        if (currentMcode == existingMcode)
-        {
+    if (opts.isInnerSendSkipped !== true) {
+      for (const [subid, existingMcode] of Object.entries(this.subidToMcode)) {
+        if (currentMcode == existingMcode) {
           // if any action fails this is out of responsibility of this pub
           // method - so just continue
           this.tryInvokeAction(
@@ -431,22 +383,18 @@ export class Bus
     }
 
     // send as response
-    if (msg instanceof Evt && msg.rsid !== undefined)
-    {
+    if (msg instanceof Evt && msg.rsid !== undefined) {
       this.sendAsResponse(msg);
     }
   }
 
-  private sendAsResponse(evt: Evt): void
-  {
-    if (evt.rsid === undefined)
-    {
+  private sendAsResponse(evt: Evt): void {
+    if (evt.rsid === undefined) {
       return;
     }
 
     const reqAndRaction = this.rsidToReqAndAction[evt.rsid];
-    if (reqAndRaction === undefined)
-    {
+    if (reqAndRaction === undefined) {
       return;
     }
     delete this.rsidToReqAndAction[evt.rsid];
@@ -454,14 +402,10 @@ export class Bus
     this.tryInvokeRaction(reqAndRaction.raction, reqAndRaction.req, evt);
   }
 
-  private tryInvokeAction(action: SubAction, msg: Bmsg): boolean
-  {
-    try
-    {
+  private tryInvokeAction(action: SubAction, msg: Bmsg): boolean {
+    try {
       action(msg);
-    }
-    catch (err)
-    {
+    } catch (err) {
       log.catch(err as Error);
       return false;
     }
@@ -469,14 +413,10 @@ export class Bus
     return true;
   }
 
-  private tryInvokeRaction(action: PubAction, req: Req, evt: Evt): boolean
-  {
-    try
-    {
+  private tryInvokeRaction(action: PubAction, req: Req, evt: Evt): boolean {
+    try {
       action(req, evt);
-    }
-    catch (err)
-    {
+    } catch (err) {
       log.catch(err as Error);
       return false;
     }
@@ -484,23 +424,19 @@ export class Bus
     return true;
   }
 
-  private receiveConnRawmsg(rawmsg: Rawmsg): void
-  {
+  private receiveConnRawmsg(rawmsg: Rawmsg): void {
     log.info("receive: " + JSON.stringify(rawmsg));
 
-    if (!("sid" in rawmsg))
-    {
+    if (!("sid" in rawmsg)) {
       return;
     }
 
-    if (!this.isInitdEvtReceived)
-    {
+    if (!this.isInitdEvtReceived) {
       const initdMsg = rawmsg as any;
       const indexedMcodes = initdMsg["indexedMcodes"];
       const indexedErrcodes = initdMsg["indexedErrcodes"];
 
-      if (indexedMcodes === undefined || indexedErrcodes === undefined)
-      {
+      if (indexedMcodes === undefined || indexedErrcodes === undefined) {
         log.catch(new Error(
           "expected initd msg, got " + JSON.stringify(initdMsg)
         ));
@@ -510,8 +446,7 @@ export class Bus
       this.indexedMcodes = indexedMcodes;
       this.indexedErrcodes = indexedErrcodes;
       this.isInitdEvtReceived = true;
-      while (this.execWhenInitdEvtReceived.length > 0)
-      {
+      while (this.execWhenInitdEvtReceived.length > 0) {
         this.execWhenInitdEvtReceived.dequeue()();
       }
       return;
@@ -520,25 +455,21 @@ export class Bus
     const msg = MsgUtils.tryDeserializeJson(
       rawmsg, this.indexedMcodes, this.indexedErrcodes
     );
-    if (msg === null)
-    {
+    if (msg === null) {
       return;
     }
-    if (msg instanceof ErrEvt && msg.err === undefined)
-    {
+    if (msg instanceof ErrEvt && msg.err === undefined) {
       // create generic err for unhandled err codes
       msg.err = Error(msg.errmsg);
     }
     this.pub(msg, undefined, { isNetSendSkipped: true });
   }
 
-  private receiveConnErr(err: any): void
-  {
+  private receiveConnErr(err: any): void {
     log.err("conn err: " + err);
   }
 
-  private receiveConnComplete(): void
-  {
+  private receiveConnComplete(): void {
     log.info("client bus conn completed");
   }
 }

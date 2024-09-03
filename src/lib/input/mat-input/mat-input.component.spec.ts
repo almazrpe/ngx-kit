@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MatInputComponent } from "./mat-input.component";
 
-describe("MatInputComponent", () => 
-{
+describe("MatInputComponent", () => {
   let component: MatInputComponent;
   let fixture: ComponentFixture<MatInputComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ MatInputComponent ]
     })
@@ -19,8 +17,7 @@ describe("MatInputComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

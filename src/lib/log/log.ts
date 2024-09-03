@@ -1,37 +1,30 @@
 import { LogData } from "./models";
 
-export abstract class log
-{
+export abstract class log {
   public static onLog: (log: LogData) => void = _ => {};
 
-  public static debug(...args: any[]): void
-  {
+  public static debug(...args: any[]): void {
     console.debug(args.map(a => JSON.stringify(a)).join(","));
   }
 
-  public static info(msg: any): void
-  {
+  public static info(msg: any): void {
     console.info(msg);
   }
 
-  public static warn(msg: any): void
-  {
+  public static warn(msg: any): void {
     console.warn(msg);
   }
 
-  public static err(msg: any): void
-  {
+  public static err(msg: any): void {
     console.error(msg);
   }
 
-  public static catch(err: any): void
-  {
+  public static catch(err: any): void {
     const fmsg: string =
       err.name + ": " + (err.message !== "" ? err.message : "<empty-msg>");
 
     const stack = err.stack;
-    if (stack !== undefined)
-    {
+    if (stack !== undefined) {
       // do not attach stack to console - too long
       // fmsg = fmsg + "\n\t-> " + stack.trimEnd().replaceAll("\n", "\n\t-> ");
     }

@@ -20,10 +20,8 @@ export enum InputValidationErrorCode {
 /**
  * Default error messages for validation errors
  */
-export function getDefaultErrorMessage(errorName: string, error: any): string
-{
-  switch(errorName as InputValidationErrorCode)
-  {
+export function getDefaultErrorMessage(errorName: string, error: any): string {
+  switch(errorName as InputValidationErrorCode) {
     case InputValidationErrorCode.Required:
       return "The field must be filled in";
     case InputValidationErrorCode.RequiredTrue:
@@ -54,11 +52,9 @@ export function getDefaultErrorMessage(errorName: string, error: any): string
 /**
  * Custom class for proper error state detection in mat-form-field
  */
-export class InputErrorStateMatcher implements ErrorStateMatcher
-{
+export class InputErrorStateMatcher implements ErrorStateMatcher {
   public errorState: boolean = false;
-  public isErrorState(): boolean
-  {
+  public isErrorState(): boolean {
     return this.errorState;
   }
 }

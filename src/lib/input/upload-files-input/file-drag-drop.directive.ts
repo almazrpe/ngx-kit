@@ -11,8 +11,7 @@ import { UploadFileObject } from "./models";
 @Directive({
   selector: "[appFileDragDrop]"
 })
-export class FileDragDropDirective 
-{
+export class FileDragDropDirective {
   @Output() public files: EventEmitter<UploadFileObject[]> =
     new EventEmitter();
 
@@ -23,41 +22,35 @@ export class FileDragDropDirective
   ) { }
 
   @HostListener("dragover", ["$event"])
-  public onDragOver(event: DragEvent): void
-  {
+  public onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.background = "#ffffff55";
   }
 
   @HostListener("dragleave", ["$event"])
-  public onDragLeave(event: DragEvent): void
-  {
+  public onDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.background = "#ffffff00";
   }
 
   @HostListener("drop", ["$event"])
-  public onDrop(event: DragEvent): void
-  {
+  public onDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.background = "#ffffff00";
 
     const files: UploadFileObject[] = [];
-    if (event.dataTransfer != null)
-    {
-      for (let i = 0; i < event.dataTransfer.files.length; i++)
-      {
+    if (event.dataTransfer != null) {
+      for (let i = 0; i < event.dataTransfer.files.length; i++) {
         const file = event.dataTransfer.files[i];
         const url = this.sanitizer.bypassSecurityTrustUrl(
           window.URL.createObjectURL(file)
         );
         files.push({ file, url });
       }
-      if (files.length > 0) 
-      {
+      if (files.length > 0) {
         this.files.emit(files);
       }
     }

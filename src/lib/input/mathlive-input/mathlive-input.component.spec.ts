@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MathliveInputComponent } from "./mathlive-input.component";
 
-describe("MathliveInputComponent", () => 
-{
+describe("MathliveInputComponent", () => {
   let component: MathliveInputComponent;
   let fixture: ComponentFixture<MathliveInputComponent>;
 
-  beforeEach(() => 
-{
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MathliveInputComponent]
     });
@@ -17,8 +15,7 @@ describe("MathliveInputComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-{
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

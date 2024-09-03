@@ -12,8 +12,7 @@ import {
   templateUrl: "./label.component.html",
   styleUrls: []
 })
-export class LabelComponent implements OnInit, AfterViewInit
-{
+export class LabelComponent implements OnInit, AfterViewInit {
   @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
   @Input() public title: string = "...";
   @Input() public bgColor: string | undefined = undefined;
@@ -21,13 +20,11 @@ export class LabelComponent implements OnInit, AfterViewInit
   @Input() public extraCssClasses: string[] | null = null;
   @Input() public isShrunk: boolean = false;
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.title = this.title.toUpperCase();
   }
 
-  public ngAfterViewInit(): void
-  {
+  public ngAfterViewInit(): void {
     this.mainElementRef.nativeElement.style.backgroundColor =
       this.bgColor ?? "#036eb7";
     this.mainElementRef.nativeElement.style.color =

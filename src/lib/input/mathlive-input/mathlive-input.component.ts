@@ -24,8 +24,7 @@ import {
   templateUrl: "./mathlive-input.component.html",
   styleUrls: ["./mathlive-design.scss"]
 })
-export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
-{
+export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy {
   /**
    * Configuration object (or just some part of it) for the component
    */
@@ -74,13 +73,11 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
   public _config_: MathliveInputConfig;
   private addLatexEventSubscription: Subscription;
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this._config_ = makeMathliveInputConfig(this.config);
   }
 
-  public ngAfterViewInit() 
-  {
+  public ngAfterViewInit() {
     MathfieldElement.locale = this._config_.locale;
     MathfieldElement.fontsDirectory = this._config_.fontsDirectory;
     MathfieldElement.soundsDirectory = this._config_.soundsDirectory;
@@ -105,8 +102,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
       // Recognize all chars from _config_.variableChars as variables
       // using \\mathit command as a shell
       ...Array.from(this._config_.variableChars).map(
-        (char: string) =>
-        {
+        (char: string) => {
           return {
              "key": char,
              "command": ["insert", `\\mathit{${char}`],
@@ -115,8 +111,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
       ),
       // Restrict to use all chars from _config_.restrictedChars
       ...Array.from(this._config_.restrictedChars).map(
-        (char: string) =>
-        {
+        (char: string) => {
           return {
              "key": char,
              "command": [],
@@ -128,8 +123,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
     this.mathfield.inlineShortcuts = {};
     // Define and intercept multi character variables
     if (this._config_.variableRegex != null)
-      this.mathfield.onInlineShortcut = (_mf, s) => 
-      {
+      this.mathfield.onInlineShortcut = (_mf, s) => {
         if (this._config_.variableRegex!.test(s)) return `\\mathit{${s}}`;
         return "";
       };
@@ -141,26 +135,22 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
     );
     this.mathfield.shadowRoot?.appendChild(style);
 
-    this.mathfield.addEventListener("focusin", () => 
-    {
+    this.mathfield.addEventListener("focusin", () => {
       this.focus.emit();
       window.mathVirtualKeyboard.layouts =
         this.virtualKeyboardLayouts;
     });
 
-    this.mathfield.addEventListener("focusout", () => 
-    {
+    this.mathfield.addEventListener("focusout", () => {
       this.blur.emit();
     });
 
-    this.mathfield.addEventListener("change", () => 
-    {
+    this.mathfield.addEventListener("change", () => {
       this.mathfield.blur();
       this.complete.emit();
     });
 
-    this.mathfield.addEventListener("input", () => 
-    {
+    this.mathfield.addEventListener("input", () => {
       this.inputValue.emit(
         this._config_.outputFormats.map(
           (format: MathliveOutputFormat) => this.mathfield.getValue(format)
@@ -170,8 +160,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
 
     if (this.addLatexEvent !== undefined)
       this.addLatexEventSubscription = this.addLatexEvent.subscribe({
-        next: (latexTxt: string | null) =>
-        {
+        next: (latexTxt: string | null) => {
           if (latexTxt != null)
             this.mathfield.insert(
               latexTxt,
@@ -181,8 +170,7 @@ export class MathliveInputComponent implements AfterViewInit, OnInit, OnDestroy
       });
   }
 
-  public ngOnDestroy(): void
-  {
+  public ngOnDestroy(): void {
     this.addLatexEventSubscription?.unsubscribe();
   }
 }

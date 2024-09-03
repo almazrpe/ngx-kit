@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { BlockComponent } from "./block.component";
 
-describe("BlockComponent", () => 
-{
+describe("BlockComponent", () => {
   let component: BlockComponent;
   let fixture: ComponentFixture<BlockComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ BlockComponent ]
     })
@@ -19,8 +17,7 @@ describe("BlockComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

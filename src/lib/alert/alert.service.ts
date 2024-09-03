@@ -6,8 +6,7 @@ import { Alert } from "./models";
 @Injectable({
   providedIn: "root"
 })
-export class AlertService
-{
+export class AlertService {
   private alerts: Subject<Alert> = new Subject();
   public alerts$: Observable<Alert> = this.alerts.asObservable();
 
@@ -21,16 +20,14 @@ export class AlertService
    *
    * @param alert Alert to spawn
    */
-  public spawn(alert: Alert): void
-  {
+  public spawn(alert: Alert): void {
     this.alerts.next(alert);
   }
 
   /**
    * Remove all alerts
    */
-  public clear(): void
-  {
+  public clear(): void {
     this.componentCall.next(CallEvent.CLEAR);
   }
 }

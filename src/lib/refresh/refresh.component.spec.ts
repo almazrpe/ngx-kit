@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { RefreshComponent } from "./refresh.component";
 
-describe("RefreshComponent", () => 
-{
+describe("RefreshComponent", () => {
   let component: RefreshComponent;
   let fixture: ComponentFixture<RefreshComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ RefreshComponent ]
     })
@@ -19,8 +17,7 @@ describe("RefreshComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

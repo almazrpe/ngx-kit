@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { DatalistComponent } from "./datalist.component";
 
-describe("DatalistComponent", () => 
-{
+describe("DatalistComponent", () => {
   let component: DatalistComponent;
   let fixture: ComponentFixture<DatalistComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ DatalistComponent ]
     })
@@ -19,8 +17,7 @@ describe("DatalistComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

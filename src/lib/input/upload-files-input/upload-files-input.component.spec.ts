@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { UploadFilesInputComponent } from "./upload-files-input.component";
 
-describe("UploadFilesInputComponent", () => 
-{
+describe("UploadFilesInputComponent", () => {
   let component: UploadFilesInputComponent;
   let fixture: ComponentFixture<UploadFilesInputComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ UploadFilesInputComponent ]
     })
@@ -19,8 +17,7 @@ describe("UploadFilesInputComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

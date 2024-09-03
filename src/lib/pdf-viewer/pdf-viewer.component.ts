@@ -10,8 +10,7 @@ import { PdfViewerConfig, makePdfViewerConfig } from "./models";
   templateUrl: "./pdf-viewer.component.html",
   styleUrls: []
 })
-export class PdfViewerComponent implements OnInit
-{
+export class PdfViewerComponent implements OnInit {
   public InputType = InputType;
   public ButtonMode = ButtonMode;
   public Math = Math;
@@ -42,8 +41,7 @@ export class PdfViewerComponent implements OnInit
   public isZoomdownEnabled$: ReplaySubject<boolean> =
     new ReplaySubject<boolean>();
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this._config_ = makePdfViewerConfig(this.config);
     if (this._config_.pdfWorkerPath != null)
       (window as any).pdfWorkerSrc = this._config_.pdfWorkerPath;
@@ -62,8 +60,7 @@ export class PdfViewerComponent implements OnInit
     this.toggleZoomButtons();
   }
 
-  public pageup(): void
-  {
+  public pageup(): void {
     this.currentPageNumber$.next(this.currentPageNumber$.value - 1);
     this.form.controls["currentPageNumber"].setValue(
       this.currentPageNumber$.value
@@ -71,8 +68,7 @@ export class PdfViewerComponent implements OnInit
     this.emitCurrentPage();
   }
 
-  public pagedown(): void
-  {
+  public pagedown(): void {
     this.currentPageNumber$.next(this.currentPageNumber$.value + 1);
     this.form.controls["currentPageNumber"].setValue(
       this.currentPageNumber$.value
@@ -80,87 +76,65 @@ export class PdfViewerComponent implements OnInit
     this.emitCurrentPage();
   }
 
-  public zoomup(): void
-  {
+  public zoomup(): void {
     this.zoom$.next(this.zoom$.value + 0.1);
     this.toggleZoomButtons();
   }
 
-  public zoomdown(): void
-  {
+  public zoomdown(): void {
     this.zoom$.next(this.zoom$.value - 0.1);
     this.toggleZoomButtons();
   }
 
-  public onInputValue(value: any): void
-  {
+  public onInputValue(value: any): void {
     this.currentPageNumber$.next(Number(value));
     this.emitCurrentPage();
   }
 
-  public backInner(event: any): void
-  {
+  public backInner(event: any): void {
     this.back.emit(event);
   }
 
-  private emitCurrentPage(): void
-  {
+  private emitCurrentPage(): void {
     if (
       this.currentPageNumber$.value < 1
       || this.currentPageNumber$.value > this.pagesCount
-    )
-    {
+    ) {
       this.errorMessage$.next(
         `${this._config_.noSuchDocPageTranslation} ` +
         `${this.currentPageNumber$.value}`
       );
-    }
-    else
-    {
+    } else {
       this.errorMessage$.next(null);
     }
 
     this.togglePageNavigationButtons();
   }
 
-  private togglePageNavigationButtons(): void
-  {
-    if (this.currentPageNumber$.value > 1)
-    {
+  private togglePageNavigationButtons(): void {
+    if (this.currentPageNumber$.value > 1) {
       this.isPageupEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isPageupEnabled$.next(false);
     }
 
-    if (this.currentPageNumber$.value < this.pagesCount)
-    {
+    if (this.currentPageNumber$.value < this.pagesCount) {
       this.isPagedownEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isPagedownEnabled$.next(false);
     }
   }
 
-  private toggleZoomButtons(): void
-  {
-    if (3 - this.zoom$.value > 1e-5)
-    {
+  private toggleZoomButtons(): void {
+    if (3 - this.zoom$.value > 1e-5) {
       this.isZoomupEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isZoomupEnabled$.next(false);
     }
 
-    if (this.zoom$.value - 0.1 > 1e-5)
-    {
+    if (this.zoom$.value - 0.1 > 1e-5) {
       this.isZoomdownEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isZoomdownEnabled$.next(false);
     }
   }

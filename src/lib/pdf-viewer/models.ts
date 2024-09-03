@@ -22,8 +22,7 @@ export interface PdfViewerConfig {
  */
 export function makePdfViewerConfig(
   options?: Partial<PdfViewerConfig>
-): PdfViewerConfig
-{
+): PdfViewerConfig {
   const defaults: PdfViewerConfig = {
     pageNumberTranslation:
       "Page number",

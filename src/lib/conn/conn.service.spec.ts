@@ -2,18 +2,15 @@ import { TestBed } from "@angular/core/testing";
 
 import { ConnService } from "./conn.service";
 
-describe("ConnService", () => 
-{
+describe("ConnService", () => {
   let service: ConnService;
 
-  beforeEach(() => 
-  {
+  beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(ConnService);
   });
 
-  it("should be created", () => 
-  {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

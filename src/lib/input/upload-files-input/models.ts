@@ -26,8 +26,7 @@ export interface UploadFilesInputConfig {
  */
 export function makeUploadFilesInputConfig(
   options?: Partial<UploadFilesInputConfig>
-): UploadFilesInputConfig
-{
+): UploadFilesInputConfig {
   const defaults: UploadFilesInputConfig = {
     filenameRepeatTranslation:
       "specified more than once, the latest version was taken",

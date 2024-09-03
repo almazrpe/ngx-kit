@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { LabelComponent } from "./label.component";
 
-describe("LabelComponent", () => 
-{
+describe("LabelComponent", () => {
   let component: LabelComponent;
   let fixture: ComponentFixture<LabelComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ LabelComponent ]
     })
@@ -19,8 +17,7 @@ describe("LabelComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

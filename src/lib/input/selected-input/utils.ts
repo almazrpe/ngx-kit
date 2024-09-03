@@ -12,16 +12,13 @@ import { ValueValidator } from "./value-validator";
 export function checkValueAgainstValidators(
   value: string,
   valueValidators: ValueValidator<any>[]
-): any | undefined 
-{
+): any | undefined {
   let validatorResult: any | undefined;
 
-  for (const validator of valueValidators) 
-  {
+  for (const validator of valueValidators) {
     validatorResult = validator(value);
 
-    if (validatorResult !== undefined) 
-    {
+    if (validatorResult !== undefined) {
       return validatorResult;
     }
   }

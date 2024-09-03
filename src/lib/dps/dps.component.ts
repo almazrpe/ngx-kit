@@ -24,8 +24,7 @@ const SCALE_MULTIPLIER: number = .2;
   templateUrl: "./dps.component.html",
   styleUrls: ["./dps-design.scss"],
 })
-export class DPSComponent implements OnInit
-{
+export class DPSComponent implements OnInit {
   @Input() public config: Partial<DPSConfig> = {};
   @Input() public pages: DocumentPage[];
   @Output() public back: EventEmitter<any> = new EventEmitter<any>();
@@ -61,8 +60,7 @@ export class DPSComponent implements OnInit
   public InputType = InputType;
   public ButtonMode = ButtonMode;
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this._config_ = makeDPSConfig(this.config);
     this.currentPageNumber = 1;
     this.emitCurrentPage();
@@ -80,16 +78,14 @@ export class DPSComponent implements OnInit
     this.togglePageNavigationButtons();
   }
 
-  public pageup(): void
-  {
+  public pageup(): void {
     this.imageLoading = true;
     this.currentPageNumber--;
     this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
     this.emitCurrentPage();
   }
 
-  public pagedown(): void
-  {
+  public pagedown(): void {
     this.imageLoading = true;
     this.currentPageNumber++;
     this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
@@ -97,29 +93,23 @@ export class DPSComponent implements OnInit
 
   }
 
-  public onInputValue(value: any): void
-  {
+  public onInputValue(value: any): void {
     this.currentPageNumber = Number(value);
     this.emitCurrentPage();
   }
 
-  public backInner(event: any): void
-  {
+  public backInner(event: any): void {
     this.back.emit(event);
   }
 
-  private emitCurrentPage(): void
-  {
+  private emitCurrentPage(): void {
     const currentPage: DocumentPage = this.pages[this.currentPageNumber-1];
 
-    if (currentPage === undefined)
-    {
+    if (currentPage === undefined) {
       this.errorMessage$.next(
         `${this._config_.noSuchDocPageTranslation} ${this.currentPageNumber}`
       );
-    }
-    else
-    {
+    } else {
       this.errorMessage$.next(null);
     }
 
@@ -129,49 +119,37 @@ export class DPSComponent implements OnInit
     this.resetImage();
   }
 
-  private togglePageNavigationButtons(): void
-  {
-    if (this.currentPageNumber > 1)
-    {
+  private togglePageNavigationButtons(): void {
+    if (this.currentPageNumber > 1) {
       this.isPageupEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isPageupEnabled$.next(false);
     }
 
-    if (this.currentPageNumber < this.totalPagesNumber)
-    {
+    if (this.currentPageNumber < this.totalPagesNumber) {
       this.isPagedownEnabled$.next(true);
-    }
-    else
-    {
+    } else {
       this.isPagedownEnabled$.next(false);
     }
   }
 
-  public imageLoaded(): void
-  {
+  public imageLoaded(): void {
     this.imageShown = true;
   }
 
-  public cropperReady(sourceImageDimensions: Dimensions): void
-  {
+  public cropperReady(sourceImageDimensions: Dimensions): void {
     this.imageLoading = false;
   }
 
-  public loadImageFailed(): void
-  {
+  public loadImageFailed(): void {
     log.err("load image failed in DPS component");
   }
 
-  public toggleRController(): void
-  {
+  public toggleRController(): void {
     this.rControllerShown = !this.rControllerShown;
   }
 
-  public resetImage(): void
-  {
+  public resetImage(): void {
     this.imageSpeedH = 0;
     this.imageSpeedV = 0;
     this.imageTranslateH = 0;
@@ -183,20 +161,17 @@ export class DPSComponent implements OnInit
     };
   }
 
-  public rotateImage(sgn: number): void
-  {
+  public rotateImage(sgn: number): void {
     this.imageLoading = true;
     // Use timeout because rotating image is a heavy operation and
     // will block the ui thread
-    setTimeout(() => 
-{
+    setTimeout(() => {
       this.imageRotation += Math.sign(sgn);
       this.flipImageAfterRotate();
     });
   }
 
-  private flipImageAfterRotate(): void
-  {
+  private flipImageAfterRotate(): void {
     const flippedH = this.imageTransform.flipH;
     const flippedV = this.imageTransform.flipV;
     this.imageTransform = {
@@ -210,8 +185,7 @@ export class DPSComponent implements OnInit
     this.imageTranslateV = 0;
   }
 
-  public zoomImage(sgn: number): void
-  {
+  public zoomImage(sgn: number): void {
     this.imageSpeedH = 0;
     this.imageSpeedV = 0;
     this.imageScale += SCALE_MULTIPLIER * Math.sign(sgn);
@@ -221,8 +195,7 @@ export class DPSComponent implements OnInit
     };
   }
 
-  public moveImageW(): void
-  {
+  public moveImageW(): void {
     if (this.imageSpeedH > 0)
       this.imageSpeedH = this.imageSpeedH * CARDINAL_MULTIPLIER;
     else
@@ -231,8 +204,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Horizontal);
   }
 
-  public moveImageE(): void
-  {
+  public moveImageE(): void {
     if (this.imageSpeedH < 0)
       this.imageSpeedH = this.imageSpeedH * CARDINAL_MULTIPLIER;
     else
@@ -241,8 +213,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Horizontal);
   }
 
-  public moveImageN(): void
-  {
+  public moveImageN(): void {
     if (this.imageSpeedV > 0)
       this.imageSpeedV = this.imageSpeedV * CARDINAL_MULTIPLIER;
     else
@@ -251,8 +222,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Vertical);
   }
 
-  public moveImageS(): void
-  {
+  public moveImageS(): void {
     if (this.imageSpeedV < 0)
       this.imageSpeedV = this.imageSpeedV * CARDINAL_MULTIPLIER;
     else
@@ -261,8 +231,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Vertical);
   }
 
-  public moveImageNW(): void
-  {
+  public moveImageNW(): void {
     if (this.imageSpeedV > 0)
       this.imageSpeedV = this.imageSpeedV * ORDINAL_MULTIPLIER;
     else
@@ -276,8 +245,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Both);
   }
 
-  public moveImageNE(): void
-  {
+  public moveImageNE(): void {
     if (this.imageSpeedV > 0)
       this.imageSpeedV = this.imageSpeedV * ORDINAL_MULTIPLIER;
     else
@@ -291,8 +259,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Both);
   }
 
-  public moveImageSW(): void
-  {
+  public moveImageSW(): void {
     if (this.imageSpeedV < 0)
       this.imageSpeedV = this.imageSpeedV * ORDINAL_MULTIPLIER;
     else
@@ -306,8 +273,7 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Both);
   }
 
-  public moveImageSE(): void
-  {
+  public moveImageSE(): void {
     if (this.imageSpeedV < 0)
       this.imageSpeedV = this.imageSpeedV * ORDINAL_MULTIPLIER;
     else
@@ -321,10 +287,8 @@ export class DPSComponent implements OnInit
     this.refreshImageTranslate(Axis.Both);
   }
 
-  private refreshImageTranslate(axis: Axis): void
-  {
-    switch(axis)
-    {
+  private refreshImageTranslate(axis: Axis): void {
+    switch(axis) {
       case Axis.Horizontal:
         this.imageTranslateH += this.imageSpeedH;
         this.imageTransform = {

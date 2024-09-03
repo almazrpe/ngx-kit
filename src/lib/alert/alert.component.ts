@@ -6,22 +6,18 @@ import { Alert, AlertLevel } from "./models";
   templateUrl: "./alert.component.html",
   styleUrls: []
 })
-export class AlertComponent implements OnInit
-{
+export class AlertComponent implements OnInit {
   @Input() public alert: Alert;
   @Input() public iconURL: string;
 
   public rootCSSClasses: string[];
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.adjustHtmlClasses();
   }
 
-  private adjustHtmlClasses(): void
-  {
-    switch (this.alert.level)
-    {
+  private adjustHtmlClasses(): void {
+    switch (this.alert.level) {
       case AlertLevel.Info:
         this.rootCSSClasses = ["bg-sky-200", "text-sky-800"];
         break;

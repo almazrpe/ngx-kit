@@ -11,8 +11,7 @@ export interface EventPlusCreate {
 }
 
 
-export abstract class EventPlusUtils
-{
+export abstract class EventPlusUtils {
   /**
    * Creates EventPlus from a default DOM event.
    *
@@ -22,8 +21,7 @@ export abstract class EventPlusUtils
   public static createEventPlus(
     event: Event,
     dataCreate: EventPlusCreate
-  ): EventPlus
-  {
+  ): EventPlus {
     return {
       extraData: dataCreate.extraData,
       ...event

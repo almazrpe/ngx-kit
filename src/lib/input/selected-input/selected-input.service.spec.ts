@@ -2,18 +2,15 @@ import { TestBed } from "@angular/core/testing";
 
 import { SelectedInputService } from "./selected-input.service";
 
-describe("SelectedInputService", () => 
-{
+describe("SelectedInputService", () => {
   let service: SelectedInputService;
 
-  beforeEach(() => 
-  {
+  beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(SelectedInputService);
   });
 
-  it("should be created", () => 
-  {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

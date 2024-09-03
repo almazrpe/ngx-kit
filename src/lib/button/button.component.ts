@@ -27,8 +27,7 @@ export enum ButtonMode {
   templateUrl: "./button.component.html",
   styleUrls: []
 })
-export class ButtonComponent implements OnInit, OnChanges
-{
+export class ButtonComponent implements OnInit, OnChanges {
   @Input() public type = "submit";
   @Input() public mode: ButtonMode = ButtonMode.DEFAULT;
   @Input() public isEnabled: boolean | null = true;
@@ -115,31 +114,25 @@ export class ButtonComponent implements OnInit, OnChanges
     ],
   ];
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.mode$.subscribe({
-      next: mode =>
-      {
+      next: mode => {
         this.html.classes = this.CssClassesOrdered[mode];
       }
     });
 
-    if (this.isEnabled === undefined)
-    {
+    if (this.isEnabled === undefined) {
       this.isEnabled = false;
     }
     this.setCSSClasses();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void
-  {
-    if (changes["mode"] != null)
-    {
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes["mode"] != null) {
       this.modeSubject.next(changes["mode"].currentValue);
       this.setCSSClasses();
     }
-    if (changes["isEnabled"] != null)
-    {
+    if (changes["isEnabled"] != null) {
       this.isEnabled =
         changes["isEnabled"].currentValue !== undefined
           ? changes["isEnabled"].currentValue : false;
@@ -147,8 +140,7 @@ export class ButtonComponent implements OnInit, OnChanges
     }
   }
 
-  public click(event: Event): void
-  {
+  public click(event: Event): void {
     const eventPlus: EventPlus = EventPlusUtils.createEventPlus(
       event,
       {
@@ -158,21 +150,17 @@ export class ButtonComponent implements OnInit, OnChanges
     this.clickFunc.emit(eventPlus);
   }
 
-  private getCSSClasses(): string[]
-  {
+  private getCSSClasses(): string[] {
     const finalClasses: string[] = this.html.classes;
-    if (this.extraCssClasses !== null)
-    {
+    if (this.extraCssClasses !== null) {
       finalClasses.push(...this.extraCssClasses);
     }
     return finalClasses;
   }
 
-  private setCSSClasses(): void
-  {
+  private setCSSClasses(): void {
     const cssClasses: string[] = Object.assign([], this.getCSSClasses());
-    if (this.isEnabled == null || this.isEnabled == false)
-    {
+    if (this.isEnabled == null || this.isEnabled == false) {
       // wrapped button in angular is not disabled logically, even if the right
       // option is passed, but workaround is to add class `pointer-events-none`
       // https://stackoverflow.com/a/70683035

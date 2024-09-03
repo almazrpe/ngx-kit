@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AlertStackComponent } from "./alert-stack.component";
 
-describe("AlertStackComponent", () => 
-{
+describe("AlertStackComponent", () => {
   let component: AlertStackComponent;
   let fixture: ComponentFixture<AlertStackComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ AlertStackComponent ]
     })
@@ -19,8 +17,7 @@ describe("AlertStackComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

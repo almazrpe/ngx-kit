@@ -7,14 +7,11 @@ import { Observable, map, take } from "rxjs";
 export function conditionValidatorWrapper(
   condition$: Observable<boolean>,
   errorName: string
-): (control: AbstractControl) => Observable<ValidationErrors | null> 
-{
+): (control: AbstractControl) => Observable<ValidationErrors | null> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return (control: AbstractControl) => 
-  {
+  return (control: AbstractControl) => {
     return condition$.pipe(
-      map((condition: boolean) => 
-      {
+      map((condition: boolean) => {
         const validationErrors: ValidationErrors = {};
         validationErrors[errorName] = true;
         return condition ? null : validationErrors;

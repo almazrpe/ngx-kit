@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { InputComponent } from "./input.component";
 
-describe("InputComponent", () => 
-{
+describe("InputComponent", () => {
   let component: InputComponent;
   let fixture: ComponentFixture<InputComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ InputComponent ]
     })
@@ -19,8 +17,7 @@ describe("InputComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

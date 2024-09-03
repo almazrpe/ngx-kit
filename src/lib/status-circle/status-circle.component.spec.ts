@@ -2,13 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { StatusCircleComponent } from "./status-circle.component";
 
-describe("StatusCircleComponent", () => 
-{
+describe("StatusCircleComponent", () => {
   let component: StatusCircleComponent;
   let fixture: ComponentFixture<StatusCircleComponent>;
 
-  beforeEach(async () => 
-  {
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ StatusCircleComponent ]
     })
@@ -19,8 +17,7 @@ describe("StatusCircleComponent", () =>
     fixture.detectChanges();
   });
 
-  it("should create", () => 
-  {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

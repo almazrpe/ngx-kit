@@ -12,8 +12,7 @@ export enum StatusCircleMode {
   templateUrl: "./status-circle.component.html",
   styleUrls: [],
 })
-export class StatusCircleComponent implements OnInit
-{
+export class StatusCircleComponent implements OnInit {
   @Input() public mode: StatusCircleMode = StatusCircleMode.ACTIVE;
   @Input() public imgSrc: string = "";
   @Input() public inputCssClasses: string[] | null = null;
@@ -23,8 +22,7 @@ export class StatusCircleComponent implements OnInit
   public cssClasses$: ReplaySubject<string[]> =
     new ReplaySubject<string[]>();
 
-  public ngOnInit(): void
-  {
+  public ngOnInit(): void {
     this.cssClasses$.next(this.inputCssClasses ?? ["w-4", "h-4"]);
   }
 }
