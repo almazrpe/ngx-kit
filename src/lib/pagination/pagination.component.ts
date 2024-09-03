@@ -31,7 +31,7 @@ import {
   PaginationPart,
   makePaginationConfig
 } from "./models";
-import { DTUtils } from "../dt/utils";
+import { DTUtils } from "../time";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
 import { StatusCircleMode } from "../status-circle/status-circle.component";

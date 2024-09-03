@@ -13,7 +13,7 @@ import {
 } from "./status-circle/status-circle.component";
 import { AlertStackComponent } from "./alert/alert-stack.component";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
+import { UnixTimestampToDatePipe } from "./time/unix-timestamp-to-date.pipe";
 import { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 import { CapitalizePipe } from "./str/capitalize.pipe";
 import { PaginationComponent } from "./pagination/pagination.component";

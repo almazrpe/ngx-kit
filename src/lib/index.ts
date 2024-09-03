@@ -91,7 +91,7 @@ export {
 } from "./status-circle/status-circle.component";
 export { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 export { CapitalizePipe } from "./str/capitalize.pipe";
-export { DTUtils } from "./dt/utils";
+export * from "./time";
 export { CoreErrorHandler } from "./error-handler/core-error-handler";
 export { ErrorHandlerService } from "./error-handler/error-handler.service";
 export { HrComponent } from "./hr/hr.component";
@@ -102,7 +102,7 @@ export {
   DocumentPage
 } from "./dps/document-page";
 export { PdfViewerConfig, makePdfViewerConfig } from "./pdf-viewer/models";
-export { UnixTimestampToDatePipe } from "./dt/unix-timestamp-to-date.pipe";
+export { UnixTimestampToDatePipe } from "./time/unix-timestamp-to-date.pipe";
 export { BlockComponent } from "./block/block.component";
 export { ButtonComponent } from "./button/button.component";
 export { DatalistComponent } from "./datalist/datalist.component";

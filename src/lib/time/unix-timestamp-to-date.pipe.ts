@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { DTUtils } from "./utils";
+import { DTUtils } from ".";
 
 @Pipe({
   name: "unixTimestampToDate"

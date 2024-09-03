@@ -7,7 +7,8 @@ import
   map,
   Observable,
   ReplaySubject,
-  Subscription
+  Subscription,
+  take
 } from "rxjs";
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
@@ -223,7 +224,8 @@ export class Bus {
         }
 
         return msg;
-      })
+      }),
+      take(1)
     );
   }
 
