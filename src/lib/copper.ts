@@ -170,7 +170,7 @@ export function securePipe<T>(): RxPipe<Res<T>, Res<T>> {
     );
 }
 
-export function unwrapPipe<T>(): RxPipe<Res<T>, T> {
+export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
     return pipe(
         map(val => {
             return val.unwrap();

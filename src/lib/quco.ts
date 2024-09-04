@@ -1,5 +1,5 @@
 import { Observable, map, pipe } from "rxjs";
-import { Bus, Err, Ok, Res, unwrapPipe } from "../public-api";
+import { Bus, Err, Ok, Res, pipeUnwrap } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
@@ -86,7 +86,7 @@ export namespace quco {
             collection,
             sq
         ).pipe(
-            unwrapPipe()
+            pipeUnwrap()
         );
     }
 
@@ -98,7 +98,7 @@ export namespace quco {
             collection,
             sq
         ).pipe(
-            unwrapPipe()
+            pipeUnwrap()
         );
     }
 

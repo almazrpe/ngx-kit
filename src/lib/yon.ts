@@ -4,6 +4,7 @@ import
 {
   map,
   Observable,
+  pipe,
   ReplaySubject,
   Subscription,
   take
@@ -11,7 +12,7 @@ import
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
-import { assert, Err, ErrCls, Ok, panic, Res, resultifyPipe } from "./copper";
+import { assert, Err, ErrCls, Ok, panic, Res, resultifyPipe, RxPipe } from "./copper";
 import {uuid4} from "./uuid";
 
 export type Msg = any;
@@ -362,5 +363,13 @@ export class Bus {
   private recvComplete(): void {
     log.info("client bus con completed");
   }
+}
+
+export function pipeToVoidFromOkMsg(): RxPipe<OkMsg, void> {
+  return pipe(
+    map(_ => {
+      return;
+    })
+  )
 }
 
