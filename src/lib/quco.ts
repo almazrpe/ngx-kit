@@ -50,7 +50,7 @@ export namespace quco {
 
     export function getMany$<T>(
         collection: Collection,
-        sq: SearchQuery
+        sq: SearchQuery = {}
     ): Observable<Res<T[]>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
@@ -65,7 +65,7 @@ export namespace quco {
 
     export function getOne$<T>(
         collection: Collection,
-        sq: SearchQuery
+        sq: SearchQuery = {}
     ): Observable<Res<T>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
@@ -80,7 +80,7 @@ export namespace quco {
 
     export function getOneUnwrap$<T>(
         collection: Collection,
-        sq: SearchQuery
+        sq: SearchQuery = {}
     ): Observable<T> {
         return getOne$<T>(
             collection,
@@ -92,7 +92,7 @@ export namespace quco {
 
     export function getManyUnwrap$<T>(
         collection: Collection,
-        sq: SearchQuery
+        sq: SearchQuery = {}
     ): Observable<T[]> {
         return getMany$<T>(
             collection,
