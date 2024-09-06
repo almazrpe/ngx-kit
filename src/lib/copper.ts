@@ -143,17 +143,13 @@ export function assert(condition: boolean, msg?: string): void {
     }
 }
 
-export function pipeResultify<T>():
-        UnaryFunction<Observable<Res<T>>, Observable<Res<T>>> {
+export function pipeResultify<T>(): RxPipe<T, Res<T>> {
     return pipe(
+        map(v => {
+            return Ok(v);
+        }),
         catchError(err => {
             return of(ErrFromNative(err));
-        }),
-        map(v => {
-            if (!(v instanceof OkCls) && !(v instanceof ErrCls)) {
-                return Ok(v);
-            }
-            return v;
         })
     );
 }
@@ -178,7 +174,25 @@ export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
     );
 }
 
-export function pipeEmptyArrOnErr<T>(): RxPipe<Res<T[]>, T[]> {
+export function pipeTakeFirst<T>(): RxPipe<T[], Res<T>> {
+    return pipe(
+        map(val => {
+            if (val.length == 0) {
+                return Err("empty arr to take from")
+            }
+            return Ok(val[0])
+        })
+    );
+}
+
+export function pipeTakeFirstUnwrap<T>(): RxPipe<T[], T> {
+    return pipe(
+        pipeTakeFirst(),
+        pipeUnwrap()
+    );
+}
+
+export function pipeOkOrEmptyArr<T>(): RxPipe<Res<T[]>, T[]> {
     return pipe(
         map(val => {
             if (val.is_err()) {
@@ -189,7 +203,7 @@ export function pipeEmptyArrOnErr<T>(): RxPipe<Res<T[]>, T[]> {
     )
 }
 
-export function pipeUndefinedOnErr<T>(): RxPipe<Res<T>, T | undefined> {
+export function pipeOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
     return pipe(
         map(val => {
             if (val.is_err()) {
