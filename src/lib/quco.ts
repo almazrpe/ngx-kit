@@ -9,7 +9,7 @@ export namespace quco {
     export type UpdQuery = Query;
     export type DelQuery = Query;
 
-    const CODE_PREFIX = "orwynn_quco::";
+    const CODE_PREFIX = "quco::";
 
     function unpackFirstUnit() {
         return pipe(
