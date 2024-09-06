@@ -12,7 +12,7 @@ import
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
-import { assert, Err, ErrCls, Ok, panic, Res, resultifyPipe, RxPipe } from "./copper";
+import { assert, Err, ErrCls, Ok, panic, Res, pipeResultify, RxPipe } from "./copper";
 import {uuid4} from "./uuid";
 
 export type Msg = any;
@@ -210,7 +210,7 @@ export class Bus {
     const subfn = (msg: Msg): void => subject$.next(msg);
     this.pub(code, msg, subfn, opts);
     return subject$.asObservable().pipe(
-      resultifyPipe<Msg>(),
+      pipeResultify<Msg>(),
       map(msg => {
         if (msg instanceof ErrCls) {
           // additionally spawn alerts for errors happened as responses

@@ -143,7 +143,7 @@ export function assert(condition: boolean, msg?: string): void {
     }
 }
 
-export function resultifyPipe<T>():
+export function pipeResultify<T>():
         UnaryFunction<Observable<Res<T>>, Observable<Res<T>>> {
     return pipe(
         catchError(err => {
@@ -162,7 +162,7 @@ export type RxPipe<TInp, TOut> = UnaryFunction<
     Observable<TInp>, Observable<TOut>
 >
 
-export function securePipe<T>(): RxPipe<Res<T>, Res<T>> {
+export function pipeSecure<T>(): RxPipe<Res<T>, Res<T>> {
     return pipe(
         catchError(err => {
             return of(ErrFromNative(err));
@@ -176,4 +176,26 @@ export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
             return val.unwrap();
         })
     );
+}
+
+export function pipeEmptyArrOnErr<T>(): RxPipe<Res<T[]>, T[]> {
+    return pipe(
+        map(val => {
+            if (val.is_err()) {
+                return []
+            }
+            return val.ok
+        })
+    )
+}
+
+export function pipeUndefinedOnErr<T>(): RxPipe<Res<T>, T | undefined> {
+    return pipe(
+        map(val => {
+            if (val.is_err()) {
+                return undefined
+            }
+            return val.ok
+        })
+    )
 }

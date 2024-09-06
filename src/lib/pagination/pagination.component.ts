@@ -31,10 +31,10 @@ import {
   PaginationPart,
   makePaginationConfig
 } from "./models";
-import { DTUtils } from "../time";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
 import { StatusCircleMode } from "../status-circle/status-circle.component";
+import { time } from "../../public-api";
 
 const DEFAULT_FIRST_COLUMN_NAME: string = "###NAME###";
 
@@ -452,7 +452,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
             filterId,
             {
               type: pair.type,
-              value: DTUtils.getComparativeDateString(pair.value)
+              value: time.getComparativeDateString(pair.value)
             }
           );
           break;
@@ -462,8 +462,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               type: pair.type,
               value: [
-                DTUtils.getComparativeDateString(pair.value[0]),
-                DTUtils.getComparativeDateString(pair.value[1])
+                time.getComparativeDateString(pair.value[0]),
+                time.getComparativeDateString(pair.value[1])
               ]
             }
           );
