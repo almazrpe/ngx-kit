@@ -3,10 +3,23 @@ import { Bus, Err, Ok, Res, pipeUnwrap } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
-    export type Query  = {[key: string]: any};
+
+    export interface Query {
+        [key: string]: any
+    }
+
+    export enum UpdQueryTopLevelOps {
+        Set = "$set",
+        Push = "$push",
+        Pull = "$pull"
+    }
+
+    export interface UpdQuery extends Query {
+        [key in UpdQueryTopLevelOps]: any
+    }
+
     export type NewQuery = Query;
     export type SearchQuery = Query;
-    export type UpdQuery = Query;
     export type DelQuery = Query;
 
     const CODE_PREFIX = "quco::";
