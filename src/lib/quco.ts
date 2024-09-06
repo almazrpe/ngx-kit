@@ -3,7 +3,7 @@ import { Bus, Err, Ok, Res, pipeUnwrap } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
-    export type Query  = any;
+    export type Query  = {[key: string]: any};
     export type NewQuery = Query;
     export type SearchQuery = Query;
     export type UpdQuery = Query;
@@ -117,7 +117,7 @@ export namespace quco {
         );
     }
 
-    export function upd$<T>(
+    export function upd$(
         collection: Collection,
         sq: SearchQuery,
         uq: UpdQuery
@@ -147,7 +147,7 @@ export namespace quco {
         );
     }
 
-    export function del$<T>(
+    export function del$(
         collection: Collection,
         sq: SearchQuery,
         uq: UpdQuery
