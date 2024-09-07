@@ -66,7 +66,7 @@ export namespace quco {
             CODE_PREFIX + "get",
             {
                 collection: collection,
-                gq: sq
+                gq: gq
             }
         ).pipe(
             unpackUnits()
@@ -81,7 +81,7 @@ export namespace quco {
             CODE_PREFIX + "get",
             {
                 collection: collection,
-                gq: sq
+                gq: gq
             }
         ).pipe(
             unpackFirstUnit()
@@ -94,7 +94,7 @@ export namespace quco {
     ): Observable<T> {
         return getOne$<T>(
             collection,
-            sq
+            gq
         ).pipe(
             pipeUnwrap()
         );
@@ -106,7 +106,7 @@ export namespace quco {
     ): Observable<T[]> {
         return getMany$<T>(
             collection,
-            sq
+            gq
         ).pipe(
             pipeUnwrap()
         );
@@ -136,7 +136,7 @@ export namespace quco {
             CODE_PREFIX + "new",
             {
                 collection: collection,
-                gq: sq,
+                gq: gq,
                 uq: uq
             }
         ).pipe(
@@ -165,7 +165,7 @@ export namespace quco {
             CODE_PREFIX + "new",
             {
                 collection: collection,
-                gq: sq
+                gq: gq
             }
         ).pipe(
             map((val: Res<any>) => {
