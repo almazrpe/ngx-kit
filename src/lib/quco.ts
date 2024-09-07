@@ -14,12 +14,9 @@ export namespace quco {
         Pull = "$pull"
     }
 
-    export interface UpdQuery extends Query {
-        [key in UpdQueryTopLevelOps]: any
-    }
-
     export type NewQuery = Query;
-    export type SearchQuery = Query;
+    export type GetQuery = Query;
+    export type UpdQuery = Query;
     export type DelQuery = Query;
 
     const CODE_PREFIX = "quco::";
@@ -63,7 +60,7 @@ export namespace quco {
 
     export function getMany$<T>(
         collection: Collection,
-        sq: SearchQuery = {}
+        sq: GetQuery = {}
     ): Observable<Res<T[]>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
@@ -78,7 +75,7 @@ export namespace quco {
 
     export function getOne$<T>(
         collection: Collection,
-        sq: SearchQuery = {}
+        sq: GetQuery = {}
     ): Observable<Res<T>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
@@ -93,7 +90,7 @@ export namespace quco {
 
     export function getOneUnwrap$<T>(
         collection: Collection,
-        sq: SearchQuery = {}
+        sq: GetQuery = {}
     ): Observable<T> {
         return getOne$<T>(
             collection,
@@ -105,7 +102,7 @@ export namespace quco {
 
     export function getManyUnwrap$<T>(
         collection: Collection,
-        sq: SearchQuery = {}
+        sq: GetQuery = {}
     ): Observable<T[]> {
         return getMany$<T>(
             collection,
@@ -132,7 +129,7 @@ export namespace quco {
 
     export function upd$(
         collection: Collection,
-        sq: SearchQuery,
+        sq: GetQuery,
         uq: UpdQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
@@ -162,7 +159,7 @@ export namespace quco {
 
     export function del$(
         collection: Collection,
-        sq: SearchQuery,
+        sq: GetQuery,
         uq: UpdQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
