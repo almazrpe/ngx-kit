@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { DTUtils } from ".";
+import { time } from "../../public-api";
 
 @Pipe({
   name: "unixTimestampToDate"
@@ -7,7 +7,7 @@ import { DTUtils } from ".";
 export class UnixTimestampToDatePipe implements PipeTransform {
 
   public transform(value: number): Date {
-    return DTUtils.convertTimestamp(value);
+    return time.toLocal(value);
   }
 
 }

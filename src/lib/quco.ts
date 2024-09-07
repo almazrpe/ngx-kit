@@ -60,13 +60,13 @@ export namespace quco {
 
     export function getMany$<T>(
         collection: Collection,
-        sq: GetQuery = {}
+        gq: GetQuery = {}
     ): Observable<Res<T[]>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
             {
                 collection: collection,
-                sq: sq
+                gq: sq
             }
         ).pipe(
             unpackUnits()
@@ -75,13 +75,13 @@ export namespace quco {
 
     export function getOne$<T>(
         collection: Collection,
-        sq: GetQuery = {}
+        gq: GetQuery = {}
     ): Observable<Res<T>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "get",
             {
                 collection: collection,
-                sq: sq
+                gq: sq
             }
         ).pipe(
             unpackFirstUnit()
@@ -90,7 +90,7 @@ export namespace quco {
 
     export function getOneUnwrap$<T>(
         collection: Collection,
-        sq: GetQuery = {}
+        gq: GetQuery = {}
     ): Observable<T> {
         return getOne$<T>(
             collection,
@@ -102,7 +102,7 @@ export namespace quco {
 
     export function getManyUnwrap$<T>(
         collection: Collection,
-        sq: GetQuery = {}
+        gq: GetQuery = {}
     ): Observable<T[]> {
         return getMany$<T>(
             collection,
@@ -129,14 +129,14 @@ export namespace quco {
 
     export function upd$(
         collection: Collection,
-        sq: GetQuery,
+        gq: GetQuery,
         uq: UpdQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "new",
             {
                 collection: collection,
-                sq: sq,
+                gq: sq,
                 uq: uq
             }
         ).pipe(
@@ -159,13 +159,13 @@ export namespace quco {
 
     export function del$(
         collection: Collection,
-        sq: GetQuery
+        gq: GetQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "new",
             {
                 collection: collection,
-                sq: sq
+                gq: sq
             }
         ).pipe(
             map((val: Res<any>) => {
