@@ -159,15 +159,13 @@ export namespace quco {
 
     export function del$(
         collection: Collection,
-        sq: GetQuery,
-        uq: UpdQuery
+        sq: GetQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
             CODE_PREFIX + "new",
             {
                 collection: collection,
-                sq: sq,
-                uq: uq
+                sq: sq
             }
         ).pipe(
             map((val: Res<any>) => {
