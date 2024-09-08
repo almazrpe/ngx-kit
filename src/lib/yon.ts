@@ -203,7 +203,7 @@ export class Bus {
   }
 
   /// Publishes msg and awaits for the response.
-  public pub$<T>(
+  public pub$<T = OkMsg>(
     code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
   ): Observable<Res<T>> {
     const subject$ = new ReplaySubject<Msg>();

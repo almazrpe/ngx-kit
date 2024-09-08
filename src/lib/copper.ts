@@ -213,3 +213,14 @@ export function pipeOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
         })
     )
 }
+
+export function pipeOkOrNull<T>(): RxPipe<Res<T>, T | null> {
+    return pipe(
+        map(val => {
+            if (val.is_err()) {
+                return null
+            }
+            return val.ok
+        })
+    )
+}
