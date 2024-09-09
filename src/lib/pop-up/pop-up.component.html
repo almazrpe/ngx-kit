@@ -11,9 +11,52 @@
       bg-c30 shadow inline-table p-6 rounded-md
       mt-14 h-fit
     "
-    [ngClass]="{'min-w-[75%]': type == PopUpType.Form}"
+    [ngClass]="{
+      'min-w-[75%]': type == PopUpType.Form,
+      'max-w-[75%] min-w-[75%]': type == PopUpType.Template
+    }"
     [ngSwitch]="true"
   >
+    <div
+      *ngSwitchCase="type == PopUpType.Template"
+      class="w-full flex flex-col justify-center items-center"
+    >
+      <div class="w-full flex items-center gap-10 justify-between px-1">
+        <ng-container
+          *ngIf="extraHeaderTemplateRef != null;
+                 then extraHeaderTemplateRef;
+                 else defaultPopUpHeader"
+        ></ng-container>
+
+        <ng-template #defaultPopUpHeader>
+          <div
+            class="ml-2 self-center cursor-default select-none text-xl"
+          >
+            {{ title }}
+          </div>
+        </ng-template>
+
+        <ngx-kit-button
+          class="shrink-0"
+          [mode]="ButtonMode.DANGER"
+          (clickFunc)="closePopUp()"
+        >
+          <img
+            [src]="_config_.abortIconPath"
+            alt="x"
+            draggable="false"
+            class="w-4 before:text-xl shrink-0"
+          >
+        </ngx-kit-button>
+      </div>
+
+      <ngx-kit-hr class="w-full"></ngx-kit-hr>
+
+      <ng-container *ngIf="mainTemplateRef != null">
+        <ng-container *ngTemplateOutlet="mainTemplateRef"></ng-container>
+      </ng-container>
+    </div>
+
     <div
       *ngSwitchCase="type == PopUpType.YesNo"
       class="w-full flex flex-col justify-center items-center"

@@ -1,4 +1,11 @@
-import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  Input,
+  EventEmitter,
+  TemplateRef
+} from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { InputType } from "../input/input-type";
@@ -39,6 +46,8 @@ export class PopUpComponent implements OnInit
   public controls: FormControl[];
   public choosingButtons: PopUpChoosingBtn[];
   public paginationData: PopUpPaginationData;
+  public mainTemplateRef: TemplateRef<any> | null;
+  public extraHeaderTemplateRef: TemplateRef<any> | null;
   public formFieldsDescriptor:
     ((data: any) => PopUpDescriptorField[]) | null =
       null;
@@ -134,6 +143,8 @@ export class PopUpComponent implements OnInit
         this.controls = this.getAllFormControls();
         this.choosingButtons = window.choosingButtons ?? [];
         this.paginationData = window.paginationData ?? { items: [] };
+        this.mainTemplateRef = window.templateRefs?.main ?? null;
+        this.extraHeaderTemplateRef = window.templateRefs?.extraHeader ?? null;
       },
       error: (err: Error) =>
       {

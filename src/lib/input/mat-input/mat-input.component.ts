@@ -440,6 +440,12 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T>
       switch(this.type)
       {
         case InputType.Number:
+          if (/^[0-9]{1,}[.,]{1}$/.test(val))
+          {
+            this.mainElementRef.nativeElement.value = 
+              val.slice(0,-1).concat(",0");
+            return;
+          }
           this.mainElementRef.nativeElement.value = val;
           this.mainElementRef.nativeElement.dispatchEvent(
             new Event("input", { bubbles: true }));

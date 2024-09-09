@@ -1,3 +1,4 @@
+import { TemplateRef } from "@angular/core";
 import { InputType } from "../input/input-type";
 import { ButtonMode } from "../button/button.component";
 import {
@@ -27,7 +28,8 @@ export enum PopUpType {
   YesNo = 1,
   ChoosingBtn = 2,
   Form = 3,
-  Pagination = 4
+  Pagination = 4,
+  Template = 5
 }
 
 export interface PopUpConfig
@@ -114,6 +116,10 @@ export interface PopUpWindow {
   fields?: PopUpFormField[];
   choosingButtons?: PopUpChoosingBtn[];
   paginationData?: PopUpPaginationData;
+  templateRefs?: {
+    main?: TemplateRef<any>;
+    extraHeader?: TemplateRef<any>;
+  };
 }
 
 export interface PopUpResult {

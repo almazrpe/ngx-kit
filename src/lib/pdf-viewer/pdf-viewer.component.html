@@ -2,93 +2,92 @@
   <!-- Top bar -->
   <div class="px-1 mt-1 flex flex-row w-full justify-between items-center">
     <!-- Page number selector -->
-    <form
-      class="flex flex-row h-full justify-start items-center gap-1"
-      [formGroup]="form"
-    >
-      <ngx-kit-mat-input
-        formControlName="currentPageNumber"
-        class="w-1/5"
-        [localizedName]="_config_.pageNumberTranslation"
-        [type]="InputType.Number"
-        [showErrors]="false"
-        (inputValue)="onInputValue($event)"
-      />
-      <p class="self-center select-none">
-        <span i18n>из</span> {{pagesCount}}
-      </p>
+<!--    <form-->
+<!--      class="flex flex-row h-full justify-start items-center gap-1"-->
+<!--      [formGroup]="form"-->
+<!--    >-->
+<!--      <ngx-kit-mat-input-->
+<!--        formControlName="currentPageNumber"-->
+<!--        class="w-1/5"-->
+<!--        [localizedName]="_config_.pageNumberTranslation"-->
+<!--        [type]="InputType.Number"-->
+<!--        [showErrors]="false"-->
+<!--        (inputValue)="onInputValue($event)"-->
+<!--      />-->
+<!--      <p class="self-center select-none">-->
+<!--        <span i18n>из</span> {{pagesCount}}-->
+<!--      </p>-->
 
-      <!-- Page navigation arrows -->
-      <div
-        class="flex flex-row justify-center items-center ml-2 gap-1"
-      >
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isPageupEnabled$ | async"
-          (clickFunc)="pageup()"
-        >
-          <img
-            [src]="_config_.pageUpIconPath"
-            alt="page up"
-            draggable="false"
-            class="w-8"
-          >
-        </ngx-kit-button>
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isPagedownEnabled$ | async"
-          (clickFunc)="pagedown()"
-        >
-          <img
-            [src]="_config_.pageDownIconPath"
-            alt="page down"
-            draggable="false"
-            class="w-8"
-          >
-        </ngx-kit-button>
-      </div>
-    </form>
+<!--      <div-->
+<!--        class="flex flex-row justify-center items-center ml-2 gap-1"-->
+<!--      >-->
+<!--        <ngx-kit-button-->
+<!--          class="flex items-center"-->
+<!--          [mode]="ButtonMode.CONTROLS"-->
+<!--          [isEnabled]="isPageupEnabled$ | async"-->
+<!--          (clickFunc)="pageup()"-->
+<!--        >-->
+<!--          <img-->
+<!--            [src]="_config_.pageUpIconPath"-->
+<!--            alt="page up"-->
+<!--            draggable="false"-->
+<!--            class="w-8"-->
+<!--          >-->
+<!--        </ngx-kit-button>-->
+<!--        <ngx-kit-button-->
+<!--          class="flex items-center"-->
+<!--          [mode]="ButtonMode.CONTROLS"-->
+<!--          [isEnabled]="isPagedownEnabled$ | async"-->
+<!--          (clickFunc)="pagedown()"-->
+<!--        >-->
+<!--          <img-->
+<!--            [src]="_config_.pageDownIconPath"-->
+<!--            alt="page down"-->
+<!--            draggable="false"-->
+<!--            class="w-8"-->
+<!--          >-->
+<!--        </ngx-kit-button>-->
+<!--      </div>-->
+<!--    </form>-->
 
     <!-- Zoom control panel -->
     <div class="flex flex-row gap-10">
-      <div
-        class="flex flex-row justify-center items-center ml-2 gap-1"
-      >
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isZoomdownEnabled$ | async"
-          (clickFunc)="zoomdown()"
-        >
-          <img
-            [src]="_config_.zoomDownIconPath"
-            alt="zoom down"
-            draggable="false"
-            class="w-9"
-          >
-        </ngx-kit-button>
-        <div
-          class="text-center w-10"
-          *ngIf="zoom$ | async as zoom"
-        >
-          {{Math.round(zoom * 100)}}%
-        </div>
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isZoomupEnabled$ | async"
-          (clickFunc)="zoomup()"
-        >
-          <img
-            [src]="_config_.zoomUpIconPath"
-            alt="zoom up"
-            draggable="false"
-            class="w-9"
-          >
-        </ngx-kit-button>
-      </div>
+<!--      <div-->
+<!--        class="flex flex-row justify-center items-center ml-2 gap-1"-->
+<!--      >-->
+<!--        <ngx-kit-button-->
+<!--          class="flex items-center"-->
+<!--          [mode]="ButtonMode.CONTROLS"-->
+<!--          [isEnabled]="isZoomdownEnabled$ | async"-->
+<!--          (clickFunc)="zoomdown()"-->
+<!--        >-->
+<!--          <img-->
+<!--            [src]="_config_.zoomDownIconPath"-->
+<!--            alt="zoom down"-->
+<!--            draggable="false"-->
+<!--            class="w-9"-->
+<!--          >-->
+<!--        </ngx-kit-button>-->
+<!--        <div-->
+<!--          class="text-center w-10"-->
+<!--          *ngIf="zoom$ | async as zoom"-->
+<!--        >-->
+<!--          {{Math.round(zoom * 100)}}%-->
+<!--        </div>-->
+<!--        <ngx-kit-button-->
+<!--          class="flex items-center"-->
+<!--          [mode]="ButtonMode.CONTROLS"-->
+<!--          [isEnabled]="isZoomupEnabled$ | async"-->
+<!--          (clickFunc)="zoomup()"-->
+<!--        >-->
+<!--          <img-->
+<!--            [src]="_config_.zoomUpIconPath"-->
+<!--            alt="zoom up"-->
+<!--            draggable="false"-->
+<!--            class="w-9"-->
+<!--          >-->
+<!--        </ngx-kit-button>-->
+<!--      </div>-->
 
       <!-- Back Button -->
       <ngx-kit-button
@@ -116,15 +115,23 @@
 
   <!-- Document viewer -->
   <ng-template #docViewer>
-    <pdf-viewer
-      [src]="url"
-      [page]="currentPageNumber$ | async"
-      [render-text]="false"
-      [original-size]="false"
-      [fit-to-page]="false"
-      [zoom]="(zoom$ | async) ?? 1"
-      [zoom-scale]="'page-width'"
-      class="w-full h-screen">
-    </pdf-viewer>
+    <pinch-zoom
+      [disableZoomControl]="'disable'"
+      [limitPan]="true"
+      [limit-zoom]="100"
+      [backgroundColor]="'var(--c60)'"
+      class="h-full w-full"
+    >
+      <pdf-viewer
+        [src]="url"
+        [page]="currentPageNumber$ | async"
+        [render-text]="false"
+        [original-size]="false"
+        [fit-to-page]="false"
+        [zoom]="(zoom$ | async) ?? 1"
+        [zoom-scale]="'page-width'"
+        class="w-full h-screen"
+      ></pdf-viewer>
+    </pinch-zoom>
   </ng-template>
 </div>
