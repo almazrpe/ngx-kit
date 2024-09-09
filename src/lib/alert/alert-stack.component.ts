@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Alert, AlertLevel, AlertUrls } from "./models";
 import { AlertService } from "./alert.service";
 import { Queue } from "queue-typescript";
-import { QueueUtils } from "../queue";
+import { clearQueue } from "ngx-kit/queue";
 
 export enum CallEvent {
   CLEAR = 0
@@ -61,7 +61,7 @@ throw err;
 
   // Clear all alerts
   private clear(): void {
-    QueueUtils.clearQueue<Alert>(this.alertQueue);
+    clearQueue<Alert>(this.alertQueue);
     this.disableClearingTimer();
   }
 
