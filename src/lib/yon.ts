@@ -156,7 +156,7 @@ export class Bus {
 
     this.conWrapper$ = this.conSv.serverWsUrl$.pipe(
       map(url => {
-        log.info(`connect websocket at ${url + "/rx"}`);
+        log.info(`connecting websocket at ${url + "/rx"}`);
         return webSocket<Bmsg>(
           url + "/rx"
         );
