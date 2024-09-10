@@ -118,6 +118,7 @@ export interface CodeData<T = any> {
 
 export interface AwaitingForResponse {
   initialCode: string
+  initialCodeSuffix?: string
   fn: SubFn
 }
 
@@ -206,7 +207,6 @@ export class Bus {
     fn: SubFn<T>,
     retUnsub: (unsub: () => void) => void = _ => {}
   ): Res<undefined> {
-    log.warn(code)
     if (!this.isWelcomeArrived()) {
       this.onWelcome.enqueue(() => {this.subFull(code, fn, retUnsub)})
       return Ok(undefined)
@@ -315,7 +315,14 @@ export class Bus {
 
     let sid = uuid4();
     if (fn !== undefined) {
-      this.awaitingForResponse.set(sid, {initialCode: code, fn: fn});
+      let initialCodeSuffix = undefined
+      if (Object.hasOwn(msg, "collection")) {
+        initialCodeSuffix = msg.collection
+      }
+      this.awaitingForResponse.set(
+        sid,
+        {initialCode: code, initialCodeSuffix: initialCodeSuffix, fn: fn}
+      )
     }
 
     // send to net
@@ -441,9 +448,15 @@ export class Bus {
 
     let to = ""
     if (bmsg.lsid !== undefined) {
-      let linkedCode = this.awaitingForResponse.get(bmsg.lsid)?.initialCode
+      let awaitingResponse = this.awaitingForResponse.get(bmsg.lsid)
+      let linkedCode = awaitingResponse?.initialCode
+      let suffix = awaitingResponse?.initialCodeSuffix
       if (linkedCode !== undefined) {
         to = linkedCode
+        // add suffix only if linked code is defined
+        if (suffix !== undefined) {
+          to += "::" + suffix
+        }
       }
     }
     let log_msg = `NET::RECV | ${code} -> ${to} | ${JSON.stringify(raw)}`
