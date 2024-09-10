@@ -95,7 +95,7 @@ function de(raw: any): Res<Bmsg> {
     || codeid === undefined
     || msg === undefined
   ) {
-    return Err("incorrect msg " + raw + " composition");
+    return Err("incorrect msg composition");
   }
 
   let bmsg = new Bmsg(sid, codeid, msg, lsid, is_err);
@@ -310,9 +310,9 @@ export class Bus {
   }
 
   private welcome(raw: any): void {
-      let codes = raw.codes;
+      let codes = raw.msg.codes;
       if (codes === undefined) {
-        panic("incorrect welcome message composition: " + raw);
+        panic("incorrect welcome message composition");
       }
       this.codes = codes;
       this.codesData.clear();
@@ -323,7 +323,7 @@ export class Bus {
   }
 
   private recv(raw: any): void {
-    log.info("NET::RECV | " + raw);
+    log.info("NET::RECV | " + JSON.stringify(raw));
     let bmsg_r = de(raw);
     if (bmsg_r.is_err()) {
       log.track(bmsg_r);
