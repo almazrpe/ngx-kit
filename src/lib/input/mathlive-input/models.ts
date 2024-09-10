@@ -1,4 +1,8 @@
-import { VirtualKeyboardLayout, Keybinding } from "mathlive";
+import {
+    VirtualKeyboardLayout,
+    VirtualKeyboardName,
+    Keybinding
+} from "mathlive";
 
 /**
  * Output math formats supported by mathlive.
@@ -6,16 +10,16 @@ import { VirtualKeyboardLayout, Keybinding } from "mathlive";
  * @see https://cortexjs.io/docs/mathlive/#(OutputFormat%3Atype)
  */
 export enum MathliveOutputFormat {
-  ASCIIMath = "ascii-math",
-  Latex = "latex",
-  LatexExpanded = "latex-expanded",
-  LatexUnstyled = "latex-unstyled",
-  MathJSON = "math-json",
-  MathML = "math-ml",
-  Spoken = "spoken",
-  SpokenText = "spoken-text",
-  SpokenSSML = "spoken-ssml",
-  SpokenSSMLHighlight = "spoken-ssml-with-highlighting"
+    ASCIIMath = "ascii-math",
+    Latex = "latex",
+    LatexExpanded = "latex-expanded",
+    LatexUnstyled = "latex-unstyled",
+    MathJSON = "math-json",
+    MathML = "math-ml",
+    Spoken = "spoken",
+    SpokenText = "spoken-text",
+    SpokenSSML = "spoken-ssml",
+    SpokenSSMLHighlight = "spoken-ssml-with-highlighting"
 }
 
 /**
@@ -25,65 +29,61 @@ export enum MathliveOutputFormat {
  * for missing fields
  */
 export interface MathliveInputConfig {
-  /**
-   * Initial value in the input field
-   */
-  initialValue: string;
-  /**
-   * Path to directory with default mathlive fonts
-   * (custom fonts restricted)
-   */
-  fontsDirectory: string | null;
-  /**
-   * Path to directory with mathlive sound effects
-   */
-  soundsDirectory: string | null;
-  /**
-   * The locale (language + region) to use for
-   * string localization in the component
-   */
-  locale: string;
-  /**
-   * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
-   */
-  smartMode: boolean;
-  /**
-   * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
-   */
-  smartFence: boolean;
-  /**
-   * @see https://cortexjs.io/docs/mathlive/#(ParseMode%3Atype)
-   */
-  parseMode: "math" | "text" | "latex";
-  /**
-   * @see https://cortexjs.io/docs/mathlive/#(LayoutOptions%3Atype)
-   */
-  letterShapeStyle: "auto" | "tex" | "iso" | "french" | "upright";
-  /**
-   * Tooltip for the virtual keyboard button
-   */
-  virtualKeyboardTxt: string;
-  /**
-   * List of formats that should be used for inputValue events
-   */
-  outputFormats: MathliveOutputFormat[];
-  /**
-   * Chars that should be identified as variables
-   */
-  variableChars: string;
-  /**
-   * Rule that should be used for identification of multi character variables
-   */
-  variableRegex: RegExp | null;
-  /**
-   * Chars that should be expelled
-   */
-  restrictedChars: string;
-  /**
-   * Additional bindings for regular keyboard
-   * (e.g. when you need to trigger some latex command throw keys)
-   */
-  additionalKeybindings: Keybinding[];
+    /**
+     * Path to directory with default mathlive fonts
+     * (custom fonts restricted)
+     */
+    fontsDirectory: string | null;
+    /**
+     * Path to directory with mathlive sound effects
+     */
+    soundsDirectory: string | null;
+    /**
+     * The locale (language + region) to use for
+     * string localization in the component
+     */
+    locale: string;
+    /**
+     * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
+     */
+    smartMode: boolean;
+    /**
+     * @see https://cortexjs.io/docs/mathlive/#(EditingOptions%3Atype)
+     */
+    smartFence: boolean;
+    /**
+     * @see https://cortexjs.io/docs/mathlive/#(ParseMode%3Atype)
+     */
+    parseMode: "math" | "text" | "latex";
+    /**
+     * @see https://cortexjs.io/docs/mathlive/#(LayoutOptions%3Atype)
+     */
+    letterShapeStyle: "auto" | "tex" | "iso" | "french" | "upright";
+    /**
+     * Tooltip for the virtual keyboard button
+     */
+    virtualKeyboardTxt: string;
+    /**
+     * List of formats that should be used for inputValue events
+     */
+    outputFormats: MathliveOutputFormat[];
+    /**
+     * Chars that should be identified as variables
+     */
+    variableChars: string;
+    /**
+     * Rule that should be used for identification of multi character variables
+     */
+    variableRegex: RegExp | null;
+    /**
+     * Chars that should be expelled
+     */
+    restrictedChars: string;
+    /**
+     * Additional bindings for regular keyboard
+     * (e.g. when you need to trigger some latex command throw keys)
+     */
+    additionalKeybindings: Keybinding[];
 }
 
 /**
@@ -97,44 +97,49 @@ export interface MathliveInputConfig {
  * @returns          completed PaginationConfig object with all attributes
  */
 export function makeMathliveInputConfig(
-  options?: Partial<MathliveInputConfig>
+    options?: Partial<MathliveInputConfig>
 ): MathliveInputConfig {
-  const defaults: MathliveInputConfig = {
-    initialValue: "",
-    fontsDirectory: null,
-    soundsDirectory: null,
-    locale: "en-EN",
-    smartMode: false,
-    smartFence: false,
-    parseMode: "math",
-    letterShapeStyle: "iso",
-    virtualKeyboardTxt: "Virtual keyboard",
-    outputFormats: [MathliveOutputFormat.Latex, MathliveOutputFormat.MathML],
-    variableChars: "",
-    variableRegex: null,
-    restrictedChars: "",
-    additionalKeybindings: []
-  };
+    const defaults: MathliveInputConfig = {
+        fontsDirectory: null,
+        soundsDirectory: null,
+        locale: "en-EN",
+        smartMode: false,
+        smartFence: false,
+        parseMode: "math",
+        letterShapeStyle: "iso",
+        virtualKeyboardTxt: "Virtual keyboard",
+        outputFormats: [MathliveOutputFormat.Latex, MathliveOutputFormat.MathML],
+        variableChars: "",
+        variableRegex: null,
+        restrictedChars: "",
+        additionalKeybindings: []
+    };
 
-  return {
-    ...defaults,
-    ...options,
-  };
+    return {
+        ...defaults,
+        ...options
+    };
 }
+
+/**
+ * Type definitions for more appropriate naming
+ */
+export type MathliveVKLayout = VirtualKeyboardLayout;
+export type MathliveVKName = VirtualKeyboardName;
 
 /**
  * Default layout for mathlive virtual keyboard
  */
-export const mathliveDefaultVirtualKeyboardLayout: VirtualKeyboardLayout = {
-  label: "default",
-  rows: [
-    [
-      "+", "-", "\\times",
-      //"\\frac{#@}{#?}",
-      //"\\sqrt{#0}",
-      "#@^{#?}",
-    ],
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
-    ["\\pi", "\\exp", ".", "(", ")"],
-  ]
+export const mathliveDefaultVKLayout: MathliveVKLayout = {
+    label: "default",
+    rows: [
+        [
+          "+", "-", "*",
+          //"\\frac{#@}{#?}",
+          //"\\sqrt{#0}",
+          //"#@^{#?}",
+        ],
+        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+        ["\\pi", "\\exp", ".", "(", ")"],
+    ]
 };

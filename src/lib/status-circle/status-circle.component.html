@@ -2,42 +2,41 @@
   Reference: https://tailwindcss.com/docs/animation#ping
 -->
 <span
-  class="relative flex"
-  [ngClass]="cssClasses$ | async"
->
-  <span
-    class="
-      animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-    "
-    [ngClass]="{
-      'bg-green-400': mode == CircleMode.ACTIVE,
-      'bg-red-400': mode == CircleMode.NONACTIVE,
-    }"
-  >
-    <ng-container *ngIf="mode == CircleMode.IMAGE">
-      <img
-        [ngClass]="cssClasses$ | async"
-        [src]="imgSrc"
-      >
-    </ng-container>
-  </span>
-  <span
-    class="relative inline-flex"
+    class="relative flex"
     [ngClass]="cssClasses$ | async"
-  >
+>
     <span
-      class="w-full h-full rounded-full"
-      [ngClass]="{
-        'bg-green-500': mode == CircleMode.ACTIVE,
-        'bg-red-500': mode == CircleMode.NONACTIVE
-      }"
+        class="animate-ping absolute inline-flex h-full w-full rounded-full 
+               opacity-75"
+        [ngClass]="{
+            'bg-green-400': mode == CircleMode.ACTIVE,
+            'bg-red-400': mode == CircleMode.NONACTIVE,
+        }"
     >
-      <ng-container *ngIf="mode == CircleMode.IMAGE">
-        <img
-          [ngClass]="cssClasses$ | async"
-          [src]="imgSrc"
-        >
-      </ng-container>
+        <ng-container *ngIf="mode == CircleMode.IMAGE">
+            <img
+                [ngClass]="cssClasses$ | async"
+                [src]="imgSrc"
+            >
+        </ng-container>
     </span>
-  </span>
+    <span
+        class="relative inline-flex"
+        [ngClass]="cssClasses$ | async"
+    >
+        <span
+            class="w-full h-full rounded-full"
+            [ngClass]="{
+                'bg-green-500': mode == CircleMode.ACTIVE,
+                'bg-red-500': mode == CircleMode.NONACTIVE
+            }"
+        >
+            <ng-container *ngIf="mode == CircleMode.IMAGE">
+                <img
+                    [ngClass]="cssClasses$ | async"
+                    [src]="imgSrc"
+                >
+            </ng-container>
+        </span>
+    </span>
 </span>

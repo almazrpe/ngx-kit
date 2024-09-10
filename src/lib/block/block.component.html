@@ -1,31 +1,31 @@
 <div [ngClass]="html.classes">
-  <div
-    *ngIf="errorMsg$ | async as errMsg; else loadingBlock"
-    class="flex flex-col gap-2 items-center"
-  >
-    <div class="text-lg">{{errMsg}}</div>
-    <ngx-kit-button
-      [extraCssClasses]="refreshBtnExtraClasses"
-      (clickFunc)="refresh.emit()"
+    <div
+        *ngIf="errorMsg$ | async as errMsg; else loadingBlock"
+        class="flex flex-col gap-2 items-center"
     >
-      <img
-        [src]="refreshIconPath"
-        [ngClass]="getRefreshImgNgClasses()"
-        class="filter-white"
-        alt="RE"
-      />
-    </ngx-kit-button>
-  </div>
+        <div class="text-lg">{{errMsg}}</div>
+        <ngx-kit-button
+            [extraCssClasses]="refreshBtnExtraClasses"
+            (clickFunc)="refresh.emit()"
+        >
+            <img
+                [src]="refreshIconPath"
+                [ngClass]="getRefreshImgNgClasses()"
+                class="filter-white"
+                alt="RE"
+            />
+        </ngx-kit-button>
+    </div>
 </div>
 
 <ng-template #loadingBlock>
-  <ng-container
-    [ngTemplateOutlet]="template" 
-    *ngIf="isLoaded$ | async; else loading"
-  >
-  </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="template" 
+        *ngIf="isLoaded$ | async; else loading"
+    >
+    </ng-container>
 </ng-template>
 
 <ng-template #loading>
-  <ngx-kit-loading class="h-20 w-full flex justify-center items-center"/>
+    <ngx-kit-loading class="h-20 w-full flex justify-center items-center"/>
 </ng-template>

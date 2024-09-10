@@ -1,12 +1,12 @@
 export interface PdfViewerConfig {
-  pageNumberTranslation: string;
-  noSuchDocPageTranslation: string;
-  returnIconPath: string;
-  pageUpIconPath: string;
-  pageDownIconPath: string;
-  zoomUpIconPath: string;
-  zoomDownIconPath: string;
-  pdfWorkerPath: string | null;
+    pageNumberTranslation: string;
+    noSuchDocPageTranslation: string;
+    returnIconPath: string;
+    pageUpIconPath: string;
+    pageDownIconPath: string;
+    zoomUpIconPath: string;
+    zoomDownIconPath: string;
+    pdfWorkerPath: string | null;
 }
 
 /**
@@ -21,23 +21,23 @@ export interface PdfViewerConfig {
  *                   attributes
  */
 export function makePdfViewerConfig(
-  options?: Partial<PdfViewerConfig>
+    options?: Partial<PdfViewerConfig>
 ): PdfViewerConfig {
-  const defaults: PdfViewerConfig = {
-    pageNumberTranslation:
-      "Page number",
-    noSuchDocPageTranslation:
-      "There is no such document page:",
-    returnIconPath: "",
-    pageUpIconPath: "",
-    pageDownIconPath: "",
-    zoomUpIconPath: "",
-    zoomDownIconPath: "",
-    pdfWorkerPath: null,
-  };
+    const defaults: PdfViewerConfig = {
+        pageNumberTranslation:
+            "Page number",
+        noSuchDocPageTranslation:
+            "There is no such document page:",
+        returnIconPath: "",
+        pageUpIconPath: "",
+        pageDownIconPath: "",
+        zoomUpIconPath: "",
+        zoomDownIconPath: "",
+        pdfWorkerPath: null,
+    };
 
-  return {
-    ...defaults,
-    ...options,
-  };
+    return {
+        ...defaults,
+        ...options,
+    };
 }

@@ -3,21 +3,21 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BlockComponent } from "./block.component";
 
 describe("BlockComponent", () => {
-  let component: BlockComponent;
-  let fixture: ComponentFixture<BlockComponent>;
+    let component: BlockComponent;
+    let fixture: ComponentFixture<BlockComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ BlockComponent ]
-    })
-      .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [ BlockComponent ]
+        })
+            .compileComponents();
 
-    fixture = TestBed.createComponent(BlockComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(BlockComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+    it("should create", () => {
+        expect(component).toBeTruthy();
+    });
 });

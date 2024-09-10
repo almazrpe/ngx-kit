@@ -10,16 +10,16 @@ import { ValueValidator } from "./value-validator";
  * @returns a new value to set or undefined if all checks were passed
  */
 export function checkValueAgainstValidators(
-  value: string,
-  valueValidators: ValueValidator<any>[]
+    value: string,
+    valueValidators: ValueValidator<any>[]
 ): any | undefined {
-  let validatorResult: any | undefined;
+    let validatorResult: any | undefined;
 
-  for (const validator of valueValidators) {
-    validatorResult = validator(value);
+    for (const validator of valueValidators) {
+        validatorResult = validator(value);
 
-    if (validatorResult !== undefined) {
-      return validatorResult;
+        if (validatorResult !== undefined) {
+            return validatorResult;
+        }
     }
-  }
 }

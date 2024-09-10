@@ -1,701 +1,1016 @@
 <ngx-kit-block
-  class="w-screen"
-  [extraClass]="data._config_!.disabledParts.has(PagPart.SearchField)
-    && data._config_!.disabledParts.has(PagPart.Footer) ? '!p-0' : ''"
-  *ngIf="{
-    _config_: config$ | async,
-    items: allPaginationItems$ | async,
-    afilters: activePaginationFilters$ | async,
-    dfilters: disabledPaginationFilters$ | async
-  } as data"
+    class="w-screen"
+    [extraClass]="
+        data._config_!.disabledParts.has(PagPart.SearchField)
+        && data._config_!.disabledParts.has(PagPart.Footer) 
+            ? '!p-0' 
+            : ''
+    "
+    *ngIf="{
+        _config_: config$ | async,
+        items: allPaginationItems$ | async,
+        afilters: activePaginationFilters$ | async,
+        dfilters: disabledPaginationFilters$ | async
+    } as data"
 >
-  <ng-template>
-    <!------------------------------------------------------------------------>
-    <!-------------------------------- HEADER -------------------------------->
-    <!------------------------------------------------------------------------>
-    <ng-container
-      *ngIf="data.items!.length > 0
-        && data._config_!.disabledParts.has(PagPart.Items) == false"
-    >
-      <div class="w-full flex flex-row justify-between">
-        <div
-          class="w-full flex flex-col gap-2 overflow-x-visible"
+    <ng-template>
+        <!-------------------------------------------------------------------->
+        <!------------------------------ HEADER ------------------------------>
+        <!-------------------------------------------------------------------->
+        <ng-container
+            *ngIf="data.items!.length > 0
+                   && data._config_!.disabledParts.has(PagPart.Items) == false"
         >
-          <ngx-kit-mat-input
-            [type]="InpType.Text"
-            [placeholder]="data._config_!.fullTextSearchTxt"
-            (inputValue)="setFullTextSearchVal($event)"
-            *ngIf="data._config_!.disabledParts.has(
-              PagPart.SearchField
-            ) == false"
-          />
-
-          <div
-            *ngIf="!isFiltersWindowShown"
-            class="flex gap-2 flex-row flex-wrap justify-start select-none"
-          >
-            <div class="flex flex-row" *ngFor="let filter of data.afilters">
-              <div
-                class="px-4 my-auto bg-c10 text-white rounded-l
-                       cursor-default truncate"
-              >
-                {{filter.labelText}}
-              </div>
-              <div
-                class="p-2 bg-red-50 rounded-r cursor-pointer"
-                (click)="dropFilter(filter.id)"
-              >
-                <img
-                  class="relative w-2 h-2 before:-top-full before:absolute"
-                  draggable="false"
-                  [src]="data._config_!.dropFilterBIconPath"
-                  [alt]="'x'"
+            <div class="w-full flex flex-row justify-between">
+                <div
+                    class="w-full flex flex-col gap-2 overflow-x-visible"
                 >
-              </div>
-            </div>
-          </div>
-        </div>
-        <ngx-kit-button
-          *ngIf="data.afilters!.length + data.dfilters!.length > 0
-            && data._config_!.disabledParts.has(PagPart.Filters) == false"
-          class="justify-center ml-2"
-          [mode]="isFiltersWindowShown == false
-                  ? BtnMode.DEFAULT
-                  : BtnMode.BOOKMARK_ACTIVE"
-          (clickFunc)="toggleFiltersWindow()"
-        >
-          <img
-            class="w-5 h-5"
-            draggable="false"
-            [src]="data._config_!.filterIconPath"
-            [alt]="'👁️'"
-          >
-        </ngx-kit-button>
-      </div>
-
-      <ng-container *ngIf="isFiltersWindowShown">
-        <div class="py-2 flex flex-col gap-2 rounded-sm">
-          <div class="w-full flex flex-row gap-2 my-1.5">
-            <ngx-kit-hr
-              class="grow opacity-25"
-            ></ngx-kit-hr>
-            <span class="font-semibold italic " i18n>
-              Фильтры
-            </span>
-            <ngx-kit-hr
-              class="grow opacity-25"
-            ></ngx-kit-hr>
-          </div>
-
-          <div
-            class="w-full flex flex-row gap-2"
-            *ngFor="let filter of data.afilters"
-          >
-            <div class="grow flex flex-row bg-gradient-to-r from-c10 rounded">
-              <div
-                class="w-60 my-auto px-4 text-white
-                       cursor-default truncate select-none"
-              >
-                {{filter.labelText}}
-              </div>
-
-              <ngx-kit-mat-input
-                class="grow"
-                [formControl]="getFilterFormControl(filter.id)"
-                [type]="filter.inputConfig.type"
-                [placeholder]="filter.inputConfig['placeholder'] != undefined
-                               ? filter.inputConfig['placeholder']
-                               : 'Enter something...'"
-                (inputValue)="filterChange(
-                  filter.id,
-                  {
-                    type: filter.inputConfig.type,
-                    value: $event
-                  }
-                )"
-              />
-            </div>
-
-            <ngx-kit-button
-              [mode]="BtnMode.DANGER"
-              class="mr-0.5 my-auto select-none"
-              (clickFunc)="dropFilter(filter.id)"
-            >
-              <img
-                class="relative w-3 h-3 before:top-[-70%] before:left-[15%] before:absolute before:text-lg"
-                draggable="false"
-                [src]="data._config_!.dropFilterWIconPath"
-                [alt]="'x'"
-              >
-            </ngx-kit-button>
-          </div>
-
-          <div class="flex flex-row gap-2 flex-wrap mb-1 select-none">
-            <div
-              class="flex flex-row"
-              *ngFor="let filter of data.dfilters">
-              <div
-                class="px-4 bg-c10 text-white rounded-l
-                       cursor-default truncate"
-              >
-                {{filter.labelText}}
-              </div>
-              <div
-                class="px-2 bg-red-50 rounded-r cursor-pointer"
-                (click)="addFilter(filter.id)"
-              >+
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </ng-container>
-
-    <!------------------------------------------------------------------------>
-    <!--------------------------------- BODY --------------------------------->
-    <!------------------------------------------------------------------------>
-    <ngx-kit-hr
-      class="w-full mb-2 opacity-25"
-      *ngIf="data._config_!.disabledParts.has(PagPart.FirstHr) == false"
-    ></ngx-kit-hr>
-    <ng-container *ngIf="activePaginationItems$ | async as items">
-      <div
-        class="pb-1 overflow-x-hidden mt-1"
-        (overflowing)="isTableOverflowing=true"
-        (notOverflowing)="isTableOverflowing=false"
-        paginationOverflowDetect [curPage]="curPage"
-        #tableRef
-      >
-        <table
-          class="overflow-auto w-full"
-          [ngClass]="{
-              'flex' : data._config_!.viewType == PagViewType.List
-                       || data._config_!.viewType == PagViewType.Tiles,
-              'flex-col' : data._config_!.viewType == PagViewType.List,
-              'flex-row
-               flex-wrap
-               justify-center' : data._config_!.viewType == PagViewType.Tiles,
-              'border-collapse' : data._config_!.viewType == PagViewType.Table
-            }"
-          *ngIf="items.length > 0
-            && data._config_!.disabledParts.has(PagPart.Items) == false;
-              else no_items"
-        >
-          <ng-container *ngIf="data._config_!.viewType == PagViewType.Table">
-            <colgroup *ngIf="data._config_!.columnFixedWidths.size > 0">
-              <ng-container *ngFor="let column of tableColumns">
-                <col
-                  *ngIf="column.disabled == false"
-                  (onCreate)="setColumnFixedWidth(colRef, column)"
-                  NgxKitOnCreate
-                  #colRef
-                >
-              </ng-container>
-            </colgroup>
-
-            <tr class="w-full">
-              <ng-container *ngFor="let column of tableColumns">
-                <th
-                  class="px-3 align-top cursor-pointer
-                         hover:bg-c10-half select-none"
-                  *ngIf="column.disabled == false"
-                  [ngClass]="{
-                    'bg-c10-fourth': chosenColumnCheck(
-                                       column,
-                                       [SortColMode.ASC, SortColMode.DESC]
-                                     ) == true,
-                    'cursor-pointer hover:bg-c10-half': column.sorting == true
-                  }"
-                  (click)="column.sorting == true
-                    ? sortPaginationItems(column, $event)
-                    : null
-                  "
-                  >
-                  <div
-                    class="flex flex-col text-left"
-                  >
-                    <ng-container
-                      *ngIf="chosenColumnCheck(column,
-                               [SortColMode.ASC]) == true"
-                    >
-                      <div class="w-full flex justify-center">
-                        <img
-                          class="w-4 h-4"
-                          draggable="false"
-                          [src]="data._config_!.ascSortIconPath"
-                          [alt]="'⬇️'"
-                        >
-                      </div>
-                    </ng-container>
-
-                    <ng-container
-                      *ngIf="chosenColumnCheck(column,
-                               [SortColMode.DESC]) == true"
-                    >
-                      <div class="w-full flex justify-center">
-                        <img
-                          class="w-4 h-4"
-                          draggable="false"
-                          [src]="data._config_!.descSortIconPath"
-                          [alt]="'⬆️'"
-                        >
-                      </div>
-                    </ng-container>
+                    <ngx-kit-mat-input
+                        [type]="InpType.Text"
+                        [placeholder]="data._config_!.fullTextSearchTxt"
+                        (inputValue)="setFullTextSearchVal($event)"
+                        *ngIf="data._config_!.disabledParts.has(
+                            PagPart.SearchField
+                        ) == false"
+                    />
 
                     <div
-                      *ngIf="column.header == PagColTag.NameHeader"
-                      class="w-full flex"
-                      [ngClass]="
-                        chosenColumnCheck(
-                          column,
-                          [SortColMode.DESC, SortColMode.ASC]
-                        ) == true
-                          ? 'justify-center text-center'
-                          : column.alignFlexClass
-                      "
+                        *ngIf="!isFiltersWindowShown"
+                        class="flex gap-2 flex-row flex-wrap justify-start 
+                               select-none"
                     >
-                      <div>
-                        {{column.name}}
-                      </div>
+                        <div 
+                            class="flex flex-row" 
+                            *ngFor="let filter of data.afilters"
+                        >
+                            <div
+                                class="px-4 my-auto bg-c10 text-white rounded-l
+                                       cursor-default truncate"
+                            >
+                                {{filter.labelText}}
+                            </div>
+                            <div
+                                class="p-2 bg-red-50 rounded-r cursor-pointer"
+                                (click)="dropFilter(filter.id)"
+                            >
+                                <img
+                                    class="relative w-2 h-2 before:-top-full 
+                                           before:absolute"
+                                    draggable="false"
+                                    [src]="data._config_!.dropFilterBIconPath"
+                                    [alt]="'x'"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ngx-kit-button
+                    *ngIf="data.afilters!.length + data.dfilters!.length > 0
+                           && data._config_!.disabledParts.has(
+                              PagPart.Filters
+                           ) == false"
+                    class="justify-center ml-2"
+                    [mode]="isFiltersWindowShown == false
+                            ? BtnMode.DEFAULT
+                            : BtnMode.BOOKMARK_ACTIVE"
+                    (clickFunc)="toggleFiltersWindow()"
+                >
+                    <img
+                        class="w-5 h-5"
+                        draggable="false"
+                        [src]="data._config_!.filterIconPath"
+                        [alt]="'👁️'"
+                    >
+                </ngx-kit-button>
+            </div>
+
+            <ng-container *ngIf="isFiltersWindowShown">
+                <div class="py-2 flex flex-col gap-2 rounded-sm">
+                    <div class="w-full flex flex-row gap-2 my-1.5">
+                        <ngx-kit-hr
+                            class="grow opacity-25"
+                        ></ngx-kit-hr>
+                        <span class="font-semibold italic " i18n>
+                            Фильтры
+                        </span>
+                        <ngx-kit-hr
+                            class="grow opacity-25"
+                        ></ngx-kit-hr>
                     </div>
 
-                    <ng-container
-                      *ngIf="column.header == PagColTag.CustomHeader"
+                    <div
+                        class="w-full flex flex-row gap-2"
+                        *ngFor="let filter of data.afilters"
                     >
-                      <div
-                        *ngIf="data._config_!.customTColumnHeaders.get(
-                          column.name
-                        ) as colHeader"
-                        class="w-full flex shrink-0"
-                        [ngClass]="
-                          chosenColumnCheck(
-                            column,
-                            [SortColMode.DESC, SortColMode.ASC]
-                          ) == true
-                            ? 'justify-center text-center'
-                            : column.alignFlexClass
-                        "
-                      >
-                        <div
-                          class="flex flex-row shrink-0 mx-1.5"
-                          [ngClass]="colHeader.gapClass != undefined
-                            ? [colHeader.gapClass]
-                            : ['gap-0.5']"
+                        <div 
+                            class="grow flex flex-row bg-gradient-to-r from-c10
+                                   rounded"
                         >
-                          <div
-                            *ngIf="colHeader.leftText != undefined"
-                            [ngClass]="colHeader.textExtraCssClasses ?? []"
-                          >
-                            {{colHeader.leftText}}
-                          </div>
-                          <img
-                            *ngIf="colHeader.imgSrc != undefined"
-                            [src]="colHeader.imgSrc"
-                            [ngClass]="colHeader.imgExtraCssClasses ?? []"
-                            class="w-5 h-5"
-                            draggable="false"
-                          >
-                          <div
-                            *ngIf="colHeader.rightText != undefined"
-                            [ngClass]="colHeader.textExtraCssClasses ?? []"
-                          >
-                            {{colHeader.rightText}}
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </div>
-                </th>
-              </ng-container>
-            </tr>
-          </ng-container>
+                            <div
+                                class="w-60 my-auto px-4 text-white
+                                       cursor-default truncate select-none"
+                            >
+                                {{filter.labelText}}
+                            </div>
 
-          <tbody #tableBodyRef>
-            <ng-container
-              *ngFor="let item of items; index as i"
-            >
-              <tr
-                *ngIf="MathModule.floor(
-                  i / data._config_!.itemCntPerPage
-                ) == curPage"
-                class="select-none"
-                [ngClass]="{
-                  'block w-full mt-1':
-                    data._config_!.viewType != PagViewType.Table,
-                  'bg-white/25':
-                    data._config_!.viewType == PagViewType.Table
-                      && whiteRowCheck(i, data._config_!),
-                  'hover:bg-c10-half cursor-pointer':
-                    data._config_!.viewType == PagViewType.Table
-                      && (item.route != null || item.altClickFunc != null)
-                }"
-                (click)="useRouteOrFunction(item)"
-              >
-                <!-- NO TABLE VIEW -->
-                <ng-container
-                  *ngIf="data._config_!.viewType != PagViewType.Table"
-                >
-                  <ngx-kit-button
-                    [ngClass]="{
-                      'w-40 h-40 block m-1':
-                        data._config_!.viewType == PagViewType.Tiles
-                    }"
-                    [extraCssClasses]="['h-full']"
-                    (clickFunc)="useRouteOrFunction(item)"
-                  >
-                    {{item.text}}
-                  </ngx-kit-button>
-                </ng-container>
-
-                <!-- TABLE VIEW -->
-                <ng-container
-                  *ngIf="data._config_!.viewType == PagViewType.Table"
-                >
-                  <ng-container *ngFor="let column of tableColumns">
-                    <td
-                      *ngIf="column.disabled == false"
-                      class="px-3 py-1.5"
-                      [ngClass]="itemHasAttr(item, column.name)
-                        ? item.attr[column.name].extraCssClasses ?? []
-                        : []"
-                    >
-                      <div
-                        *ngIf="itemHasAttr(item, column.name)"
-                        class="flex items-center"
-                        [ngClass]="[column.alignFlexClass]"
-                        [ngSwitch]="true"
-                        (onCreate)="setRowFixedHeight(cellRef)"
-                        NgxKitOnCreate
-                        #cellRef
-                      >
-                        <!-- DATETIME | DATE | TIME -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.DATETIME
-                                         || column.type === PagAttrType.DATE
-                                         || column.type === PagAttrType.TIME"
-                        >
-                          {{
-                            item.attr[column.name].body.value == null
-                              ? " "
-                              : (item.attr[column.name].body.formatter
-                                 ?? defaultDTFormatters.get(column.type))
-                                   .format(item.attr[column.name].body.value) +
-                                (item.attr[column.name].body.endStr ?? '')
-                          }}
+                            <ngx-kit-mat-input
+                                class="grow"
+                                [formControl]="getFilterFormControl(filter.id)"
+                                [type]="filter.inputConfig.type"
+                                [placeholder]="
+                                    filter.inputConfig[
+                                        'placeholder'
+                                    ] != undefined
+                                        ? filter.inputConfig['placeholder']
+                                        : 'Enter something...'
+                                "
+                                (inputValue)="filterChange(
+                                    filter.id,
+                                    {
+                                        type: filter.inputConfig.type,
+                                        value: $event
+                                    }
+                                )"
+                            />
                         </div>
 
-                        <!-- ICON -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.ICON"
-                          class="flex"
+                        <ngx-kit-button
+                            [mode]="BtnMode.DANGER"
+                            class="mr-0.5 my-auto select-none"
+                            (clickFunc)="dropFilter(filter.id)"
                         >
-                          <ng-container
-                            *ngIf="item.attr[column.name].body
-                                     .animatePing == true"
-                          >
-                            <ngx-kit-status-circle
-                              class="inline-block"
-                              [mode]="CircleMode.IMAGE"
-                              [imgSrc]="item.attr[column.name].body.src"
-                              [inputCssClasses]=
-                                "item.attr[column.name].body.cssClasses
-                                  ?? null"
-                            >
-                            </ngx-kit-status-circle>
-                          </ng-container>
-
-                          <ng-container
-                            *ngIf="item.attr[column.name].body
-                                     .animatePing == false"
-                          >
-                            <span
-                            class="inline-block"
-                            [ngClass]=
-                              "item.attr[column.name].body.cssClasses
-                               ?? ['w-4', 'h-4']"
-                            >
-                              <img
-                                [ngClass]=
-                                  "item.attr[column.name].body.cssClasses
-                                   ?? ['w-4', 'h-4']"
-                                [src]="item.attr[column.name].body.src"
+                            <img
+                                class="relative w-3 h-3 before:top-[-70%] 
+                                       before:left-[15%] before:absolute before:text-lg"
                                 draggable="false"
-                              >
-                            </span>
-                          </ng-container>
-                        </div>
-
-                        <!-- ICONS -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.ICONS"
-                          class="flex flex-row flex-wrap gap-1.5"
-                        >
-                          <div
-                            *ngFor="let icon of item.attr[column.name].body"
-                          >
-                            <ng-container
-                              *ngIf="icon.animatePing == true"
+                                [src]="data._config_!.dropFilterWIconPath"
+                                [alt]="'x'"
                             >
-                              <ngx-kit-status-circle
-                                class="inline-block"
-                                [mode]="CircleMode.IMAGE"
-                                [imgSrc]="icon.src"
-                                [inputCssClasses]="icon.cssClasses ?? null"
-                              >
-                              </ngx-kit-status-circle>
-                            </ng-container>
+                        </ngx-kit-button>
+                    </div>
 
-                            <ng-container
-                              *ngIf="icon.animatePing == false"
+                    <div class="flex flex-row gap-2 flex-wrap mb-1 select-none">
+                        <div
+                            class="flex flex-row"
+                            *ngFor="let filter of data.dfilters"
+                        >
+                            <div
+                                class="px-4 bg-c10 text-white rounded-l
+                                       cursor-default truncate"
                             >
-                              <span
-                              class="inline-block"
-                              [ngClass]="icon.cssClasses ?? ['w-4', 'h-4']"
-                              >
-                                <img
-                                  [ngClass]="icon.cssClasses ?? ['w-4', 'h-4']"
-                                  [src]="icon.src"
-                                  draggable="false"
-                                >
-                              </span>
-                            </ng-container>
-                          </div>
+                                {{filter.labelText}}
+                            </div>
+                            <div
+                                class="px-2 bg-red-50 rounded-r cursor-pointer"
+                                (click)="addFilter(filter.id)"
+                            >+</div>
                         </div>
-
-                        <!-- LABEL -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.LABEL"
-                        >
-                          <ngx-kit-label
-                            [title]="item.attr[column.name].body.title"
-                            [bgColor]="item.attr[column.name].body.bgColor"
-                            [textColor]="item.attr[column.name].body.textColor"
-                            [isShrunk]="true"
-                          ></ngx-kit-label>
-                        </div>
-
-                        <!-- LABELS -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.LABELS"
-                          class="w-full flex flex-row flex-wrap"
-                          [ngClass]="[column.alignFlexClass]"
-                        >
-                          <div
-                            *ngFor="let label of item.attr[column.name].body"
-                          >
-                            <ngx-kit-label
-                              [title]="label.title"
-                              [bgColor]="label.bgColor"
-                              [textColor]="label.textColor"
-                              [isShrunk]="true"
-                            ></ngx-kit-label>
-                          </div>
-                        </div>
-
-                        <!-- BUTTON -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.BUTTON"
-                        >
-                          <ngx-kit-button
-                            [ngClass]= "item.attr[column.name].body.cssClasses ?? []"
-                            (clickFunc)="item.attr[column.name].body.clickFunc()"
-                            [mode]="item.attr[column.name].body.mode ?? BtnMode.DEFAULT"
-                            [isEnabled]="item.attr[column.name].body.isEnabled ?? true"
-                          >
-                            <ng-container
-                              *ngIf="item.attr[column.name].body.imageSrc != undefined"
-                            >
-                              <img
-                                [ngClass]="item.attr[column.name].body.cssClasses ?? ['w-4', 'h-4']"
-                                [src]="item.attr[column.name].body.imageSrc"
-                                draggable="false"
-                              >
-                            </ng-container>
-
-                            <ng-container
-                              *ngIf="item.attr[column.name].body.imageSrc == undefined"
-                            >
-                              {{item.attr[column.name].body.labelText}}
-                            </ng-container>
-                          </ngx-kit-button>
-                        </div>
-
-                        <!-- BOOLEAN -->
-                        <div
-                          *ngSwitchCase="column.type === PagAttrType.BOOLEAN"
-                        >
-                          <ngx-kit-status-circle
-                            class="inline-block"
-                            [mode]="item.attr[column.name].body == true
-                                    ? CircleMode.ACTIVE
-                                    : CircleMode.NONACTIVE"
-                          >
-                          </ngx-kit-status-circle>
-                        </div>
-
-                        <!-- DEFAULT -->
-                        <div
-                          class="whitespace-pre-line"
-                          [ngClass]="setTextCellStyles(column)"
-                          *ngSwitchDefault
-                        >
-                          {{item.attr[column.name].body}}
-                        </div>
-                      </div>
-
-                      <div
-                        *ngIf="item.dummy === true"
-                        (onCreate)="setRowFixedHeight(cellRef)"
-                        NgxKitOnCreate
-                        #cellRef
-                      ></div>
-                    </td>
-                  </ng-container>
-                </ng-container>
-              </tr>
+                    </div>
+                </div>
             </ng-container>
-          </tbody>
-        </table>
-      </div>
+        </ng-container>
 
-      <ng-container
-        *ngIf="data._config_!.disabledParts.has(
-                 PagPart.TableOverflowButtons
-               ) == false && isTableOverflowing"
-      >
-        <div class="flex flex-row justify-between mt-2 mb-1">
-          <ngx-kit-button
-            class="flex justify-center h-16"
-            (click)="scrollTableRight($event)"
-          >
-            <<<
-          </ngx-kit-button>
-          <ngx-kit-button
-            class="flex justify-center h-16"
-            (click)="scrollTableLeft($event)"
-          >
-            >>>
-          </ngx-kit-button>
-        </div>
-      </ng-container>
-    </ng-container>
+        <!-------------------------------------------------------------------->
+        <!------------------------------- BODY ------------------------------->
+        <!-------------------------------------------------------------------->
+        <ngx-kit-hr
+            class="w-full mb-2 opacity-25"
+            *ngIf="data._config_!.disabledParts.has(PagPart.FirstHr) == false"
+        ></ngx-kit-hr>
+        <ng-container *ngIf="activePaginationItems$ | async as items">
+            <div
+                class="pb-1 overflow-x-hidden mt-1"
+                (overflowing)="isTableOverflowing=true"
+                (notOverflowing)="isTableOverflowing=false"
+                paginationOverflowDetect [curPage]="curPage"
+                #tableRef
+            >
+                <table
+                    class="overflow-auto w-full"
+                    [ngClass]="{
+                        'flex': 
+                            data._config_!.viewType == PagViewType.List
+                            || data._config_!.viewType == PagViewType.Tiles,
+                        'flex-col': 
+                            data._config_!.viewType == PagViewType.List,
+                        'flex-row flex-wrap justify-center': 
+                            data._config_!.viewType == PagViewType.Tiles,
+                        'border-collapse': 
+                            data._config_!.viewType == PagViewType.Table
+                    }"
+                    *ngIf="
+                        items.length > 0
+                        && data._config_!.disabledParts.has(
+                            PagPart.Items
+                        ) == false;
+                        else no_items
+                    "
+                >
+                    <ng-container 
+                        *ngIf="data._config_!.viewType == PagViewType.Table"
+                    >
+                        <colgroup 
+                            *ngIf="data._config_!.columnFixedWidths.size > 0"
+                        >
+                            <ng-container *ngFor="let column of tableColumns">
+                                <col
+                                    *ngIf="column.disabled == false"
+                                    (onCreate)="setColumnFixedWidth(
+                                        colRef, 
+                                        column
+                                    )"
+                                    NgxKitOnCreate
+                                    #colRef
+                                >
+                            </ng-container>
+                        </colgroup>
 
-    <ngx-kit-hr
-      class="w-full opacity-25"
-      *ngIf="data._config_!.disabledParts.has(PagPart.SecondHr) == false"
-    ></ngx-kit-hr>
+                        <tr class="w-full">
+                            <ng-container *ngFor="let column of tableColumns">
+                                <th
+                                    class="px-3 align-top cursor-pointer
+                                           hover:bg-c10-half select-none"
+                                    *ngIf="column.disabled == false"
+                                    [ngClass]="{
+                                        'bg-c10-fourth': 
+                                            chosenColumnCheck(
+                                                column,
+                                                [
+                                                    SortColMode.ASC, 
+                                                    SortColMode.DESC
+                                                ]
+                                            ) == true,
+                                        'cursor-pointer hover:bg-c10-half': 
+                                            column.sorting == true
+                                    }"
+                                    (click)="column.sorting == true
+                                        ? sortPaginationItems(column, $event)
+                                        : null
+                                    "
+                                >
+                                    <div
+                                        class="flex flex-col text-left"
+                                    >
+                                        <ng-container
+                                            *ngIf="chosenColumnCheck(
+                                                column,
+                                                [SortColMode.ASC]
+                                            ) == true"
+                                        >
+                                            <div 
+                                                class="w-full flex 
+                                                       justify-center"
+                                            >
+                                                <img
+                                                    class="w-4 h-4"
+                                                    draggable="false"
+                                                    [src]="
+                                                        data
+                                                        ._config_
+                                                        !.ascSortIconPath
+                                                    "
+                                                    [alt]="'⬇️'"
+                                                >
+                                            </div>
+                                        </ng-container>
 
-    <!------------------------------------------------------------------------>
-    <!-------------------------------- FOOTER -------------------------------->
-    <!------------------------------------------------------------------------>
-    <ng-container
-      *ngIf="data.items!.length > 0
-        && data._config_!.disabledParts.has(PagPart.Footer) == false
-        && data._config_!.disabledParts.has(PagPart.Items) == false"
-    >
-      <div class="flex flex-row justify-between items-center">
-        <ngx-kit-button
-          class="flex justify-center"
-          (clickFunc)="getPreviousPage()"
-          [isEnabled]="curPage > 0"
-        >
-          < {{data._config_!.backTxt}}
-        </ngx-kit-button>
+                                        <ng-container
+                                            *ngIf="chosenColumnCheck(
+                                                column,
+                                                [SortColMode.DESC]
+                                            ) == true"
+                                        >
+                                            <div 
+                                                class="w-full flex 
+                                                       justify-center"
+                                            >
+                                                <img
+                                                    class="w-4 h-4"
+                                                    draggable="false"
+                                                    [src]="
+                                                        data
+                                                        ._config_
+                                                        !.descSortIconPath
+                                                    "
+                                                    [alt]="'⬆️'"
+                                                >
+                                            </div>
+                                        </ng-container>
 
-        <div class="flex flex-row">
-          <div
-            *ngFor="let iter of [].constructor(pageCnt); let i = index"
-          >
+                                        <div
+                                            *ngIf="
+                                                column.header 
+                                                == PagColTag.NameHeader
+                                            "
+                                            class="w-full flex"
+                                            [ngClass]="
+                                                chosenColumnCheck(
+                                                    column,
+                                                    [
+                                                        SortColMode.DESC, 
+                                                        SortColMode.ASC
+                                                    ]
+                                                ) == true
+                                                    ? 'justify-center'.concat(
+                                                        ' text-center'
+                                                    )
+                                                    : column.alignFlexClass
+                                            "
+                                        >
+                                            <div>
+                                                {{column.name}}
+                                            </div>
+                                        </div>
+
+                                        <ng-container
+                                            *ngIf="
+                                                column.header 
+                                                == PagColTag.CustomHeader
+                                            "
+                                        >
+                                            <div
+                                                *ngIf="
+                                                    data
+                                                    ._config_
+                                                    !.customTColumnHeaders
+                                                    .get(
+                                                        column.name
+                                                    ) as colHeader
+                                                "
+                                                class="w-full flex shrink-0"
+                                                [ngClass]="
+                                                    chosenColumnCheck(
+                                                        column,
+                                                        [
+                                                            SortColMode.DESC, 
+                                                            SortColMode.ASC
+                                                        ]
+                                                    ) == true
+                                                        ? 'justify-center'
+                                                          .concat(
+                                                              ' text-center'
+                                                          )
+                                                        : column.alignFlexClass
+                                                "
+                                            >
+                                                <div
+                                                    class="flex flex-row 
+                                                           shrink-0 mx-1.5"
+                                                    [ngClass]="
+                                                        colHeader.gapClass 
+                                                        != undefined
+                                                            ? [
+                                                                colHeader
+                                                                .gapClass
+                                                              ]
+                                                            : ['gap-0.5']
+                                                    "
+                                                >
+                                                    <div
+                                                        *ngIf="
+                                                            colHeader.leftText 
+                                                            != undefined
+                                                        "
+                                                        [ngClass]="
+                                                          colHeader
+                                                          .textExtraCssClasses
+                                                          ?? []
+                                                        "
+                                                    >
+                                                        {{colHeader.leftText}}
+                                                    </div>
+                                                    <img
+                                                        *ngIf="
+                                                            colHeader.imgSrc 
+                                                            != undefined
+                                                        "
+                                                        [src]="
+                                                            colHeader.imgSrc
+                                                        "
+                                                        [ngClass]="
+                                                            colHeader
+                                                            .imgExtraCssClasses
+                                                            ?? []
+                                                        "
+                                                        class="w-5 h-5"
+                                                        draggable="false"
+                                                    >
+                                                    <div
+                                                        *ngIf="
+                                                            colHeader.rightText
+                                                            != undefined
+                                                        "
+                                                        [ngClass]="
+                                                          colHeader
+                                                          .textExtraCssClasses 
+                                                          ?? []
+                                                        "
+                                                    >
+                                                        {{colHeader.rightText}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+
+                    <tbody #tableBodyRef>
+                        <ng-container
+                            *ngFor="let item of items; index as i"
+                        >
+                            <tr
+                                *ngIf="MathModule.floor(
+                                    i / data._config_!.itemCntPerPage
+                                ) == curPage"
+                                class="select-none"
+                                [ngClass]="{
+                                    'block w-full mt-1':
+                                        data._config_!.viewType 
+                                        != PagViewType.Table,
+                                    'bg-white/25':
+                                        data._config_!.viewType 
+                                        == PagViewType.Table
+                                        && whiteRowCheck(i, data._config_!),
+                                    'hover:bg-c10-half cursor-pointer':
+                                        data._config_!.viewType 
+                                        == PagViewType.Table
+                                        && (
+                                            item.route != null 
+                                            || item.altClickFunc != null
+                                        )
+                                }"
+                                (click)="useRouteOrFunction(item)"
+                            >
+                                <!-- NO TABLE VIEW -->
+                                <ng-container
+                                    *ngIf="
+                                        data._config_!.viewType 
+                                        != PagViewType.Table
+                                    "
+                                >
+                                    <ngx-kit-button
+                                        [ngClass]="{
+                                            'w-40 h-40 block m-1':
+                                                data._config_!.viewType 
+                                                == PagViewType.Tiles
+                                        }"
+                                        [extraCssClasses]="['h-full']"
+                                        (clickFunc)="useRouteOrFunction(item)"
+                                    >
+                                        {{item.text}}
+                                    </ngx-kit-button>
+                                </ng-container>
+
+                                <!-- TABLE VIEW -->
+                                <ng-container
+                                    *ngIf="
+                                        data._config_!.viewType 
+                                        == PagViewType.Table
+                                    "
+                                >
+                                    <ng-container 
+                                        *ngFor="let column of tableColumns"
+                                    >
+                                        <td
+                                            *ngIf="column.disabled == false"
+                                            class="px-3 py-1.5"
+                                            [ngClass]="
+                                                itemHasAttr(
+                                                    item, 
+                                                    column.name
+                                                )
+                                                    ? item.attr[
+                                                        column.name
+                                                    ].extraCssClasses ?? []
+                                                    : []
+                                            "
+                                        >
+                                            <div
+                                                *ngIf="itemHasAttr(
+                                                    item, 
+                                                    column.name
+                                                )"
+                                                class="flex items-center"
+                                                [ngClass]="[
+                                                    column.alignFlexClass
+                                                ]"
+                                                [ngSwitch]="true"
+                                                (onCreate)="setRowFixedHeight(
+                                                    cellRef
+                                                )"
+                                                NgxKitOnCreate
+                                                #cellRef
+                                            >
+                                              <!-- DATETIME | DATE | TIME -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.DATETIME
+                                                      || (
+                                                          column.type 
+                                                          === PagAttrType.DATE
+                                                      )
+                                                      || (
+                                                          column.type 
+                                                          === PagAttrType.TIME
+                                                      )
+                                                  "
+                                              >
+                                                  {{
+                                                      item.attr[
+                                                          column.name
+                                                      ].body.value == null
+                                                          ? " "
+                                                          : (
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.formatter
+                                                              ?? defaultDTF
+                                                                 .get(
+                                                                    column.type
+                                                                 )
+                                                          ).format(
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.value
+                                                          ) + (
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.endStr 
+                                                              ?? ''
+                                                          )
+                                                  }}
+                                              </div>
+
+                                              <!-- ICON -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.ICON
+                                                  "
+                                                  class="flex"
+                                              >
+                                                  <ng-container
+                                                      *ngIf="
+                                                          item.attr[
+                                                              column.name
+                                                          ].body.animatePing
+                                                      "
+                                                  >
+                                                      <ngx-kit-status-circle
+                                                          class="inline-block"
+                                                          [mode]="
+                                                              CircleMode.IMAGE
+                                                          "
+                                                          [imgSrc]="item.attr[
+                                                              column.name
+                                                          ].body.src"
+                                                          [inputCssClasses]="
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.cssClasses 
+                                                              ?? null
+                                                          "
+                                                      >
+                                                      </ngx-kit-status-circle>
+                                                  </ng-container>
+
+                                                  <ng-container
+                                                      *ngIf="
+                                                          !item.attr[
+                                                              column.name
+                                                          ].body.animatePing
+                                                      "
+                                                  >
+                                                      <span
+                                                          class="inline-block"
+                                                          [ngClass]="
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.cssClasses
+                                                              ?? ['w-4', 'h-4']
+                                                          "
+                                                      >
+                                                          <img
+                                                              [ngClass]="
+                                                                  item.attr[
+                                                                      column
+                                                                      .name
+                                                                  ]
+                                                                  .body
+                                                                  .cssClasses
+                                                                  ?? [
+                                                                      'w-4', 
+                                                                      'h-4'
+                                                                  ]
+                                                              "
+                                                              [src]="item.attr[
+                                                                  column.name
+                                                              ].body.src"
+                                                              draggable="false"
+                                                          >
+                                                      </span>
+                                                  </ng-container>
+                                              </div>
+
+                                              <!-- ICONS -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.ICONS
+                                                  "
+                                                  class="flex flex-row 
+                                                         flex-wrap gap-1.5"
+                                              >
+                                                  <div
+                                                      *ngFor="
+                                                          let icon 
+                                                          of item.attr[
+                                                              column.name
+                                                          ].body
+                                                      "
+                                                  >
+                                                      <ngx-kit-status-circle
+                                                          *ngIf="
+                                                              icon.animatePing
+                                                          "
+                                                          class="inline-block"
+                                                          [mode]="
+                                                            CircleMode.IMAGE
+                                                          "
+                                                          [imgSrc]="icon.src"
+                                                          [inputCssClasses]="
+                                                              icon.cssClasses 
+                                                              ?? null
+                                                          "
+                                                      >
+                                                      </ngx-kit-status-circle>
+
+                                                      <span
+                                                          *ngIf="
+                                                              !icon.animatePing
+                                                          "
+                                                          class="inline-block"
+                                                          [ngClass]="
+                                                              icon.cssClasses 
+                                                              ?? ['w-4', 'h-4']
+                                                          "
+                                                      >
+                                                          <img
+                                                              [ngClass]="
+                                                                  icon
+                                                                  .cssClasses
+                                                                  ?? [
+                                                                      'w-4', 
+                                                                      'h-4'
+                                                                  ]
+                                                              "
+                                                              [src]="icon.src"
+                                                              draggable="false"
+                                                          >
+                                                      </span>
+                                                  </div>
+                                              </div>
+
+                                              <!-- LABEL -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.LABEL
+                                                  "
+                                              >
+                                                  <ngx-kit-label
+                                                      [title]="item.attr[
+                                                          column.name
+                                                      ].body.title"
+                                                      [bgColor]="item.attr[
+                                                          column.name
+                                                      ].body.bgColor"
+                                                      [textColor]="item.attr[
+                                                          column.name
+                                                      ].body.textColor"
+                                                      [isShrunk]="true"
+                                                  ></ngx-kit-label>
+                                              </div>
+
+                                              <!-- LABELS -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.LABELS
+                                                  "
+                                                  class="w-full flex flex-row
+                                                         flex-wrap"
+                                                  [ngClass]="[
+                                                      column.alignFlexClass
+                                                  ]"
+                                              >
+                                                  <div
+                                                      *ngFor="
+                                                          let label 
+                                                          of item.attr[
+                                                              column.name
+                                                          ].body
+                                                      "
+                                                  >
+                                                      <ngx-kit-label
+                                                        [title]="label.title"
+                                                        [bgColor]="
+                                                            label.bgColor
+                                                        "
+                                                        [textColor]="
+                                                            label.textColor
+                                                        "
+                                                        [isShrunk]="true"
+                                                      ></ngx-kit-label>
+                                                  </div>
+                                              </div>
+
+                                              <!-- BUTTON -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.BUTTON
+                                                  "
+                                              >
+                                                  <ngx-kit-button
+                                                      [ngClass]= "item.attr[
+                                                          column.name
+                                                      ].body.cssClasses ?? []"
+                                                      (clickFunc)="item.attr[
+                                                          column.name
+                                                      ].body.clickFunc()"
+                                                      [mode]="item.attr[
+                                                          column.name
+                                                      ].body.mode 
+                                                      ?? BtnMode.DEFAULT"
+                                                      [isEnabled]="item.attr[
+                                                          column.name
+                                                      ].body.isEnabled ?? true"
+                                                  >
+                                                      <ng-container
+                                                          *ngIf="
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.imageSrc 
+                                                              != undefined
+                                                          "
+                                                      >
+                                                          <img
+                                                              [ngClass]="
+                                                                  item.attr[
+                                                                      column
+                                                                      .name
+                                                                  ].body
+                                                                  .cssClasses 
+                                                                  ?? [
+                                                                      'w-4', 
+                                                                      'h-4'
+                                                                  ]"
+                                                              [src]="item.attr[
+                                                                  column.name
+                                                              ].body.imageSrc"
+                                                              draggable="false"
+                                                          >
+                                                      </ng-container>
+
+                                                      <ng-container
+                                                          *ngIf="
+                                                            item.attr[
+                                                                column.name
+                                                            ].body.imageSrc 
+                                                            == undefined
+                                                          "
+                                                      >
+                                                          {{
+                                                              item.attr[
+                                                                  column.name
+                                                              ].body.labelText
+                                                          }}
+                                                      </ng-container>
+                                                  </ngx-kit-button>
+                                              </div>
+
+                                              <!-- BOOLEAN -->
+                                              <div
+                                                  *ngSwitchCase="
+                                                      column.type 
+                                                      === PagAttrType.BOOLEAN
+                                                  "
+                                              >
+                                                  <ngx-kit-status-circle
+                                                      class="inline-block"
+                                                      [mode]="
+                                                          item.attr[
+                                                              column.name
+                                                          ].body == true
+                                                              ? CircleMode
+                                                                .ACTIVE
+                                                              : CircleMode
+                                                                .NONACTIVE
+                                                      "
+                                                  >
+                                                  </ngx-kit-status-circle>
+                                              </div>
+
+                                              <!-- DEFAULT -->
+                                              <div
+                                                  class="whitespace-pre-line"
+                                                  [ngClass]="setTextCellStyles(
+                                                        column
+                                                  )"
+                                                  *ngSwitchDefault
+                                              >
+                                                  {{
+                                                      item.attr[
+                                                            column.name
+                                                      ].body
+                                                  }}
+                                              </div>
+                                            </div>
+
+                                            <div
+                                                *ngIf="item.dummy === true"
+                                                (onCreate)="
+                                                    setRowFixedHeight(cellRef)
+                                                "
+                                                NgxKitOnCreate
+                                                #cellRef
+                                            ></div>
+                                        </td>
+                                    </ng-container>
+                                </ng-container>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
 
             <ng-container
                 *ngIf="
-                  i == 0
-                  || i == pageCnt - 1
-                  || (i > leftSlice
-                      && i <= leftSlice + data._config_!.visiblePagesCnt - 2)"
+                    data._config_!.disabledParts.has(
+                        PagPart.TableOverflowButtons
+                    ) == false && isTableOverflowing
+                "
             >
-              <ng-container
-                  *ngIf="i == curPage"
-              >
-                <div class="mx-2">
-                  <ngx-kit-button
-                    class="justify-center"
-                    [mode]="BtnMode.BOOKMARK_ACTIVE"
-                    (clickFunc)="getPage(i)"
-                  >
-                    {{i + 1}}
-                  </ngx-kit-button>
+                <div class="flex flex-row justify-between mt-2 mb-1">
+                    <ngx-kit-button
+                        class="flex justify-center h-16"
+                        (click)="scrollTableRight($event)"
+                    >
+                        <<<
+                    </ngx-kit-button>
+                    <ngx-kit-button
+                        class="flex justify-center h-16"
+                        (click)="scrollTableLeft($event)"
+                    >
+                        >>>
+                    </ngx-kit-button>
                 </div>
-              </ng-container>
-
-              <ng-container
-                  *ngIf="i != curPage"
-              >
-                <div class="mx-2">
-                  <ngx-kit-button
-                    class="justify-center"
-                    (clickFunc)="getPage(i)"
-                  >
-                    {{i + 1}}
-                  </ngx-kit-button>
-                </div>
-              </ng-container>
-
             </ng-container>
+        </ng-container>
 
-            <ng-container
-                *ngIf="i == 1 && leftSlice > 0"
-            >
-              <div class="text-center mx-2">...</div>
-            </ng-container>
+        <ngx-kit-hr
+            class="w-full opacity-25"
+            *ngIf="data._config_!.disabledParts.has(PagPart.SecondHr) == false"
+        ></ngx-kit-hr>
 
-            <ng-container
-                *ngIf="i == pageCnt - 2
-                       && i > leftSlice + data._config_!.visiblePagesCnt - 2"
-            >
-              <div class="text-center mx-2">...</div>
-            </ng-container>
-
-
-          </div>
-        </div>
-
-        <ngx-kit-button
-          class="flex justify-center"
-          (clickFunc)="getNextPage()"
-          [isEnabled]="curPage < pageCnt - 1"
+        <!-------------------------------------------------------------------->
+        <!------------------------------ FOOTER ------------------------------>
+        <!-------------------------------------------------------------------->
+        <ng-container
+            *ngIf="data.items!.length > 0
+                   && data._config_!.disabledParts.has(PagPart.Footer) == false
+                   && data._config_!.disabledParts.has(PagPart.Items) == false"
         >
-          {{data._config_!.forwardTxt}} >
-        </ngx-kit-button>
-      </div>
-    </ng-container>
+            <div class="flex flex-row justify-between items-center">
+                <ngx-kit-button
+                    class="flex justify-center"
+                    (clickFunc)="getPreviousPage()"
+                    [isEnabled]="curPage > 0"
+                >
+                    < {{data._config_!.backTxt}}
+                </ngx-kit-button>
 
-    <ng-template #no_items>
-      <ng-container
-        *ngIf="data._config_!.disabledParts.has(PagPart.Items) == true"
-      >
-        <div class="no-items text-center mt-2 fst-italic">
-          {{data._config_!.hiddenItemsTxt}}
-        </div>
-      </ng-container>
+                <div class="flex flex-row">
+                    <div
+                        *ngFor="
+                            let iter of [].constructor(pageCnt); let i = index
+                        "
+                    >
+                        <ng-container
+                            *ngIf="
+                                i == 0
+                                || i == pageCnt - 1
+                                || (
+                                    i > leftSlice
+                                    && (
+                                        i 
+                                        <= (
+                                            leftSlice 
+                                            + data._config_!.visiblePagesCnt 
+                                            - 2
+                                        )
+                                    )
+                                )
+                            "
+                        >
+                            <ng-container
+                                *ngIf="i == curPage"
+                            >
+                                <div class="mx-2">
+                                    <ngx-kit-button
+                                        class="justify-center"
+                                        [mode]="BtnMode.BOOKMARK_ACTIVE"
+                                        (clickFunc)="getPage(i)"
+                                    >
+                                        {{i + 1}}
+                                    </ngx-kit-button>
+                                </div>
+                            </ng-container>
 
-      <ng-container
-        *ngIf="data.items!.length > 0
-          && data._config_!.disabledParts.has(PagPart.Items) == false"
-      >
-        <div class="no-items text-center mt-2 fst-italic">
-          {{data._config_!.noSuitableItemsTxt}}
-        </div>
-      </ng-container>
+                            <ng-container
+                                *ngIf="i != curPage"
+                            >
+                                <div class="mx-2">
+                                    <ngx-kit-button
+                                        class="justify-center"
+                                        (clickFunc)="getPage(i)"
+                                    >
+                                        {{i + 1}}
+                                    </ngx-kit-button>
+                                </div>
+                            </ng-container>
 
-      <ng-container
-        *ngIf="data.items!.length == 0
-        && data._config_!.disabledParts.has(PagPart.Items) == false"
-      >
-        <div class="no-items text-center mt-2 fst-italic">
-          {{data._config_!.noAnyItemsTxt}}
-        </div>
-      </ng-container>
+                        </ng-container>
+
+                        <ng-container
+                            *ngIf="i == 1 && leftSlice > 0"
+                        >
+                            <div class="text-center mx-2">...</div>
+                        </ng-container>
+
+                        <ng-container
+                            *ngIf="
+                                i == pageCnt - 2
+                                && (
+                                    i 
+                                    > (
+                                        leftSlice 
+                                        + data._config_!.visiblePagesCnt 
+                                        - 2
+                                    )
+                                )
+                            "
+                        >
+                            <div class="text-center mx-2">...</div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <ngx-kit-button
+                    class="flex justify-center"
+                    (clickFunc)="getNextPage()"
+                    [isEnabled]="curPage < pageCnt - 1"
+                >
+                    {{data._config_!.forwardTxt}} >
+                </ngx-kit-button>
+            </div>
+        </ng-container>
+
+        <ng-template #no_items>
+            <ng-container
+                *ngIf="data._config_!.disabledParts.has(PagPart.Items) == true"
+            >
+                <div class="no-items text-center mt-2 fst-italic">
+                    {{data._config_!.hiddenItemsTxt}}
+                </div>
+            </ng-container>
+
+            <ng-container
+                *ngIf="
+                    data.items!.length > 0
+                    && data._config_!.disabledParts.has(PagPart.Items) == false
+                "
+            >
+                <div class="no-items text-center mt-2 fst-italic">
+                    {{data._config_!.noSuitableItemsTxt}}
+                </div>
+            </ng-container>
+
+            <ng-container
+                *ngIf="
+                    data.items!.length == 0
+                    && data._config_!.disabledParts.has(PagPart.Items) == false
+                "
+            >
+                <div class="no-items text-center mt-2 fst-italic">
+                    {{data._config_!.noAnyItemsTxt}}
+                </div>
+            </ng-container>
+        </ng-template>
     </ng-template>
-  </ng-template>
 </ngx-kit-block>

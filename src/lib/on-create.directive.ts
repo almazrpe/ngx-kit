@@ -1,12 +1,12 @@
 import { Directive, Output, EventEmitter, } from "@angular/core";
 
 @Directive({
-  selector: "[NgxKitOnCreate]"
+    selector: "[NgxKitOnCreate]"
 })
 export class OnCreateDirective {
-  @Output() public onCreate = new EventEmitter<void>();
+    @Output() public onCreate = new EventEmitter<void>();
 
-  public ngOnInit(): void {
-    this.onCreate.emit();
-  }
+    public ngOnInit(): void {
+        this.onCreate.emit();
+    }
 }

@@ -12,4 +12,4 @@ import { ValueValidatorEvent } from "./value-validator-event";
  * respective validator function should make required conversions on the way.
  */
 export type ValueValidator<T> =
-  (value: string) => T | ValueValidatorEvent | undefined;
+    (value: string) => T | ValueValidatorEvent | undefined;
