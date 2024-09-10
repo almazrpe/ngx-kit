@@ -1,5 +1,5 @@
 import { Observable, map, pipe } from "rxjs";
-import { Bus, Err, Ok, Res, pipeUnwrap } from "../public-api";
+import { Bus, Err, Ok, Res, panic, pipeUnwrap } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
@@ -183,5 +183,41 @@ export namespace quco {
                 return Ok(count);
             })
         );
+    }
+
+    export enum Crud {
+        New = "new",
+        Get = "get",
+        Upd = "upd",
+        Del = "del"
+    }
+
+    export const CODE_NEW_COLLECTION = "quco::new"
+    export const CODE_GET_COLLECTION = "quco::get"
+    export const CODE_UPD_COLLECTION = "quco::upd"
+    export const CODE_DEL_COLLECTION = "quco::del"
+
+    export function getCollectionPermissionCode(
+        collection: string,
+        crud: Crud
+    ): string {
+        var base = ""
+        switch (crud) {
+            case Crud.New:
+                base = CODE_NEW_COLLECTION
+                break
+            case Crud.Get:
+                base = CODE_GET_COLLECTION
+                break
+            case Crud.Upd:
+                base = CODE_UPD_COLLECTION
+                break
+            case Crud.Del:
+                base = CODE_DEL_COLLECTION
+                break
+            default:
+                panic()
+        }
+        return base + "::" + collection
     }
 }

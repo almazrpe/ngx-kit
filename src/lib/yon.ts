@@ -19,8 +19,8 @@ export type Msg = any;
 
 export class Bmsg {
   public sid: string;
-  public msg: Msg;
   public codeid: number;
+  public msg: Msg;
   public lsid: string | undefined;
   public is_err: boolean | undefined;
 
@@ -32,6 +32,7 @@ export class Bmsg {
     is_err?: boolean,
   ) {
     this.sid = sid;
+    this.codeid = codeid;
     this.msg = msg;
     this.lsid = lsid;
     this.is_err = is_err;
@@ -257,13 +258,13 @@ export class Bus {
 
     // send to net
     if (!opts.skipNet) {
-      let codeid = this.getCodeidByCode(msg.code());
+      let codeid = this.getCodeidByCode(code);
       if (codeid.is_err()) {
         return codeid;
       }
       let bmsg = ser(sid, msg, codeid.ok);
 
-      log.info("NET::SEND | " + JSON.stringify(bmsg));
+      log.info(`NET::SEND | ${code} | ${JSON.stringify(bmsg)}`);
 
       if (this.con !== null) {
         this.con.next(bmsg);
@@ -323,7 +324,6 @@ export class Bus {
   }
 
   private recv(raw: any): void {
-    log.info("NET::RECV | " + JSON.stringify(raw));
     let bmsg_r = de(raw);
     if (bmsg_r.is_err()) {
       log.track(bmsg_r);
@@ -331,6 +331,7 @@ export class Bus {
     }
 
     if (!this.isWelcomeRecvd) {
+      // welcome msg is not logged as NET::RECV
       this.welcome(raw);
       return;
     }
@@ -347,6 +348,12 @@ export class Bus {
       log.track(msg_r, `codeid ${codeid} unpack`);
       return;
     }
+    let log_msg = `NET::RECV | ${code_r.ok} | ${JSON.stringify(raw)}`
+    if (code_r.ok?.endsWith("err")) {
+      log.err(log_msg)
+    } else {
+      log.info(log_msg)
+    }
     this.pub(
       code_r.ok as string,
       msg,
@@ -357,11 +364,20 @@ export class Bus {
   }
 
   private recvErr(err: any): void {
-    log.err("con err: " + err);
+    let msg =
+      "client bus connection is closed with error: " + err
+    this.alertSv.spawn({
+      level: AlertLevel.Error,
+      msg: msg
+    });
+    log.err(msg)
   }
 
   private recvComplete(): void {
-    log.info("client bus con completed");
+    this.alertSv.spawn({
+      level: AlertLevel.Warning,
+      msg: "client bus connection is closed"
+    });
   }
 }
 
