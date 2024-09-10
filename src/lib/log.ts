@@ -2,7 +2,7 @@ import { ErrCls, ErrFromNative } from "./copper";
 
 export abstract class log {
     public static debug(...args: any[]): void {
-        console.debug(args.map(a => JSON.stringify(a)).join(","));
+        console.debug(args.map(a => a + ":: " + JSON.stringify(a)).join(","));
     }
 
     public static info(msg: any): void {
