@@ -14,6 +14,7 @@ import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
 import { assert, Err, ErrCls, Ok, panic, Res, pipeResultify, RxPipe } from "./copper";
 import {uuid4} from "./uuid";
+import { Queue } from "queue-typescript";
 
 export type Msg = any;
 
@@ -134,10 +135,10 @@ export class Bus {
 
   private codes: string[] = [];
   private isInitd: boolean = false;
-  private isWelcomeRecvd: boolean = false;
 
-  private alertSv: AlertService;
-  private conSv: ConService;
+  private alertSv: AlertService
+  private conSv: ConService
+  private onWelcome: Queue<() => void> = new Queue()
 
   /// Map of initial message sid to awaiting function data.
   private awaitingForResponse: Map<string, AwaitingForResponse> = new Map();
@@ -180,20 +181,33 @@ export class Bus {
     this.isInitd = true;
   }
 
+  private isWelcomeArrived(): boolean {
+    return this.codes.length > 0
+  }
+
   public sub<T>(
     code: string,
-    fn: SmallSubFn<T>
-  ): Res<() => void> {
+    fn: SmallSubFn<T>,
+    retUnsub: (unsub: () => void) => void = _ => {}
+  ): Res<undefined> {
     return this.subFull(
       code,
-      (_code, msg: T, _isErr) => {fn(msg)}
+      (_code, msg: T, _isErr) => {fn(msg)},
+      retUnsub
     )
   }
 
   public subFull<T>(
     code: string,
-    fn: SubFn<T>
-  ): Res<() => void> {
+    fn: SubFn<T>,
+    retUnsub: (unsub: () => void) => void = _ => {}
+  ): Res<undefined> {
+    log.warn(code)
+    if (!this.isWelcomeArrived()) {
+      this.onWelcome.enqueue(() => {this.subFull(code, fn, retUnsub)})
+      return Ok(undefined)
+    }
+
     let codeData = this.codesData.get(code);
     if (codeData === undefined) {
       return Err(`unrecognized code ${code}`);
@@ -205,12 +219,13 @@ export class Bus {
       this.callSubFn(fn, code, codeData.lastMsg as T, codeData.isErr);
     }
 
-    return Ok(() => {
+    retUnsub(() => {
       if (codeData !== undefined) {
         // we don't care about unsub result
         codeData.subs.delete(subid);
       }
-    });
+    })
+    return Ok(undefined)
   }
 
   private callSubFn<T>(fn: SubFn<T>, code: string, msg: T, isErr: boolean) {
@@ -266,6 +281,11 @@ export class Bus {
     fn?: SubFn<T>,
     opts: PubOpts = DEFAULT_PUB_OPTS
   ): Res<undefined> {
+    if (!this.isWelcomeArrived()) {
+      this.onWelcome.enqueue(() => {this.pub(code, msg, fn, opts)})
+      return Ok(undefined)
+    }
+
     if (opts._lsid !== undefined && fn !== undefined) {
       return Err("cannot provide both lsid and sub function");
     }
@@ -342,31 +362,57 @@ export class Bus {
     return Ok(this.codes[codeid]);
   }
 
+  /// Unsub every item in array, clearing on the go.
+  public unsubArr(arr: (() => void)[]) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      let unsub = arr.pop()
+      if (unsub !== undefined) {
+        unsub()
+      }
+    }
+  }
+
   private welcome(raw: any): void {
-      let codes = raw.msg.codes;
-      if (codes === undefined) {
-        panic("incorrect welcome message composition");
-      }
-      this.codes = codes;
-      this.codesData.clear();
-      for (let code of this.codes) {
-        this.codesData.set(
-          code,
-          {
-            isErr: false,
-            lastMsg: undefined,
-            subs: new Map()
-          }
-        )
-      }
-      this.isWelcomeRecvd = true;
+    log.info("receive welcome")
+    let codes = raw.msg.codes;
+    if (codes === undefined) {
+      panic("incorrect welcome message composition");
+    }
+    this.codes = codes;
+    this.codesData.clear();
+    for (let code of this.codes) {
+      this.codesData.set(
+        code,
+        {
+          isErr: false,
+          lastMsg: undefined,
+          subs: new Map()
+        }
+      )
+    }
+
+    let deferredCount = this.onWelcome.length
+    while (this.onWelcome.length > 0) {
+      this.onWelcome.dequeue()()
+    }
+    log.info(`executed ${deferredCount} welcome-deferred functions`)
   }
 
   private recv(raw: any): void {
-    if (!this.isWelcomeRecvd) {
+    if (
+      !this.isWelcomeArrived()
+      || raw.codeid == StaticCodeids.Welcome
+    ) {
       // welcome msg is not logged as NET::RECV
-      this.welcome(raw);
-      return;
+      this.welcome(raw)
+      return
+    }
+
+    if (!this.isWelcomeArrived() && raw.codeid != StaticCodeids.Welcome) {
+      log.err(
+        "no welcome is arrived, but other messages from the net are received"
+      )
+      return
     }
 
     let bmsg_r = de(raw);

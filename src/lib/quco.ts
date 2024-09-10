@@ -1,5 +1,5 @@
 import { Observable, map, pipe } from "rxjs";
-import { Bus, Err, Ok, Res, panic, pipeUnwrap } from "../public-api";
+import { Bus, Err, Ok, Res, log, panic, pipeUnwrap } from "../public-api";
 
 export namespace quco {
     export type Collection = string;
@@ -218,6 +218,7 @@ export namespace quco {
             default:
                 panic()
         }
+        log.warn(base + "::" + collection)
         return base + "::" + collection
     }
 }
