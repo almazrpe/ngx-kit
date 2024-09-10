@@ -20,14 +20,14 @@ export type Msg = any;
 export class Bmsg {
   public sid: string;
   public codeid: number;
-  public msg: Msg;
+  public msg: Msg | undefined;
   public lsid: string | undefined;
   public is_err: boolean | undefined;
 
   public constructor(
     sid: string,
     codeid: number,
-    msg: any,
+    msg?: any,
     lsid?: string,
     is_err?: boolean,
   ) {
@@ -95,7 +95,6 @@ function de(raw: any): Res<Bmsg> {
   if (
     sid === undefined
     || codeid === undefined
-    || msg === undefined
   ) {
     return Err("incorrect msg composition");
   }
@@ -106,12 +105,18 @@ function de(raw: any): Res<Bmsg> {
 
 // Client sub fn doesn't return anything to publish back, instead they can
 // call `Bus.pub` undependently, but not so many subs actually need to.
-export type SubFn<T = Msg> = (code: string, msg: T, isErr: boolean) => void;
+export type SmallSubFn<T = Msg> = (msg: T) => void
+export type SubFn<T = Msg> = (code: string, msg: T, isErr: boolean) => void
 
 export interface CodeData<T = any> {
   isErr: boolean
   lastMsg: Msg | undefined
   subs: Map<string, SubFn<T>>
+}
+
+export interface AwaitingForResponse {
+  initialCode: string
+  fn: SubFn
 }
 
 export class Bus {
@@ -134,7 +139,8 @@ export class Bus {
   private alertSv: AlertService;
   private conSv: ConService;
 
-  private awaitingResponse: Map<string, SubFn> = new Map();
+  /// Map of initial message sid to awaiting function data.
+  private awaitingForResponse: Map<string, AwaitingForResponse> = new Map();
 
   public init(
     alertSv: AlertService,
@@ -176,6 +182,16 @@ export class Bus {
 
   public sub<T>(
     code: string,
+    fn: SmallSubFn<T>
+  ): Res<() => void> {
+    return this.subFull(
+      code,
+      (_code, msg: T, _isErr) => {fn(msg)}
+    )
+  }
+
+  public subFull<T>(
+    code: string,
     fn: SubFn<T>
   ): Res<() => void> {
     let codeData = this.codesData.get(code);
@@ -209,17 +225,17 @@ export class Bus {
   public pub$<T = OkMsg>(
     code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
   ): Observable<Res<T>> {
-    return this.pubCoded$<T>(code, msg, opts).pipe(
+    return this.pubFull$<T>(code, msg, opts).pipe(
       map(v => {
-        if (v.is_ok()) {
-          return Ok(v.ok.msg)
+        if (v.is_err()) {
+          return v
         }
-        return v
+        return Ok(v.ok.msg)
       })
     )
   }
 
-  public pubCoded$<T = OkMsg>(
+  public pubFull$<T = OkMsg>(
     code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
   ): Observable<Res<{code: string, msg: T}>> {
     const subject$ = new ReplaySubject<{
@@ -269,7 +285,7 @@ export class Bus {
 
     let sid = uuid4();
     if (fn !== undefined) {
-      this.awaitingResponse.set(sid, fn);
+      this.awaitingForResponse.set(sid, {initialCode: code, fn: fn});
     }
 
     // send to net
@@ -300,11 +316,11 @@ export class Bus {
 
     // send as response
     if (opts._lsid !== undefined) {
-      let awaitingFn = this.awaitingResponse.get(opts._lsid);
+      let awaitingFn = this.awaitingForResponse.get(opts._lsid);
       if (awaitingFn !== undefined) {
-        this.callSubFn(awaitingFn, code, msg, isErr);
+        this.callSubFn(awaitingFn.fn, code, msg, isErr);
         // clear after satisfying with the response
-        this.awaitingResponse.delete(opts._lsid);
+        this.awaitingForResponse.delete(opts._lsid);
       }
     }
 
@@ -361,22 +377,37 @@ export class Bus {
     let bmsg = bmsg_r.ok;
     let codeid = bmsg.codeid;
     let code_r = this.getCodeByCodeid(codeid);
-    if (bmsg_r.is_err()) {
+    if (code_r.is_err()) {
       log.track(bmsg_r, `codeid ${codeid} unpack`);
       return;
     }
-    let log_msg = `NET::RECV | ${code_r.ok} | ${JSON.stringify(raw)}`
+    let code = code_r.ok
+
+    let to = ""
+    if (bmsg.lsid !== undefined) {
+      let linkedCode = this.awaitingForResponse.get(bmsg.lsid)?.initialCode
+      if (linkedCode !== undefined) {
+        to = linkedCode
+      }
+    }
+    let log_msg = `NET::RECV | ${code} -> ${to} | ${JSON.stringify(raw)}`
     if (bmsg.is_err === true) {
       log.err(log_msg)
     } else {
       log.info(log_msg)
     }
+
     this.pub(
       code_r.ok as string,
       bmsg.msg,
       undefined,
       // disallow duplicate net resending
-      { ...DEFAULT_PUB_OPTS, skipNet: true, _lsid: bmsg_r.ok.lsid }
+      {
+        ...DEFAULT_PUB_OPTS,
+        skipNet: true,
+        _lsid: bmsg.lsid,
+        _isErr: bmsg.is_err
+      }
     );
   }
 
