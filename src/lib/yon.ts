@@ -83,7 +83,8 @@ function ser(sid: string, msg: Msg, codeid: number): Bmsg {
     msg,
     // client cannot send msg with lsid, for now
     undefined,
-    is_err
+    // client cannot send errors
+    undefined
   );
 }
 
@@ -126,6 +127,9 @@ export class Bus {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return this._ie || (this._ie = new this());
   }
+
+  /// Does some action, but doesn't change how error flows further.
+  public onErrPassedToSubFn: (err: ErrCls) => void = _ => {}
 
   private conWrapper$: Observable<WebSocketSubject<Bmsg>>;
   private con: WebSocketSubject<Bmsg> | null = null;
@@ -229,6 +233,9 @@ export class Bus {
   }
 
   private callSubFn<T>(fn: SubFn<T>, code: string, msg: T, isErr: boolean) {
+    if (isErr && msg instanceof ErrCls) {
+      this.onErrPassedToSubFn(msg)
+    }
     try {
       fn(code, msg, isErr);
     } catch (err) {
@@ -266,6 +273,9 @@ export class Bus {
     return subject$.asObservable().pipe(
       map(data => {
         if (data.isErr) {
+          if (data.msg instanceof ErrCls) {
+            return data.msg
+          }
           return Err(data.msg.msg)
         }
         return Ok({code: data.code, msg: data.msg})
@@ -443,9 +453,20 @@ export class Bus {
       log.info(log_msg)
     }
 
+    let final_msg = bmsg.msg
+    // add code to errors, and convert them to classes, since the original
+    // err's code is moved to the bmsg's top-level field from the msg's nested
+    // body
+    if (bmsg.is_err) {
+      final_msg = Err(
+        final_msg.msg,
+        code
+      )
+    }
+
     this.pub(
       code_r.ok as string,
-      bmsg.msg,
+      final_msg,
       undefined,
       // disallow duplicate net resending
       {

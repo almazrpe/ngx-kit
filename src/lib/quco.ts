@@ -218,7 +218,6 @@ export namespace quco {
             default:
                 panic()
         }
-        log.warn(base + "::" + collection)
         return base + "::" + collection
     }
 }

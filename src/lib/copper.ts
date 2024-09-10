@@ -69,8 +69,8 @@ export class ErrCls extends Error implements ResItem {
         return `${this.code}:: ${this.msg}`;
     }
 
-    public is(code: string): boolean {
-        return this.code == code;
+    public is(...codes: string[]): boolean {
+        return codes.includes(this.code);
     }
 
     public is_ok(): this is OkCls<any> {
