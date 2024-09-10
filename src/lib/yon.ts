@@ -57,10 +57,11 @@ export enum StaticCodeids {
 }
 
 export interface PubOpts {
-  skipNet: boolean;
-  skipInner: boolean;
+  skipNet: boolean
+  skipInner: boolean
   /// Publications that are supplied with lsid will be sent as responses.
-  _lsid?: string;
+  _lsid?: string
+  _isErr?: boolean
 }
 export const DEFAULT_PUB_OPTS: PubOpts = {
   skipNet: false,
@@ -105,11 +106,12 @@ function de(raw: any): Res<Bmsg> {
 
 // Client sub fn doesn't return anything to publish back, instead they can
 // call `Bus.pub` undependently, but not so many subs actually need to.
-export type SubFn<T = Msg> = (msg: T) => void;
+export type SubFn<T = Msg> = (code: string, msg: T, isErr: boolean) => void;
 
 export interface CodeData<T = any> {
-  lastMsg: Msg | undefined;
-  subs: Map<string, SubFn<T>>;
+  isErr: boolean
+  lastMsg: Msg | undefined
+  subs: Map<string, SubFn<T>>
 }
 
 export class Bus {
@@ -184,7 +186,7 @@ export class Bus {
     codeData.subs.set(subid, fn);
     // call with last msg
     if (codeData.lastMsg !== undefined) {
-      this.callSubFn(fn, codeData.lastMsg as T);
+      this.callSubFn(fn, code, codeData.lastMsg as T, codeData.isErr);
     }
 
     return Ok(() => {
@@ -195,9 +197,9 @@ export class Bus {
     });
   }
 
-  private callSubFn<T>(fn: SubFn<T>, msg: T) {
+  private callSubFn<T>(fn: SubFn<T>, code: string, msg: T, isErr: boolean) {
     try {
-      fn(msg);
+      fn(code, msg, isErr);
     } catch (err) {
       log.track(err);
     }
@@ -207,26 +209,38 @@ export class Bus {
   public pub$<T = OkMsg>(
     code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
   ): Observable<Res<T>> {
-    const subject$ = new ReplaySubject<Msg>();
-    const subfn = (msg: Msg): void => subject$.next(msg);
+    return this.pubCoded$<T>(code, msg, opts).pipe(
+      map(v => {
+        if (v.is_ok()) {
+          return Ok(v.ok.msg)
+        }
+        return v
+      })
+    )
+  }
+
+  public pubCoded$<T = OkMsg>(
+    code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
+  ): Observable<Res<{code: string, msg: T}>> {
+    const subject$ = new ReplaySubject<{
+      code: string, msg: Msg, isErr: boolean
+    }>()
+    const subfn = (code: string, msg: Msg, isErr: boolean): void => subject$
+      .next({
+        code: code,
+        msg: msg,
+        isErr: isErr
+      })
     this.pub(code, msg, subfn, opts);
     return subject$.asObservable().pipe(
-      pipeResultify<Msg>(),
-      map(msg => {
-        if (msg instanceof ErrCls) {
-          // additionally spawn alerts for errors happened as responses
-          // this maybe changed in a future, but for now we found it
-          // convenient to notify user about all errors happened
-          this.alertSv.spawn({
-            level: AlertLevel.Error,
-            msg: msg.display()
-          });
+      map(data => {
+        if (data.isErr) {
+          return Err(data.msg.msg)
         }
-
-        return msg;
+        return Ok({code: data.code, msg: data.msg})
       }),
       take(1)
-    );
+    )
   }
 
   /// Publish msg and calls the provided function when the response arrives.
@@ -249,7 +263,9 @@ export class Bus {
     if (codeData === undefined) {
       return Err("cannot find code " + code);
     }
-    codeData.lastMsg = msg;
+    let isErr = opts._isErr === true
+    codeData.isErr = isErr
+    codeData.lastMsg = msg
 
     let sid = uuid4();
     if (fn !== undefined) {
@@ -277,7 +293,7 @@ export class Bus {
     if (!opts.skipInner) {
       for (const [code_, codeData] of Object.entries(this.codesData)) {
         if (code_ == code) {
-          this.callSubFn(codeData.fn, msg);
+          this.callSubFn(codeData.fn, code, msg, isErr);
         }
       }
     }
@@ -286,7 +302,7 @@ export class Bus {
     if (opts._lsid !== undefined) {
       let awaitingFn = this.awaitingResponse.get(opts._lsid);
       if (awaitingFn !== undefined) {
-        this.callSubFn(awaitingFn, msg);
+        this.callSubFn(awaitingFn, code, msg, isErr);
         // clear after satisfying with the response
         this.awaitingResponse.delete(opts._lsid);
       }
@@ -318,48 +334,49 @@ export class Bus {
       this.codes = codes;
       this.codesData.clear();
       for (let code of this.codes) {
-        this.codesData.set(code, {lastMsg: undefined, subs: new Map()});
+        this.codesData.set(
+          code,
+          {
+            isErr: false,
+            lastMsg: undefined,
+            subs: new Map()
+          }
+        )
       }
       this.isWelcomeRecvd = true;
   }
 
   private recv(raw: any): void {
-    let bmsg_r = de(raw);
-    if (bmsg_r.is_err()) {
-      log.track(bmsg_r);
-      return;
-    }
-
     if (!this.isWelcomeRecvd) {
       // welcome msg is not logged as NET::RECV
       this.welcome(raw);
       return;
     }
 
-    let msg_r = de(raw);
-    if (msg_r.is_err()) {
-      log.track(msg_r, "bus receive");
+    let bmsg_r = de(raw);
+    if (bmsg_r.is_err()) {
+      log.track(bmsg_r, "bus receive");
       return;
     }
-    let msg = msg_r.ok;
-    let codeid = msg.codeid;
+    let bmsg = bmsg_r.ok;
+    let codeid = bmsg.codeid;
     let code_r = this.getCodeByCodeid(codeid);
-    if (msg_r.is_err()) {
-      log.track(msg_r, `codeid ${codeid} unpack`);
+    if (bmsg_r.is_err()) {
+      log.track(bmsg_r, `codeid ${codeid} unpack`);
       return;
     }
     let log_msg = `NET::RECV | ${code_r.ok} | ${JSON.stringify(raw)}`
-    if (code_r.ok?.endsWith("err")) {
+    if (bmsg.is_err === true) {
       log.err(log_msg)
     } else {
       log.info(log_msg)
     }
     this.pub(
       code_r.ok as string,
-      msg,
+      bmsg.msg,
       undefined,
       // disallow duplicate net resending
-      { ...DEFAULT_PUB_OPTS, skipNet: true }
+      { ...DEFAULT_PUB_OPTS, skipNet: true, _lsid: bmsg_r.ok.lsid }
     );
   }
 

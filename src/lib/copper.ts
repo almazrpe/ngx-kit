@@ -1,6 +1,7 @@
 //! Provides the core functionality for a better typescript experience.
 
 import { Observable, UnaryFunction, catchError, map, of, pipe } from "rxjs";
+import { log } from "../public-api";
 
 export interface ResItem<T = any> {
     is_ok(): this is OkCls<T>;
@@ -170,6 +171,24 @@ export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
     return pipe(
         map(val => {
             return val.unwrap();
+        })
+    );
+}
+
+export function pipeDebug(): RxPipe<any, any> {
+    return pipe(
+        map(val => {
+            log.debug(val)
+            return val
+        })
+    );
+}
+
+export function pipeWarn(): RxPipe<any, any> {
+    return pipe(
+        map(val => {
+            log.warn(val)
+            return val
         })
     );
 }
