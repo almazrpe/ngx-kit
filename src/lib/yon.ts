@@ -142,7 +142,7 @@ export class Bus {
 
   private alertSv: AlertService
   private conSv: ConService
-  private onWelcome: Queue<() => void> = new Queue()
+  public onWelcome: Queue<() => void> = new Queue()
 
   /// Map of initial message sid to awaiting function data.
   private awaitingForResponse: Map<string, AwaitingForResponse> = new Map();
