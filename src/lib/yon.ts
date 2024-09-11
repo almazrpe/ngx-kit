@@ -12,14 +12,14 @@ import
 import { AlertLevel } from "./alert/models";
 import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
-import { 
-    assert, 
-    Err, 
-    ErrCls, 
-    Ok, 
-    panic, 
-    Res, 
-    RxPipe 
+import {
+    assert,
+    Err,
+    ErrCls,
+    Ok,
+    panic,
+    Res,
+    RxPipe
 } from "./copper";
 import { uuid4 } from "./uuid";
 import { Queue } from "queue-typescript";
@@ -276,8 +276,8 @@ this.subFull(code, fn, retUnsub);
             code: string; msg: Msg; isErr: boolean;
         }>();
         const subfn = (
-            code: string, 
-            msg: Msg, 
+            code: string,
+            msg: Msg,
             isErr: boolean
         ): void => subject$
         .next({
@@ -340,8 +340,8 @@ this.pub(code, msg, fn, opts);
             this.awaitingForResponse.set(
                 sid,
                 {
-                    initialCode: code, 
-                    initialCodeSuffix: initialCodeSuffix, 
+                    initialCode: code,
+                    initialCodeSuffix: initialCodeSuffix,
                     fn: fn
                 }
             );
@@ -492,9 +492,9 @@ this.pub(code, msg, fn, opts);
 
         let final_msg = bmsg.msg;
         // add code to errors, and convert them to classes, since the original
-        // err's code is moved to the bmsg's top-level field from the msg's nested
-        // body
-        if (bmsg.is_err) {
+        // err's code is moved to the bmsg's top-level field from the msg's
+        // nested body
+        if (bmsg.is_err === true) {
             final_msg = Err(
                 final_msg.msg,
                 code

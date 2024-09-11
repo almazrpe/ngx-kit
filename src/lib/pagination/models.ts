@@ -518,7 +518,8 @@ export interface PaginationFilter {
     /**
      * Unique attribute that allows one filter to be distinguished from another
      * Do not start id string with double underscores (__), this two symbols
-     * are using for automatic filter generation inside the pagination component
+     * are using for automatic filter generation inside the pagination
+     * component.
      */
     id: number;
     /**

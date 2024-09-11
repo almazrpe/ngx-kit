@@ -59,8 +59,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Observable which indicates some part of the component must be updated
      */
-    @Input() public updateEvent: Observable<PaginationPart | null> | undefined =
-      of(null);
+    @Input() public updateEvent:
+        Observable<PaginationPart | null> | undefined = of(null)
 
     /**
      * Map object with custom sorting functions (compare-like)
@@ -199,7 +199,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                                     PaginationPart.Items
                                 )
                             ) {
-                                const conf: PaginationConfig = 
+                                const conf: PaginationConfig =
                                     this.config$.value;
                                 conf.disabledParts.delete(
                                     PaginationPart.Items
@@ -235,7 +235,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                             if (this.config$.value.disabledParts.has(
                                 PaginationPart.Filters
                             )) {
-                                const conf: PaginationConfig = 
+                                const conf: PaginationConfig =
                                     this.config$.value;
                                 conf.disabledParts.delete(
                                     PaginationPart.Filters
@@ -358,7 +358,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
             : 1;
 
         if (this.config$.value.addEmptyItemsOnLastPage == true) {
-            const newPagItems: Array<PaginationItem> = 
+            const newPagItems: Array<PaginationItem> =
                 new Array<PaginationItem>(
                     itemCntPerPage - (
                         this.activePaginationItems$.value.length - (
@@ -388,10 +388,10 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.curPage >= this.config$.value.visiblePagesCnt - 2) {
             this.leftSlice+=1;
             if (
-              this.leftSlice 
+              this.leftSlice
               > this.pageCnt - this.config$.value.visiblePagesCnt
             ) {
-                this.leftSlice = 
+                this.leftSlice =
                     this.pageCnt - this.config$.value.visiblePagesCnt;
             }
         }
@@ -400,7 +400,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
     public getPreviousPage(): void {
         this.curPage-=1;
         if (
-            this.curPage 
+            this.curPage
             < this.pageCnt - this.config$.value.visiblePagesCnt + 2
         ) {
             this.leftSlice-=1;
@@ -521,8 +521,11 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.activePaginationItems$.next(
             this.allPaginationItems$.value.filter(item => {
-                if (this.curFilterValues.size == 0) {} else if (item.filterValues === null)
-                    return false;
+                if (this.curFilterValues.size == 0) {
+                }
+                else if (item.filterValues === null) {
+                    return false
+                }
                 else {
                     for (const fid of this.curFilterValues.keys()) {
                         const fIVal: any = item.filterValues.get(fid);
@@ -530,7 +533,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                             return false;
                         else {
                             const curFilterPair: PaginationFilterTVPair =
-                                this.curFilterValues.get(fid) 
+                                this.curFilterValues.get(fid)
                                     ?? {type: null, value: null};
                             switch(curFilterPair.type) {
                                 case null:
@@ -571,7 +574,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                                 let attrStr: string;
                                 switch(item.attr[key].type) {
                                     case PaginationAttrType.DATETIME:
-                                        attrStr = 
+                                        attrStr =
                                             defaultDateTimeFormatters.get(
                                                 PaginationAttrType.DATETIME
                                             )!.format(
@@ -579,7 +582,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                                             );
                                         break;
                                     case PaginationAttrType.DATE:
-                                        attrStr = 
+                                        attrStr =
                                             defaultDateTimeFormatters.get(
                                                 PaginationAttrType.DATE
                                             )!.format(
@@ -587,7 +590,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                                             );
                                         break;
                                     case PaginationAttrType.TIME:
-                                        attrStr = 
+                                        attrStr =
                                             defaultDateTimeFormatters.get(
                                                 PaginationAttrType.TIME
                                             )!.format(
@@ -643,10 +646,12 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
         const modeFactor: number = this.sortChosenColumns[iter].mode +
             Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
 
-        const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
-        const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
+        const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName]
+        const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName]
 
-        if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false) {
+        if (
+            this.customColumnSortingFunctions?.has(chosenColumnName) ?? false
+        ) {
             const func: PaginationSortFunc | undefined =
                 this.customColumnSortingFunctions!.get(chosenColumnName);
 
@@ -764,7 +769,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                     }
                     case PaginationAttrType.DATETIME: {
                         if (
-                            aAttr!.body.value.toString() 
+                            aAttr!.body.value.toString()
                             == bAttr!.body.value.toString()
                         ) {
                             return this.sortingCondition(a, b, iter + 1);
@@ -788,9 +793,9 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                             return -1 * modeFactor;
                     }
                     case PaginationAttrType.TIME: {
-                        const aTime: string = 
+                        const aTime: string =
                             aAttr!.body.value.toTimeString();
-                        const bTime: string = 
+                        const bTime: string =
                             aAttr!.body.value.toTimeString();
                         if (aTime == bTime)
                             return this.sortingCondition(a, b, iter + 1);
@@ -858,7 +863,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                     (this.sortChosenColumns[oldSortColumnIndex].mode + 1) % 3;
 
                 if (
-                    this.sortChosenColumns[oldSortColumnIndex].mode 
+                    this.sortChosenColumns[oldSortColumnIndex].mode
                     == SortColumnMode.OFF
                 ) {
                     this.sortChosenColumns.splice(oldSortColumnIndex, 1);
@@ -891,8 +896,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
                 scolumn => scolumn.column.name == column.name
             );
 
-        return sortColumn == undefined 
-            ? false 
+        return sortColumn == undefined
+            ? false
             : modes.includes(sortColumn.mode);
     }
 
