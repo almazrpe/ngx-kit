@@ -17,8 +17,8 @@ export function conditionValidatorWrapper(
                 return condition ? null : validationErrors;
             }),
 
-            // avoid PENDING status when form waits for the new values from the same
-            // async validator
+            // avoid PENDING status when form waits for the new values from the
+            // same async validator
             // see: https://stackoverflow.com/a/72202477/14748231
             take(1)
         );

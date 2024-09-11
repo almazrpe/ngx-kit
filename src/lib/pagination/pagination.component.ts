@@ -60,7 +60,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
      * Observable which indicates some part of the component must be updated
      */
     @Input() public updateEvent:
-        Observable<PaginationPart | null> | undefined = of(null)
+        Observable<PaginationPart | null> | undefined = of(null);
 
     /**
      * Map object with custom sorting functions (compare-like)
@@ -522,11 +522,9 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
         this.activePaginationItems$.next(
             this.allPaginationItems$.value.filter(item => {
                 if (this.curFilterValues.size == 0) {
-                }
-                else if (item.filterValues === null) {
-                    return false
-                }
-                else {
+                } else if (item.filterValues === null) {
+                    return false;
+                } else {
                     for (const fid of this.curFilterValues.keys()) {
                         const fIVal: any = item.filterValues.get(fid);
                         if (fIVal === undefined)
@@ -646,8 +644,8 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
         const modeFactor: number = this.sortChosenColumns[iter].mode +
             Math.floor(this.sortChosenColumns[iter].mode / 2) * -3;
 
-        const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName]
-        const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName]
+        const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
+        const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
 
         if (
             this.customColumnSortingFunctions?.has(chosenColumnName) ?? false

@@ -83,7 +83,7 @@ export interface MathliveInputConfig {
      * Additional bindings for regular keyboard
      * (e.g. when you need to trigger some latex command throw keys)
      */
-    additionalKeybindings: Keybinding[];
+    additionalKeybindings: Keybinding[]
 }
 
 /**
@@ -108,7 +108,9 @@ export function makeMathliveInputConfig(
         parseMode: "math",
         letterShapeStyle: "iso",
         virtualKeyboardTxt: "Virtual keyboard",
-        outputFormats: [MathliveOutputFormat.Latex, MathliveOutputFormat.MathML],
+        outputFormats: [
+            MathliveOutputFormat.Latex, MathliveOutputFormat.MathML
+        ],
         variableChars: "",
         variableRegex: null,
         restrictedChars: "",

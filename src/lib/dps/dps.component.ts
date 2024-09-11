@@ -81,14 +81,18 @@ export class DPSComponent implements OnInit {
     public pageup(): void {
         this.imageLoading = true;
         this.currentPageNumber--;
-        this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
+        this.form.controls["currentPageNumber"].setValue(
+            this.currentPageNumber
+        );
         this.emitCurrentPage();
     }
 
     public pagedown(): void {
         this.imageLoading = true;
         this.currentPageNumber++;
-        this.form.controls["currentPageNumber"].setValue(this.currentPageNumber);
+        this.form.controls["currentPageNumber"].setValue(
+            this.currentPageNumber
+        );
         this.emitCurrentPage();
 
     }
@@ -107,7 +111,8 @@ export class DPSComponent implements OnInit {
 
         if (currentPage === undefined) {
             this.errorMessage$.next(
-                `${this._config_.noSuchDocPageTranslation} ${this.currentPageNumber}`
+                `${this._config_.noSuchDocPageTranslation}`
+                + ` ${this.currentPageNumber}`
             );
         } else {
             this.errorMessage$.next(null);

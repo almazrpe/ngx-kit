@@ -12,5 +12,5 @@ export interface I18nConfig
      * In terms in performance, this can be very heavy operations since the
      * map might be big. In future we plan to implement async loading of this.
      */
-    translationMapByLang?: TranslationMapByLang;
+    translationMapByLang?: TranslationMapByLang
 }

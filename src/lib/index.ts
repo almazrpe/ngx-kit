@@ -84,7 +84,7 @@ export {
 
 export { KeyboardComponent } from "./keyboard/keyboard.component";
 export { LoadingComponent } from "./loading/loading.component";
-export { StatusCircleComponent } from "./status-circle/status-circle.component";
+export { StatusCircleComponent } from "./status-circle/status-circle.component"
 export { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 export { CapitalizePipe } from "./str/capitalize.pipe";
 export * from "./time";

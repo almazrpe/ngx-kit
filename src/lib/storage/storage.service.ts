@@ -12,7 +12,7 @@ import { assert, panic } from "../../public-api";
 export class StorageService {
     private storages: {[key: string]: IStorage<any>} = {};
     private items: {
-        [storageKey: string]: {[itemKey: string]: ReplaySubject<any>};
+        [storageKey: string]: {[itemKey: string]: ReplaySubject<any>}
     } = {};
 
     public addStorage<T>(key: string, storage: IStorage<T>): void {

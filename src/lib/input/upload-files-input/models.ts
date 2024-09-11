@@ -2,7 +2,7 @@ import { SafeUrl } from "@angular/platform-browser";
 
 export interface UploadFileObject {
     file: File;
-    url: SafeUrl;
+    url: SafeUrl
 }
 
 export interface UploadFilesInputConfig {
@@ -10,7 +10,7 @@ export interface UploadFilesInputConfig {
     unknownExtensionTranslation: string;
     wrongExtensionTranslation: string;
     abortIconPath: string;
-    unknownDocIconPath: string;
+    unknownDocIconPath: string
 }
 
 /**

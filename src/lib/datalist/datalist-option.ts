@@ -10,5 +10,5 @@ export interface DatalistOption<Type = any> {
     /**
      * Object to reference for this option.
      */
-    obj?: Type;
+    obj?: Type
 }

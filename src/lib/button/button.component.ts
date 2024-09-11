@@ -39,7 +39,7 @@ export class ButtonComponent implements OnInit, OnChanges {
 
     private modeSubject: BehaviorSubject<ButtonMode> =
         new BehaviorSubject<ButtonMode>(this.mode);
-    public mode$: Observable<ButtonMode> = 
+    public mode$: Observable<ButtonMode> =
         this.modeSubject.asObservable();
 
     public cssClasses$: ReplaySubject<string[]> =
@@ -101,8 +101,8 @@ export class ButtonComponent implements OnInit, OnChanges {
         ],
         // CONTROLS
         [
-            "text-c10-text", "rounded", "hover:bg-gray-200", "hover:bg-opacity-70",
-            "p-0", "w-full",
+            "text-c10-text", "rounded", "hover:bg-gray-200",
+            "hover:bg-opacity-70", "p-0", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
@@ -136,7 +136,7 @@ export class ButtonComponent implements OnInit, OnChanges {
         if (changes["isEnabled"] != null) {
             this.isEnabled =
                 changes["isEnabled"].currentValue !== undefined
-                    ? changes["isEnabled"].currentValue 
+                    ? changes["isEnabled"].currentValue
                     : false;
             this.setCSSClasses();
         }
@@ -163,9 +163,11 @@ export class ButtonComponent implements OnInit, OnChanges {
     private setCSSClasses(): void {
         const cssClasses: string[] = Object.assign([], this.getCSSClasses());
         if (this.isEnabled == null || this.isEnabled == false) {
-            // wrapped button in angular is not disabled logically, even if the right
-            // option is passed, but workaround is to add class `pointer-events-none`
-            // https://stackoverflow.com/a/70683035
+            // wrapped button in angular is not disabled logically, even if the
+            // right option is passed, but workaround is to add class
+            // `pointer-events-none`
+            //
+            // ref: https://stackoverflow.com/a/70683035
             cssClasses.push("pointer-events-none");
         }
         this.cssClasses$.next(cssClasses);

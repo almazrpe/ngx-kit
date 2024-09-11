@@ -28,7 +28,7 @@ export class KeyboardService {
 
     private isBtnEnabled: BehaviorSubject<boolean> =
         new BehaviorSubject<boolean>(true);
-    public isBtnEnabled$: Observable<boolean> = 
+    public isBtnEnabled$: Observable<boolean> =
         this.isBtnEnabled.asObservable();
 
     private isInitialized = false;
@@ -128,16 +128,18 @@ export class KeyboardService {
                 stringValue = event.value.toString();
             }
 
-            // only on external value changes change the buffer of the keyboard,
-            // in other cases it's already set to required buffer, since the host
-            // of an event is keyboard
+            // only on external value changes change the buffer of the
+            // keyboard, in other cases it's already set to required buffer,
+            // since the host of an event is keyboard
             this.keyboard.setInput(stringValue);
-            // sometimes unreset caret selects unecessary text which gets replaced
-            // by new keyboard input
+            // sometimes unreset caret selects unecessary text which gets
+            // replaced by new keyboard input
             this.keyboard.setCaretPosition(null);
 
         } else if (event.host !== ValueHost.KEYBOARD) {
-            throw new Error(`unrecognized input value event host=${event.host}`);
+            throw new Error(
+                `unrecognized input value event host=${event.host}`
+            );
         }
     }
 

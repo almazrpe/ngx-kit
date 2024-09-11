@@ -12,5 +12,5 @@ export interface TranslationOptions {
      * Fallback bracket params are injected as it would be for the normal
      * translation.
      */
-    fallback?: string;
+    fallback?: string
 }

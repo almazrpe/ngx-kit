@@ -89,7 +89,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor {
                         // do not re-accept self-made changes
                         && event.host !== ValueHost.INPUT
                     ) {
-                        // don't resend an input change event back to 
+                        // don't resend an input change event back to
                         // keyboard, because
                         // here the keyboard initiated the change
                         const mockEvent: any = {
@@ -159,7 +159,7 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor {
         this.setValue(value);
 
         if (
-            // if the origin value is changed by validators, an event should 
+            // if the origin value is changed by validators, an event should
             // be fired
             // even if it was disabled to notify the other recipients (mainly a
             // keyboard) about the change
@@ -199,9 +199,9 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor {
             }
         }
 
-        // for inputs with suggested options an additional "teardown" input action
-        // should be called for cases where such additional option is picked by
-        // an user
+        // for inputs with suggested options an additional "teardown" input
+        // action should be called for cases where such additional option is
+        // picked by an user
         this.onInput(event);
 
         this.blur.emit(event);
@@ -259,9 +259,9 @@ export class InputComponent<T> implements OnInit, ControlValueAccessor {
     }
 
     private setValue(value: T | ValueValidatorEvent): void {
-        // apply value set only on correct form API initialization, 
+        // apply value set only on correct form API initialization,
         // sometimes the
-        // input catches old input values from the bus before it has been 
+        // input catches old input values from the bus before it has been
         // properly
         // initialized (e.g. on logout transition) - so ensure no error will be
         // raised in such case and such values are just ignored

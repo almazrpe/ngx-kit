@@ -6,7 +6,7 @@ export interface PdfViewerConfig {
     pageDownIconPath: string;
     zoomUpIconPath: string;
     zoomDownIconPath: string;
-    pdfWorkerPath: string | null;
+    pdfWorkerPath: string | null
 }
 
 /**

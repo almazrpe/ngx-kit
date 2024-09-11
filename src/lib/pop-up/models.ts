@@ -36,7 +36,7 @@ export interface PopUpConfig
 extends UploadFilesInputConfig, MathliveInputConfig
 {
     closeUsingBtnOnly: boolean;
-    resetFieldIconPath: string;
+    resetFieldIconPath: string
 }
 
 /**
@@ -88,14 +88,14 @@ export interface PopUpFormField {
     fileUploadCheckFunc?: (
         files: UploadFileObject[]
     ) => Observable<UploadFileObject[] | null>;
-    mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
+    mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>
 }
 
 export interface PopUpChoosingBtn {
     print: string;
     value: any;
     mode?: ButtonMode;
-    extraCssClasses?: string[];
+    extraCssClasses?: string[]
 }
 
 export interface PopUpPaginationData {
@@ -104,7 +104,7 @@ export interface PopUpPaginationData {
     config?: Partial<PaginationConfig>;
     sortFuncs?: Map<string, PaginationSortFunc>;
     updateEvt?: Observable<PaginationPart | null>;
-    subtitle?: string;
+    subtitle?: string
 }
 
 export interface PopUpWindow {
@@ -117,17 +117,17 @@ export interface PopUpWindow {
     paginationData?: PopUpPaginationData;
     templateRefs?: {
         main?: TemplateRef<any>;
-        extraHeader?: TemplateRef<any>;
-    };
+        extraHeader?: TemplateRef<any>
+    }
 }
 
 export interface PopUpResult {
     windowNum: number;
-    value: any;
+    value: any
 }
 
 export interface PopUpDescriptorField {
     fieldName?: string;
     message: string;
-    imageSrc?: string;
+    imageSrc?: string
 }

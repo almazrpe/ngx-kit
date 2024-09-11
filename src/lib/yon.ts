@@ -54,7 +54,7 @@ export enum mcode {
 }
 
 export interface Welcome {
-    codes: string[];
+    codes: string[]
 }
 
 export interface OkMsg {
@@ -70,7 +70,7 @@ export interface PubOpts {
     skipInner: boolean;
     /// Publications that are supplied with lsid will be sent as responses.
     _lsid?: string;
-    _isErr?: boolean;
+    _isErr?: boolean
 }
 export const DEFAULT_PUB_OPTS: PubOpts = {
     skipNet: false,
@@ -121,13 +121,13 @@ export type SubFn<T = Msg> = (code: string, msg: T, isErr: boolean) => void
 export interface CodeData<T = any> {
     isErr: boolean;
     lastMsg: Msg | undefined;
-    subs: Map<string, SubFn<T>>;
+    subs: Map<string, SubFn<T>>
 }
 
 export interface AwaitingForResponse {
     initialCode: string;
     initialCodeSuffix?: string;
-    fn: SubFn;
+    fn: SubFn
 }
 
 export class Bus {
@@ -273,7 +273,7 @@ this.subFull(code, fn, retUnsub);
         code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
     ): Observable<Res<{code: string; msg: T}>> {
         const subject$ = new ReplaySubject<{
-            code: string; msg: Msg; isErr: boolean;
+            code: string; msg: Msg; isErr: boolean
         }>();
         const subfn = (
             code: string,

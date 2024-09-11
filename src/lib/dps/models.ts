@@ -12,7 +12,7 @@ export interface DPSConfig {
     showDPSLControllerIconPath: string;
     controllerArrowIconPath: string;
     controllerPlusIconPath: string;
-    controllerMinusIconPath: string;
+    controllerMinusIconPath: string
 }
 
 /**

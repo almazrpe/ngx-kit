@@ -1,14 +1,14 @@
 export interface TranslationMapByLang
 {
-    [lang: string]: TranslationMap;
+    [lang: string]: TranslationMap
 }
 
 export interface TranslationMap
 {
-    [code: string]: TranslationUnit;
+    [code: string]: TranslationUnit
 }
 
 export interface TranslationUnit
 {
-    [modifier: string]: string;
+    [modifier: string]: string
 }

@@ -5,7 +5,7 @@ export namespace quco {
     export type Collection = string;
 
     export interface Query {
-        [key: string]: any;
+        [key: string]: any
     }
 
     export enum UpdQueryTopLevelOps {

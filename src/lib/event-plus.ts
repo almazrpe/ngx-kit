@@ -2,12 +2,12 @@
  * Extended version of the default DOM Event.
  */
 export interface EventPlus extends Event {
-    extraData?: any;
+    extraData?: any
 }
 
 
 export interface EventPlusCreate {
-    extraData?: any;
+    extraData?: any
 }
 
 

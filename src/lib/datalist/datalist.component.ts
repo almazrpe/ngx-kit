@@ -45,7 +45,7 @@ import { StringUtils } from "../str/utils";
         }
     ],
 })
-export class DatalistComponent 
+export class DatalistComponent
 implements OnInit, ControlValueAccessor, OnChanges {
     @Input() public inputType: InputType = InputType.Text;
     @Input() public labelText: string;
@@ -115,9 +115,12 @@ implements OnInit, ControlValueAccessor, OnChanges {
         if (
             !isValueMatched && isValueDefined
         ) {
-            // alert should be spawned only on closed keyboard, to not distract user
-            // on typing, since he will unfocus the target field to type new data
-            if (!this.keyboardService.isEnabledValue && isUnmatchAlertSpawned) {
+            // alert should be spawned only on closed keyboard, to not distract
+            // user on typing, since he will unfocus the target field to type
+            // new data
+            if (
+                !this.keyboardService.isEnabledValue && isUnmatchAlertSpawned
+            ) {
                 this.spawnUnmatchAlert(value);
             }
         } else if (isValueDefined) {

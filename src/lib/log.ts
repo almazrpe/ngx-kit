@@ -26,7 +26,8 @@ export abstract class log {
         const stack = err.stack;
         if (stack !== undefined) {
           // do not attach stack to console - too long
-          // emsg = emsg + "\n\t-> " + stack.trimEnd().replaceAll("\n", "\n\t-> ")
+          // emsg =
+          //     emsg + "\n\t-> " + stack.trimEnd().replaceAll("\n", "\n\t-> ")
           // TODO: but attach stack to browser's db log storage
         }
 

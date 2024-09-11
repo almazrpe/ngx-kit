@@ -58,7 +58,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
     @Input() public type: InputType = InputType.Text;
     /**
      * List of items for InputType.Select, InputType.CheckList,
-     * InputType.RadioList and autocompletion 
+     * InputType.RadioList and autocompletion
      * (using only in REGULAR InputTypes)
      */
     @Input() public fillingOptions: Array<T> | undefined = undefined;
@@ -153,7 +153,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
      */
     @Input() public localizedName: string = "noname";
     /**
-     * Very optional configuration that allows to define list 
+     * Very optional configuration that allows to define list
      * of attr-attributes for the main element of the component.
      */
     @Input() public attrList: string[] = [];
@@ -185,7 +185,9 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
     @Output() public complete: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
-    public formControl: FormControl = new FormControl("", { nonNullable: true });
+    public formControl: FormControl = new FormControl(
+        "", { nonNullable: true }
+    );
     public stateChanges: Subject<void> = new Subject<void>();
     public matcher: InputErrorStateMatcher = new InputErrorStateMatcher();
     public errorState: boolean = false;
@@ -249,8 +251,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
                         if (event.value === ValueValidatorEvent.Complete)
                             this.onEnterInput();
                         else
-                            // don't resend an input change event back to 
-                            // keyboard, because here the keyboard initiated 
+                            // don't resend an input change event back to
+                            // keyboard, because here the keyboard initiated
                             // the change
                             this.sendInputMockEvent(event.value, true);
                     }
@@ -317,8 +319,8 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
         const oldState: boolean = this.errorState;
         const newState: boolean = (
             (
-                this.ngControl == null 
-                    ? false 
+                this.ngControl == null
+                    ? false
                     : (this.ngControl.invalid ?? false)
             )
             && (this.touched || (parent != null && parent.submitted))
@@ -401,7 +403,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
     }
 
     public sendInputMockEvent(
-      val: any, 
+      val: any,
       virtualKeyboard: boolean = false
     ): void {
         const mockEvent: any = {
@@ -418,7 +420,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
             switch(this.type) {
                 case InputType.Number:
                     if (/^[0-9]{1,}[.,]{1}$/.test(val)) {
-                        this.mainElementRef.nativeElement.value = 
+                        this.mainElementRef.nativeElement.value =
                             val.slice(0,-1).concat(",0");
                         return;
                     }
@@ -480,7 +482,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
                     ) ?? "";
                 else
                     return getDefaultErrorMessage(
-                        errorName, 
+                        errorName,
                         errors[errorName]
                     );
             }

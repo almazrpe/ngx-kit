@@ -49,7 +49,8 @@ export function getDefaultErrorMessage(errorName: string, error: any): string {
         case InputValidationErrorCode.LatexVarStartNoUnderscore:
             return "Variables mustn't begin with underscore characters";
         case InputValidationErrorCode.LatexVarSizeMin:
-            return `Length of variable names mustn't be below ${error["minSize"]}`;
+            return "Length of variable names mustn't be below"
+                + ` ${error["minSize"]}`;
         default:
             return "The field contains an error";
     }

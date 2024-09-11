@@ -8,7 +8,7 @@ export interface ResItem<T = any> {
     is_err(): this is ErrCls;
     get ok(): T | undefined;
     get err(): ErrCls | undefined;
-    unwrap(): T;
+    unwrap(): T
 }
 
 export function Ok<T>(val: T): OkCls<T> {
@@ -53,8 +53,8 @@ export class OkCls<T> implements ResItem<T> {
 
 // TODO: support stacktrace
 export class ErrCls extends Error implements ResItem {
-    code: string;
-    msg: string | undefined;
+    public code: string;
+    public msg: string | undefined;
 
     public constructor(msg?: string, code: string = ecode.Err) {
         super();

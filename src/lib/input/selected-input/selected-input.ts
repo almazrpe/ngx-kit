@@ -16,7 +16,7 @@ export interface SelectedInputEvent<T> {
      * empty string value and isSelected=false to comply with this event
      * interface and signify that the input was deselected.
      */
-    isSelected: boolean;
+    isSelected: boolean
 }
 
 export interface SelectedInput<T> {
@@ -24,7 +24,7 @@ export interface SelectedInput<T> {
     name: string;
     type: InputType;
     inputValueValidators?: ValueValidator<T>[];
-    blurValueValidators?: ValueValidator<T>[];
+    blurValueValidators?: ValueValidator<T>[]
 }
 
 /**

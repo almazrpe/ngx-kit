@@ -155,7 +155,7 @@ export interface PaginationConfig {
      * Settings for custom table column headers
      * (in case column has PaginationColumnTag.CustomHeader)
      */
-    customTColumnHeaders: Map<string, PaginationTColumnHeader>;
+    customTColumnHeaders: Map<string, PaginationTColumnHeader>
 }
 
 /**
@@ -255,13 +255,13 @@ export interface PaginationItem {
      * (in case viewType configuration of the component is Table)
      */
     attr: {
-      [key: string]: PaginationAttr;
+      [key: string]: PaginationAttr
     };
     /**
      * Indicates this item is dummy (created just for more pleasant view)
      * (in case viewType configuration of the component is Table)
      */
-    dummy?: boolean;
+    dummy?: boolean
 }
 
 /**
@@ -275,7 +275,7 @@ export interface PaginationAttr {
     /**
      * Additional css classes for more pleasant table cell view of this attr
      */
-    extraCssClasses?: string[];
+    extraCssClasses?: string[]
 }
 
 /**
@@ -381,7 +381,7 @@ export interface PaginationIcon {
      * Array to setup custom tailwind css classes
      * (mainly for weight and height setup)
      */
-    cssClasses?: string[];
+    cssClasses?: string[]
 }
 
 /**
@@ -407,7 +407,7 @@ export interface PaginationLabel {
     /**
      * Text color of the label
      */
-    textColor?: string;
+    textColor?: string
 }
 
 /**
@@ -443,7 +443,7 @@ export interface PaginationButton {
     /**
      * Array to setup custom tailwind css classes
      */
-    cssClasses?: string[];
+    cssClasses?: string[]
 }
 
 /**
@@ -464,7 +464,7 @@ export interface PaginationDateTime {
      * Custom addition string at the end of the string output
      * (after a formatter implementation)
      */
-    endStr?: string;
+    endStr?: string
 }
 
 /**
@@ -529,7 +529,7 @@ export interface PaginationFilter {
     /**
      * Settings for the input component
      */
-    inputConfig: FilterInputConfig;
+    inputConfig: FilterInputConfig
 }
 
 /**
@@ -543,7 +543,7 @@ export interface FilterInputConfig {
     /**
      * Any other attributes of the input component
      */
-    [inputOption: string]: any;
+    [inputOption: string]: any
 }
 
 /**
@@ -551,7 +551,7 @@ export interface FilterInputConfig {
  */
 export interface PaginationFilterTVPair {
     type: InputType | null;
-    value: any;
+    value: any
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -569,7 +569,7 @@ export interface TableColumn {
     sorting: boolean;
     header: PaginationColumnTag.NameHeader
         | PaginationColumnTag.CustomHeader
-        | PaginationColumnTag.NoHeader;
+        | PaginationColumnTag.NoHeader
 }
 
 /**
@@ -577,7 +577,7 @@ export interface TableColumn {
  */
 export interface SortTableColumn {
     column: TableColumn;
-    mode: SortColumnMode;
+    mode: SortColumnMode
 }
 
 /**
@@ -589,7 +589,7 @@ export interface PaginationTColumnHeader {
     rightText?: string;
     gapClass?: string;
     imgExtraCssClasses?: string[];
-    textExtraCssClasses?: string[];
+    textExtraCssClasses?: string[]
 }
 
 /**
