@@ -178,8 +178,8 @@ export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
 export function pipeDebug(): RxPipe<any, any> {
     return pipe(
         map(val => {
-            log.debug(val)
-            return val
+            log.debug(val);
+            return val;
         })
     );
 }
@@ -187,8 +187,8 @@ export function pipeDebug(): RxPipe<any, any> {
 export function pipeWarn(): RxPipe<any, any> {
     return pipe(
         map(val => {
-            log.warn(val)
-            return val
+            log.warn(val);
+            return val;
         })
     );
 }
@@ -197,9 +197,9 @@ export function pipeTakeFirst<T>(): RxPipe<T[], Res<T>> {
     return pipe(
         map(val => {
             if (val.length == 0) {
-                return Err("empty arr to take from")
+                return Err("empty arr to take from");
             }
-            return Ok(val[0])
+            return Ok(val[0]);
         })
     );
 }
@@ -215,31 +215,31 @@ export function pipeOkOrEmptyArr<T>(): RxPipe<Res<T[]>, T[]> {
     return pipe(
         map(val => {
             if (val.is_err()) {
-                return []
+                return [];
             }
-            return val.ok
+            return val.ok;
         })
-    )
+    );
 }
 
 export function pipeOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
     return pipe(
         map(val => {
             if (val.is_err()) {
-                return undefined
+                return undefined;
             }
-            return val.ok
+            return val.ok;
         })
-    )
+    );
 }
 
 export function pipeOkOrNull<T>(): RxPipe<Res<T>, T | null> {
     return pipe(
         map(val => {
             if (val.is_err()) {
-                return null
+                return null;
             }
-            return val.ok
+            return val.ok;
         })
-    )
+    );
 }

@@ -10,8 +10,7 @@ import { panic } from "ngx-kit/copper";
 @Injectable({
     providedIn: "root"
 })
-export class SelectedInputService 
-{
+export class SelectedInputService {
     private _eventBus$: ReplaySubject<SelectedInputEvent<any>> =
         new ReplaySubject<SelectedInputEvent<any>>;
     public eventBus$: Observable<SelectedInputEvent<any>> =
@@ -57,17 +56,14 @@ export class SelectedInputService
     }
 
     public deselect(): void {
-        try 
-        {
+        try {
             this._eventBus$.next({
                 host: ValueHost.INPUT,
                 selectedInput: this.checkCanSend(),
                 value: "",
                 isSelected: false
             });
-        } 
-        catch (error) 
-        {
+        } catch (error) {
             // TODO: better throw unrecognized errs here
             return;
         }
@@ -75,12 +71,9 @@ export class SelectedInputService
     }
 
     private checkCanSend(): SelectedInput<any> {
-        if (this.selectedInput === null) 
-        {
+        if (this.selectedInput === null) {
             panic("cannot send value: no selected input");
-        } 
-        else 
-        {
+        } else {
             return this.selectedInput;
         }
     }

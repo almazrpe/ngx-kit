@@ -43,8 +43,7 @@ const DEFAULT_FIRST_COLUMN_NAME: string = "###NAME###";
     templateUrl: "./pagination.component.html",
     styleUrls: []
 })
-export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy 
-{
+export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * List of items for the pagination
      */
@@ -142,8 +141,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                         || paginationAttrTypeChecker(item.attr[key]) == false
                     )
                         continue;
-                    else
-                    {
+                    else {
                         if (undefined == this.tableColumns.find(
                             (column: TableColumn) => {
                                 return column.name == key
@@ -186,8 +184,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         }
         this.refreshPageCnt();
 
-        if (this.updateEvent !== undefined)
-        {
+        if (this.updateEvent !== undefined) {
             this.updateEventSubscription = this.updateEvent.subscribe({
                 next: (part: PaginationPart | null) => {
                     switch(part) {
@@ -524,9 +521,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.activePaginationItems$.next(
             this.allPaginationItems$.value.filter(item => {
-                if (this.curFilterValues.size == 0) 
-                  {} 
-                else if (item.filterValues === null)
+                if (this.curFilterValues.size == 0) {} else if (item.filterValues === null)
                     return false;
                 else {
                     for (const fid of this.curFilterValues.keys()) {
@@ -651,8 +646,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
         const aAttr: PaginationAttr | undefined = a.attr[chosenColumnName];
         const bAttr: PaginationAttr | undefined = b.attr[chosenColumnName];
 
-        if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false) 
-        {
+        if (this.customColumnSortingFunctions?.has(chosenColumnName) ?? false) {
             const func: PaginationSortFunc | undefined =
                 this.customColumnSortingFunctions!.get(chosenColumnName);
 
@@ -698,8 +692,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                 && bAttr!.type != chosenColumnType
             ) {
                 return this.sortingCondition(a, b, iter + 1);
-            }
-            else if (
+            } else if (
                 bCheck == false
                 || aAttr!.type == chosenColumnType
                 && bAttr!.type != chosenColumnType
@@ -709,8 +702,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                         ? -1 * modeFactor
                         : 1 * modeFactor
                 );
-            }
-            else if (
+            } else if (
                 aCheck == false
                 || aAttr!.type != chosenColumnType
                 && bAttr!.type == chosenColumnType
@@ -720,8 +712,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                         ? 1 * modeFactor
                         : -1 * modeFactor
                 );
-            }
-            else {
+            } else {
                 switch(chosenColumnType) {
                     case PaginationAttrType.BUTTON:
                     case PaginationAttrType.LABEL:
@@ -777,8 +768,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
                             == bAttr!.body.value.toString()
                         ) {
                             return this.sortingCondition(a, b, iter + 1);
-                        }
-                        else if (aAttr!.body.value > bAttr!.body.value)
+                        } else if (aAttr!.body.value > bAttr!.body.value)
                             return 1 * modeFactor;
                         else
                             return -1 * modeFactor;
@@ -859,7 +849,7 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy
             const oldSortColumnIndex: number =
                 this.sortChosenColumns.findIndex(
                     scolumn => {
-                        return scolumn.column.name == chosenColumn.name
+                        return scolumn.column.name == chosenColumn.name;
                     }
                 );
 

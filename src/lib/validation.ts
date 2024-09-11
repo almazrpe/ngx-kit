@@ -11,8 +11,7 @@ export abstract class ValidationUtils {
     }
 }
 
-export abstract class CustomValidators
-{
+export abstract class CustomValidators {
     /**
       * Handles whitespaces in form fields.
       */
@@ -26,12 +25,9 @@ export abstract class CustomValidators
         }
 
         if (typeof hasWhitespace == "boolean" &&
-            hasWhitespace == true)
-        {
+            hasWhitespace == true) {
             return { nowhitespace: true };
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
@@ -62,12 +58,10 @@ export abstract class CustomValidators
      */
     public static latexVarStartNoUnderscore(
         control: AbstractControl
-    ): ValidationErrors | null
-    {
+    ): ValidationErrors | null {
         let hasWrongVar: boolean = false;
 
-        if (typeof control.value == "string")
-        {
+        if (typeof control.value == "string") {
             hasWrongVar = /\\mathit{(\\_.*?)}/.test(control.value);
         }
 
@@ -79,15 +73,12 @@ export abstract class CustomValidators
      */
     public static latexVarSizeMin(
         minSize: number
-    ): ValidatorFn
-    {
+    ): ValidatorFn {
         const re = new RegExp(`\\mathit{(.{1,${minSize - 1}}?)}`);
-        return (control: AbstractControl): ValidationErrors | null =>
-        {
+        return (control: AbstractControl): ValidationErrors | null => {
             let hasWrongVar: boolean = false;
 
-            if (typeof control.value == "string")
-            {
+            if (typeof control.value == "string") {
                 hasWrongVar = re.test(control.value);
             }
 

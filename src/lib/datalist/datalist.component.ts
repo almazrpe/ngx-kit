@@ -46,8 +46,7 @@ import { StringUtils } from "../str/utils";
     ],
 })
 export class DatalistComponent 
-implements OnInit, ControlValueAccessor, OnChanges 
-{
+implements OnInit, ControlValueAccessor, OnChanges {
     @Input() public inputType: InputType = InputType.Text;
     @Input() public labelText: string;
     @Input() public options: DatalistOption[];

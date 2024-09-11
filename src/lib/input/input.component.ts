@@ -30,8 +30,7 @@ import { NumUtils } from "../num";
         }
     ],
 })
-export class InputComponent<T> implements OnInit, ControlValueAccessor 
-{
+export class InputComponent<T> implements OnInit, ControlValueAccessor {
     @Input() public id: string;
     @Input() public name: string;
     @Input() public localizedName: string = "noname";

@@ -19,8 +19,7 @@ import { Event as GeneralRouterEvent } from "@angular/router";
 @Injectable({
     providedIn: "root"
 })
-export class KeyboardService 
-{
+export class KeyboardService {
     private keyboard: Keyboard;
 
     private isEnabled: BehaviorSubject<boolean> =

@@ -19,30 +19,27 @@ export class ErrorHandlerService {
 
     public handle(err: Error): void {
         if (!(err instanceof ErrCls)) {
-            if (err instanceof HttpErrorResponse) 
-            {
-                var err_body = {code: undefined, msg: err.error}
+            if (err instanceof HttpErrorResponse) {
+                let err_body = {code: undefined, msg: err.error};
                 try {
-                    err_body = JSON.parse(err.error)
+                    err_body = JSON.parse(err.error);
                 } catch (exc) {}
 
-                let msg = err_body.msg
+                let msg = err_body.msg;
                 if (msg === undefined) {
-                    msg = err.error
+                    msg = err.error;
                 }
 
-                let code = `http(${err.status})`
+                let code = `http(${err.status})`;
                 if (err_body.code !== undefined) {
-                    code += `::${err_body.code}`
+                    code += `::${err_body.code}`;
                 }
 
                 err = Err(
                     msg,
                     code
-                )
-            } 
-            else 
-            {
+                );
+            } else {
                 err = ErrFromNative(err);
             }
         }

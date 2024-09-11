@@ -69,8 +69,7 @@ export class StorageService {
         return subj.asObservable();
     }
 
-    public initItem<T>(storageKey: string, itemKey: string, defaultVal?: T): T 
-    {
+    public initItem<T>(storageKey: string, itemKey: string, defaultVal?: T): T {
         return this.getItem(storageKey, itemKey, defaultVal);
     }
 

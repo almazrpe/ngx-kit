@@ -19,7 +19,6 @@ import {
     Ok, 
     panic, 
     Res, 
-    pipeResultify, 
     RxPipe 
 } from "./copper";
 import { uuid4 } from "./uuid";
@@ -67,11 +66,11 @@ export enum StaticCodeids {
 }
 
 export interface PubOpts {
-    skipNet: boolean
-    skipInner: boolean
+    skipNet: boolean;
+    skipInner: boolean;
     /// Publications that are supplied with lsid will be sent as responses.
-    _lsid?: string
-    _isErr?: boolean
+    _lsid?: string;
+    _isErr?: boolean;
 }
 export const DEFAULT_PUB_OPTS: PubOpts = {
     skipNet: false,
@@ -120,15 +119,15 @@ export type SmallSubFn<T = Msg> = (msg: T) => void
 export type SubFn<T = Msg> = (code: string, msg: T, isErr: boolean) => void
 
 export interface CodeData<T = any> {
-    isErr: boolean
-    lastMsg: Msg | undefined
-    subs: Map<string, SubFn<T>>
+    isErr: boolean;
+    lastMsg: Msg | undefined;
+    subs: Map<string, SubFn<T>>;
 }
 
 export interface AwaitingForResponse {
-    initialCode: string
-    initialCodeSuffix?: string
-    fn: SubFn
+    initialCode: string;
+    initialCodeSuffix?: string;
+    fn: SubFn;
 }
 
 export class Bus {
@@ -139,7 +138,7 @@ export class Bus {
     }
 
     /// Does some action, but doesn't change how error flows further.
-    public onErrPassedToSubFn: (err: ErrCls) => void = _ => {}
+    public onErrPassedToSubFn: (err: ErrCls) => void = _ => {};
 
     private conWrapper$: Observable<WebSocketSubject<Bmsg>>;
     private con: WebSocketSubject<Bmsg> | null = null;
@@ -150,9 +149,9 @@ export class Bus {
     private codes: string[] = [];
     private isInitd: boolean = false;
 
-    private alertSv: AlertService
-    private conSv: ConService
-    public onWelcome: Queue<() => void> = new Queue()
+    private alertSv: AlertService;
+    private conSv: ConService;
+    public onWelcome: Queue<() => void> = new Queue();
 
     /// Map of initial message sid to awaiting function data.
     private awaitingForResponse: Map<string, AwaitingForResponse> = new Map();
@@ -196,7 +195,7 @@ export class Bus {
     }
 
     private isWelcomeArrived(): boolean {
-        return this.codes.length > 0
+        return this.codes.length > 0;
     }
 
     public sub<T>(
@@ -206,9 +205,11 @@ export class Bus {
     ): Res<undefined> {
         return this.subFull(
             code,
-            (_code, msg: T, _isErr) => {fn(msg)},
+            (_code, msg: T, _isErr) => {
+fn(msg);
+},
             retUnsub
-        )
+        );
     }
 
     public subFull<T>(
@@ -217,8 +218,10 @@ export class Bus {
         retUnsub: (unsub: () => void) => void = _ => {}
     ): Res<undefined> {
         if (!this.isWelcomeArrived()) {
-            this.onWelcome.enqueue(() => {this.subFull(code, fn, retUnsub)})
-            return Ok(undefined)
+            this.onWelcome.enqueue(() => {
+this.subFull(code, fn, retUnsub);
+});
+            return Ok(undefined);
         }
 
         let codeData = this.codesData.get(code);
@@ -237,13 +240,13 @@ export class Bus {
                 // we don't care about unsub result
                 codeData.subs.delete(subid);
             }
-        })
-        return Ok(undefined)
+        });
+        return Ok(undefined);
     }
 
     private callSubFn<T>(fn: SubFn<T>, code: string, msg: T, isErr: boolean) {
         if (isErr && msg instanceof ErrCls) {
-            this.onErrPassedToSubFn(msg)
+            this.onErrPassedToSubFn(msg);
         }
         try {
             fn(code, msg, isErr);
@@ -259,19 +262,19 @@ export class Bus {
         return this.pubFull$<T>(code, msg, opts).pipe(
             map(v => {
                 if (v.is_err()) {
-                    return v
+                    return v;
                 }
-                return Ok(v.ok.msg)
+                return Ok(v.ok.msg);
             })
-        )
+        );
     }
 
     public pubFull$<T = OkMsg>(
         code: string, msg: Msg, opts: PubOpts = DEFAULT_PUB_OPTS
-    ): Observable<Res<{code: string, msg: T}>> {
+    ): Observable<Res<{code: string; msg: T}>> {
         const subject$ = new ReplaySubject<{
-            code: string, msg: Msg, isErr: boolean
-        }>()
+            code: string; msg: Msg; isErr: boolean;
+        }>();
         const subfn = (
             code: string, 
             msg: Msg, 
@@ -281,20 +284,20 @@ export class Bus {
             code: code,
             msg: msg,
             isErr: isErr
-        })
+        });
         this.pub(code, msg, subfn, opts);
         return subject$.asObservable().pipe(
         map(data => {
             if (data.isErr) {
                 if (data.msg instanceof ErrCls) {
-                    return data.msg
+                    return data.msg;
                 }
-                return Err(data.msg.msg)
+                return Err(data.msg.msg);
             }
-            return Ok({code: data.code, msg: data.msg})
+            return Ok({code: data.code, msg: data.msg});
         }),
         take(1)
-        )
+        );
     }
 
     /// Publish msg and calls the provided function when the response arrives.
@@ -305,8 +308,10 @@ export class Bus {
         opts: PubOpts = DEFAULT_PUB_OPTS
     ): Res<undefined> {
         if (!this.isWelcomeArrived()) {
-            this.onWelcome.enqueue(() => {this.pub(code, msg, fn, opts)})
-            return Ok(undefined)
+            this.onWelcome.enqueue(() => {
+this.pub(code, msg, fn, opts);
+});
+            return Ok(undefined);
         }
 
         if (opts._lsid !== undefined && fn !== undefined) {
@@ -322,15 +327,15 @@ export class Bus {
         if (codeData === undefined) {
             return Err("cannot find code " + code);
         }
-        let isErr = opts._isErr === true
-        codeData.isErr = isErr
-        codeData.lastMsg = msg
+        let isErr = opts._isErr === true;
+        codeData.isErr = isErr;
+        codeData.lastMsg = msg;
 
         let sid = uuid4();
         if (fn !== undefined) {
-            let initialCodeSuffix = undefined
+            let initialCodeSuffix = undefined;
             if (Object.hasOwn(msg, "collection")) {
-                initialCodeSuffix = msg.collection
+                initialCodeSuffix = msg.collection;
             }
             this.awaitingForResponse.set(
                 sid,
@@ -339,7 +344,7 @@ export class Bus {
                     initialCodeSuffix: initialCodeSuffix, 
                     fn: fn
                 }
-            )
+            );
         }
 
         // send to net
@@ -399,15 +404,15 @@ export class Bus {
     /// Unsub every item in array, clearing on the go.
     public unsubArr(arr: (() => void)[]) {
         for (let i = arr.length - 1; i > 0; i--) {
-            let unsub = arr.pop()
+            let unsub = arr.pop();
             if (unsub !== undefined) {
-                unsub()
+                unsub();
             }
         }
     }
 
     private welcome(raw: any): void {
-        log.info("receive welcome")
+        log.info("receive welcome");
         let codes = raw.msg.codes;
         if (codes === undefined) {
             panic("incorrect welcome message composition");
@@ -422,14 +427,14 @@ export class Bus {
                     lastMsg: undefined,
                     subs: new Map()
                 }
-            )
+            );
         }
 
-        let deferredCount = this.onWelcome.length
+        let deferredCount = this.onWelcome.length;
         while (this.onWelcome.length > 0) {
-            this.onWelcome.dequeue()()
+            this.onWelcome.dequeue()();
         }
-        log.info(`executed ${deferredCount} welcome-deferred functions`)
+        log.info(`executed ${deferredCount} welcome-deferred functions`);
     }
 
     private recv(raw: any): void {
@@ -438,8 +443,8 @@ export class Bus {
             || raw.codeid == StaticCodeids.Welcome
         ) {
             // welcome msg is not logged as NET::RECV
-            this.welcome(raw)
-            return
+            this.welcome(raw);
+            return;
         }
 
         if (!this.isWelcomeArrived() && raw.codeid != StaticCodeids.Welcome) {
@@ -447,8 +452,8 @@ export class Bus {
                 "no welcome is arrived, but other messages".concat(
                     "from the net are received"
                 )
-            )
-            return
+            );
+            return;
         }
 
         let bmsg_r = de(raw);
@@ -463,29 +468,29 @@ export class Bus {
             log.track(bmsg_r, `codeid ${codeid} unpack`);
             return;
         }
-        let code = code_r.ok
+        let code = code_r.ok;
 
-        let to = ""
+        let to = "";
         if (bmsg.lsid !== undefined) {
-            let awaitingResponse = this.awaitingForResponse.get(bmsg.lsid)
-            let linkedCode = awaitingResponse?.initialCode
-            let suffix = awaitingResponse?.initialCodeSuffix
+            let awaitingResponse = this.awaitingForResponse.get(bmsg.lsid);
+            let linkedCode = awaitingResponse?.initialCode;
+            let suffix = awaitingResponse?.initialCodeSuffix;
             if (linkedCode !== undefined) {
-                to = linkedCode
+                to = linkedCode;
                 // add suffix only if linked code is defined
                 if (suffix !== undefined) {
-                    to += "::" + suffix
+                    to += "::" + suffix;
                 }
             }
         }
-        let log_msg = `NET::RECV | ${code} -> ${to} | ${JSON.stringify(raw)}`
+        let log_msg = `NET::RECV | ${code} -> ${to} | ${JSON.stringify(raw)}`;
         if (bmsg.is_err === true) {
-            log.err(log_msg)
+            log.err(log_msg);
         } else {
-            log.info(log_msg)
+            log.info(log_msg);
         }
 
-        let final_msg = bmsg.msg
+        let final_msg = bmsg.msg;
         // add code to errors, and convert them to classes, since the original
         // err's code is moved to the bmsg's top-level field from the msg's nested
         // body
@@ -493,7 +498,7 @@ export class Bus {
             final_msg = Err(
                 final_msg.msg,
                 code
-            )
+            );
         }
 
         this.pub(
@@ -512,12 +517,12 @@ export class Bus {
 
     private recvErr(err: any): void {
         let msg =
-            "client bus connection is closed with error: " + err
+            "client bus connection is closed with error: " + err;
         this.alertSv.spawn({
             level: AlertLevel.Error,
             msg: msg
         });
-        log.err(msg)
+        log.err(msg);
     }
 
     private recvComplete(): void {
@@ -533,5 +538,5 @@ export function pipeToVoidFromOkMsg(): RxPipe<OkMsg, void> {
         map(_ => {
             return;
         })
-    )
+    );
 }

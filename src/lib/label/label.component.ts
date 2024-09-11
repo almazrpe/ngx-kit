@@ -12,8 +12,7 @@ import {
     templateUrl: "./label.component.html",
     styleUrls: []
 })
-export class LabelComponent implements OnInit, AfterViewInit 
-{
+export class LabelComponent implements OnInit, AfterViewInit {
     @ViewChild("main", { read: ElementRef }) public mainElementRef: ElementRef;
     @Input() public title: string = "...";
     @Input() public bgColor: string | undefined = undefined;

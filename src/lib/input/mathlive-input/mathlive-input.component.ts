@@ -39,8 +39,7 @@ import {
     styleUrls: ["./mathlive-design.scss"]
 })
 export class MathliveInputComponent
-implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
-{
+implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
     /**
      * Configuration object (or just some part of it) for the component
      */
@@ -106,16 +105,13 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
         @Optional() @Self() public ngControl: NgControl,
         @Optional() private _parentForm: NgForm,
         @Optional() private _parentFormGroup: FormGroupDirective,
-    )
-    {
-        if (this.ngControl != null)
-        {
+    ) {
+        if (this.ngControl != null) {
           this.ngControl.valueAccessor = this;
         }
     }
 
-    public ngOnInit(): void
-    {
+    public ngOnInit(): void {
         this._config_ = makeMathliveInputConfig(this.config);
     }
 
@@ -185,8 +181,7 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
                     ?? [mathliveDefaultVKLayout];
         });
 
-        this.mathfield.addEventListener("focusout", () => 
-        {
+        this.mathfield.addEventListener("focusout", () => {
             this.touched = true;
             this.onTouched();
             this.blur.emit();
@@ -197,8 +192,7 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
             this.complete.emit();
         });
 
-        this.mathfield.addEventListener("input", () => 
-        {
+        this.mathfield.addEventListener("input", () => {
             this.onChange(this.mathfield.getValue("latex"));
             this.checkValidation();
             this.inputValue.emit(
@@ -221,8 +215,7 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
           });
 
         this.errorMsg$.subscribe({
-            next: (err: string | null) =>
-            {
+            next: (err: string | null) => {
                 if (err == null)
                     this.mathfield.style.cssText = `
                         content: "";
@@ -241,13 +234,10 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
         });
     }
 
-    private checkValidation(): void
-    {
-        if (this.ngControl != null)
-        {
+    private checkValidation(): void {
+        if (this.ngControl != null) {
             const { errors } = this.ngControl;
-            if (errors != null)
-            {
+            if (errors != null) {
                 const errorName: string = Object.keys(errors)[0];
                 if (this.customErrorMessages !== undefined
                     && this.customErrorMessages.has(
@@ -261,8 +251,7 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
                     return this.errorMsg$.next(
                         getDefaultErrorMessage(errorName, errors[errorName])
                     );
-            }
-            else
+            } else
                 this.errorMsg$.next(null);
         }
     }
@@ -271,41 +260,32 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
         this.addLatexEventSubscription?.unsubscribe();
     }
 
-    public writeValue(val: string | null, firstTime?: boolean): void
-    {
-        if (this.mathfield !== undefined)
-        {
+    public writeValue(val: string | null, firstTime?: boolean): void {
+        if (this.mathfield !== undefined) {
             this.mathfield.setValue(val ?? "");
             if (firstTime !== false)
                 this.checkValidation();
-        }
-        else
-            setTimeout(() =>
-            {
+        } else
+            setTimeout(() => {
                 this.writeValue(val, false);
             }, 100);
     }
 
-    public registerOnChange(fn: any): void
-    {
+    public registerOnChange(fn: any): void {
         this.onChange = fn;
     }
 
-    public registerOnTouched(fn: any): void
-    {
+    public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
 
-    public ngDoCheck(): void
-    {
-        if (this.ngControl != null)
-        {
+    public ngDoCheck(): void {
+        if (this.ngControl != null) {
             this.updateErrorState();
         }
     }
 
-    private updateErrorState(): void
-    {
+    private updateErrorState(): void {
         const parent: NgForm | FormGroupDirective | null =
             this._parentFormGroup != null
                 ? this._parentFormGroup
@@ -323,10 +303,9 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor
                     : (this.ngControl.invalid ?? false)
             )
             && (this.touched || (parent != null && parent.submitted))
-        )
+        );
 
-        if (oldState !== newState)
-        {
+        if (oldState !== newState) {
             this.errorState = newState;
             this.checkValidation();
         }

@@ -33,8 +33,7 @@ import {
   styles: [
   ]
 })
-export class PopUpComponent implements OnInit 
-{
+export class PopUpComponent implements OnInit {
   @Input() public config: Partial<PopUpConfig> = {};
   @Output() public onComplete: EventEmitter<PopUpResult> =
     new EventEmitter<PopUpResult>();
@@ -148,13 +147,11 @@ export class PopUpComponent implements OnInit
     return this._config_ as UploadFilesInputConfig;
   }
 
-  public mathliveInputConfig(): MathliveInputConfig
-  {
+  public mathliveInputConfig(): MathliveInputConfig {
     return this._config_ as MathliveInputConfig;
   }
 
-  public closePopUp(): void
-  {
+  public closePopUp(): void {
     this.popUpService.toggle();
   }
 
@@ -167,13 +164,11 @@ export class PopUpComponent implements OnInit
   public borderClosingCheck(event: MouseEvent): void {
     const elem: Element | null =
       document.elementFromPoint(event.clientX, event.clientY);
-    if (elem != null && elem.id == "pop-up-container")
-    {
+    if (elem != null && elem.id == "pop-up-container") {
       if (this._config_.closeUsingBtnOnly == true)
         return;
 
-      if (this.type == PopUpType.Form)
-      {
+      if (this.type == PopUpType.Form) {
         if (this.form.valid == false)
           this.closePopUp();
       } else

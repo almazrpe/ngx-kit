@@ -22,8 +22,7 @@ import {
     styles: [
     ]
 })
-export class UploadFilesInputComponent implements OnInit 
-{
+export class UploadFilesInputComponent implements OnInit {
     @Input() public control: FormControl = new FormControl(null);
     @Input() public fileExtensions: Set<string> | undefined;
     @Input() public checkFunc: undefined | (

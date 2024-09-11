@@ -11,8 +11,7 @@ import { UploadFileObject } from "./models";
 @Directive({
     selector: "[appFileDragDrop]"
 })
-export class FileDragDropDirective 
-{
+export class FileDragDropDirective {
     @Output() public files: EventEmitter<UploadFileObject[]> =
         new EventEmitter();
 
@@ -43,8 +42,7 @@ export class FileDragDropDirective
         this.background = "#ffffff00";
 
         const files: UploadFileObject[] = [];
-        if (event.dataTransfer != null) 
-        {
+        if (event.dataTransfer != null) {
             for (let i = 0; i < event.dataTransfer.files.length; i++) {
                 const file = event.dataTransfer.files[i];
                 const url = this.sanitizer.bypassSecurityTrustUrl(

@@ -12,8 +12,7 @@ import { ButtonMode } from "../button/button.component";
     templateUrl: "./keyboard.component.html",
     styleUrls: []
 })
-export class KeyboardComponent implements OnInit 
-{
+export class KeyboardComponent implements OnInit {
     public keyboardButtonMode: ButtonMode = ButtonMode.DIMMED;
     public cssSelectors$: Observable<string[]>;
     public cssSelectorsBtn$: Observable<string[]>;

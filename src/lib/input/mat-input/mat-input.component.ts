@@ -98,13 +98,10 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
     }
     public set disabled(value: BooleanInput) {
         this._disabled = coerceBooleanProperty(value);
-        if (this._disabled)
-        {
+        if (this._disabled) {
             this.formControl.disable();
             this.supportFormGroup.disable();
-        }
-        else
-        {
+        } else {
             this.formControl.enable();
             this.supportFormGroup.enable();
         }
@@ -420,8 +417,7 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
         if (virtualKeyboardInput == true) {
             switch(this.type) {
                 case InputType.Number:
-                    if (/^[0-9]{1,}[.,]{1}$/.test(val))
-                    {
+                    if (/^[0-9]{1,}[.,]{1}$/.test(val)) {
                         this.mainElementRef.nativeElement.value = 
                             val.slice(0,-1).concat(",0");
                         return;

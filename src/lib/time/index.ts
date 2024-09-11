@@ -16,7 +16,7 @@ export namespace time {
     */
     export function toLocal(timestamp?: number): Date {
         if (timestamp === undefined) {
-            timestamp = utc()
+            timestamp = utc();
         }
         return new Date(timestamp * 1000);
     }
