@@ -1,64 +1,64 @@
 <div
-  class="w-full h-20 rounded-md border-dashed border-2 border-c10 select-none"
-  appFileDragDrop
-  (files)="filesDropped($event, control)"
+    class="w-full h-20 rounded-md border-dashed border-2 border-c10 select-none"
+    appFileDragDrop
+    (files)="filesDropped($event, control)"
 >
-  <div
-    class="p-2 w-full h-full flex flex-row gap-2
-      items-center justify-center
-      bg-repeating-diag-white-lines"
-  >
-    <input
-      type="file"
-      class="hidden"
-      accept="{{
-        fileExtensions != null
-          ? Array.from(fileExtensions.values()).join(',')
-          : '*'
-      }}"
-      (change)="filesBrowsed($event, control)"
-      #fileUpload
-      multiple
+    <div
+        class="p-2 w-full h-full flex flex-row gap-2
+               items-center justify-center
+               bg-repeating-diag-white-lines"
     >
+        <input
+            type="file"
+            class="hidden"
+            accept="{{
+                fileExtensions != null
+                    ? Array.from(fileExtensions.values()).join(',')
+                    : '*'
+            }}"
+            (change)="filesBrowsed($event, control)"
+            #fileUpload
+            multiple
+        >
 
-    <ngx-kit-button
-      type="button"
-      [mode]="ButtonMode.DEFAULT"
-      (clickFunc)="fileUpload.click()"
-      i18
-    >
-      Выберите
-    </ngx-kit-button>
-    <div i18>или перетащите в эту область свои файлы</div>
-  </div>
+        <ngx-kit-button
+            type="button"
+            [mode]="ButtonMode.DEFAULT"
+            (clickFunc)="fileUpload.click()"
+            i18
+        >
+            Выберите
+        </ngx-kit-button>
+        <div i18>или перетащите в эту область свои файлы</div>
+    </div>
 </div>
 
 <div class="mt-2">
-  <div
-    *ngFor="let ufile of control.value; index as i"
-    class="p-1 flex flex-row justify-between items-center"
-    [ngClass]="{'border-t-2 border-c10-fourth': i != 0}"
-  >
-    <div class="flex flex-row gap-2 items-center">
-      <img
-        *ngIf="ufile"
-        [src]="ufile.url"
-        (error)="setDefaultImage($event)"
-        class="w-4 h-4 select-none"
-      >
-      <div *ngIf="ufile" class="bold">{{ufile.file.name}}</div>
-    </div>
-
-    <ngx-kit-button
-      type="button"
-      [mode]="ButtonMode.DANGER"
-      (clickFunc)="fileCanceled(i, control)"
+    <div
+        *ngFor="let ufile of control.value; index as i"
+        class="p-1 flex flex-row justify-between items-center"
+        [ngClass]="{'border-t-2 border-c10-fourth': i != 0}"
     >
-      <img
-        [src]="_config_.abortIconPath"
-        alt="X"
-        class="w-3 select-none"
-      >
-    </ngx-kit-button>
-  </div>
+        <div class="flex flex-row gap-2 items-center">
+            <img
+                *ngIf="ufile"
+                [src]="ufile.url"
+                (error)="setDefaultImage($event)"
+                class="w-4 h-4 select-none"
+            >
+            <div *ngIf="ufile" class="bold">{{ufile.file.name}}</div>
+        </div>
+
+        <ngx-kit-button
+            type="button"
+            [mode]="ButtonMode.DANGER"
+            (clickFunc)="fileCanceled(i, control)"
+        >
+            <img
+                [src]="_config_.abortIconPath"
+                alt="X"
+                class="w-3 select-none"
+            >
+        </ngx-kit-button>
+    </div>
 </div>

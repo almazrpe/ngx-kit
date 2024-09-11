@@ -1,16 +1,16 @@
 import { SafeUrl } from "@angular/platform-browser";
 
 export interface UploadFileObject {
-  file: File;
-  url: SafeUrl;
+    file: File;
+    url: SafeUrl;
 }
 
 export interface UploadFilesInputConfig {
-  filenameRepeatTranslation: string;
-  unknownExtensionTranslation: string;
-  wrongExtensionTranslation: string;
-  abortIconPath: string;
-  unknownDocIconPath: string;
+    filenameRepeatTranslation: string;
+    unknownExtensionTranslation: string;
+    wrongExtensionTranslation: string;
+    abortIconPath: string;
+    unknownDocIconPath: string;
 }
 
 /**
@@ -25,21 +25,21 @@ export interface UploadFilesInputConfig {
  *                   attributes
  */
 export function makeUploadFilesInputConfig(
-  options?: Partial<UploadFilesInputConfig>
+    options?: Partial<UploadFilesInputConfig>
 ): UploadFilesInputConfig {
-  const defaults: UploadFilesInputConfig = {
-    filenameRepeatTranslation:
-      "specified more than once, the latest version was taken",
-    unknownExtensionTranslation:
-      "has an unknown extension and was therefore excluded",
-    wrongExtensionTranslation:
-      "has an inadequate extension and was therefore excluded",
-    abortIconPath: "",
-    unknownDocIconPath: "",
-  };
+    const defaults: UploadFilesInputConfig = {
+        filenameRepeatTranslation:
+            "specified more than once, the latest version was taken",
+        unknownExtensionTranslation:
+            "has an unknown extension and was therefore excluded",
+        wrongExtensionTranslation:
+            "has an inadequate extension and was therefore excluded",
+        abortIconPath: "",
+        unknownDocIconPath: "",
+    };
 
-  return {
-    ...defaults,
-    ...options,
-  };
+    return {
+        ...defaults,
+        ...options,
+    };
 }

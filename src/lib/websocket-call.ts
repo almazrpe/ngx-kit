@@ -1,3 +1,3 @@
 export interface WebsocketCall {
-  call: unknown;
+    call: unknown;
 }

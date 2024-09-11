@@ -1,6 +1,4 @@
 export { DocumentPageExtension } from "./dps/document-page-extension";
-
-export { InputValidationErrorCode } from "./input/mat-input/error-content";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
 
@@ -8,8 +6,8 @@ export * from "./copper";
 export * from "./yon";
 
 export {
-  UploadFileObject,
-  UploadFilesInputConfig
+    UploadFileObject,
+    UploadFilesInputConfig
 } from "./input/upload-files-input/models";
 
 export { IncludesPipe } from "./includes.pipe";
@@ -22,73 +20,71 @@ export { ButtonMode } from "./button/button.component";
 export { FormUtils } from "./forms";
 
 export {
-  ValueValidatorEvent
+    ValueValidatorEvent
 } from "./input/selected-input/value-validator-event";
 export {
-  ValueValidator
+    ValueValidator
 } from "./input/selected-input/value-validator";
 export {
-  SelectedInput, SelectedInputEvent, ValueHost
+    SelectedInput, SelectedInputEvent, ValueHost
 } from "./input/selected-input/selected-input";
 
 export {
-  SelectedInputService
+    SelectedInputService
 } from "./input/selected-input/selected-input.service";
 
 export { PaginationComponent } from "./pagination/pagination.component";
 export {
-  PaginationConfig,
-  PaginationViewType,
-  makePaginationConfig,
-  PaginationItem,
-  PaginationAttr,
-  PaginationAttrType,
-  PaginationIcon,
-  PaginationLabel,
-  PaginationButton,
-  PaginationDateTime,
-  PaginationFilter,
-  FilterInputConfig,
-  PaginationColumnTag,
-  PaginationTColumnHeader,
-  PaginationPart,
-  makePaginationColumnTags,
-  PaginationSortFunc,
+    PaginationConfig,
+    PaginationViewType,
+    makePaginationConfig,
+    PaginationItem,
+    PaginationAttr,
+    PaginationAttrType,
+    PaginationIcon,
+    PaginationLabel,
+    PaginationButton,
+    PaginationDateTime,
+    PaginationFilter,
+    FilterInputConfig,
+    PaginationColumnTag,
+    PaginationTColumnHeader,
+    PaginationPart,
+    makePaginationColumnTags,
+    PaginationSortFunc,
 } from "./pagination/models";
 
 export {
-  PopUpType,
-  PopUpConfig,
-  makePopUpConfig,
-  PopUpFormField,
-  PopUpChoosingBtn,
-  PopUpWindow,
-  PopUpResult,
-  PopUpDescriptorField
+    PopUpType,
+    PopUpConfig,
+    makePopUpConfig,
+    PopUpFormField,
+    PopUpChoosingBtn,
+    PopUpWindow,
+    PopUpResult,
+    PopUpDescriptorField
 } from "./pop-up/models";
 export { PopUpService } from "./pop-up/pop-up.service";
 
 export { NumUtils } from "./num";
 export { ObjectUtils } from "./obj";
-export { ValidationUtils, FormValidationUtils } from "./validation";
+export { ValidationUtils, CustomValidators } from "./validation";
 export { WebsocketCall } from "./websocket-call";
 
 export { LocalStorageUtils } from "./client-storage";
 export {
-  EventPlus, EventPlusCreate, EventPlusUtils
+    EventPlus, EventPlusCreate, EventPlusUtils
 } from "./event-plus";
 export { conditionValidatorWrapper } from "./condition.validator";
 
 export { StringUtils } from "./str/utils";
 export {
-  TranslationModifier as Modifier,
+    TranslationModifier as Modifier,
 } from "./i18n/modifier";
 
 export { KeyboardComponent } from "./keyboard/keyboard.component";
 export { LoadingComponent } from "./loading/loading.component";
-export {
-  StatusCircleComponent
-} from "./status-circle/status-circle.component";
+export { StatusCircleComponent } from "./status-circle/status-circle.component";
 export { CapitalizeEachPipe } from "./str/capitalize-each.pipe";
 export { CapitalizePipe } from "./str/capitalize.pipe";
 export * from "./time";
@@ -98,9 +94,7 @@ export { HrComponent } from "./hr/hr.component";
 export { InputType } from "./input/input-type";
 export { DPSComponent } from "./dps/dps.component";
 export { DPSConfig, makeDPSConfig } from "./dps/models";
-export {
-  DocumentPage
-} from "./dps/document-page";
+export { DocumentPage } from "./dps/document-page";
 export { PdfViewerConfig, makePdfViewerConfig } from "./pdf-viewer/models";
 export { UnixTimestampToDatePipe } from "./time/unix-timestamp-to-date.pipe";
 export { BlockComponent } from "./block/block.component";
@@ -117,9 +111,9 @@ export { NgxKitModule } from "./ngx-kit.module";
 export { TranslationOptions } from "./i18n/options";
 export { I18nConfig } from "./i18n/config";
 export {
-  TranslationMapByLang,
-  TranslationMap,
-  TranslationUnit
+    TranslationMapByLang,
+    TranslationMap,
+    TranslationUnit
 } from "./i18n/translation";
 export * from "./log";
 export * from "./arr";

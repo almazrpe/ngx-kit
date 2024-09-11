@@ -1,10 +1,18 @@
-import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  Input,
+  EventEmitter,
+  TemplateRef
+} from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
+import { MathliveInputConfig } from "../input/mathlive-input/models";
 import { ButtonMode } from "../button/button.component";
-import { FormValidationUtils } from "../validation";
+import { CustomValidators } from "../validation";
 import { I18nService } from "../i18n/i18n.service";
 import { PopUpService } from "./pop-up.service";
 import {
@@ -25,7 +33,8 @@ import {
   styles: [
   ]
 })
-export class PopUpComponent implements OnInit {
+export class PopUpComponent implements OnInit 
+{
   @Input() public config: Partial<PopUpConfig> = {};
   @Output() public onComplete: EventEmitter<PopUpResult> =
     new EventEmitter<PopUpResult>();
@@ -37,6 +46,8 @@ export class PopUpComponent implements OnInit {
   public controls: FormControl[];
   public choosingButtons: PopUpChoosingBtn[];
   public paginationData: PopUpPaginationData;
+  public mainTemplateRef: TemplateRef<any> | null;
+  public extraHeaderTemplateRef: TemplateRef<any> | null;
   public formFieldsDescriptor:
     ((data: any) => PopUpDescriptorField[]) | null =
       null;
@@ -77,7 +88,7 @@ export class PopUpComponent implements OnInit {
                 field.value, 
                 (field.validators ?? []).concat(
                   field.autocompleteRequired === true 
-                    ? FormValidationUtils.requiredAutocompleteValidator(
+                    ? CustomValidators.requiredAutocomplete(
                       field.fillingOptions
                     ) 
                     : []
@@ -124,6 +135,8 @@ export class PopUpComponent implements OnInit {
         this.controls = this.getAllFormControls();
         this.choosingButtons = window.choosingButtons ?? [];
         this.paginationData = window.paginationData ?? { items: [] };
+        this.mainTemplateRef = window.templateRefs?.main ?? null;
+        this.extraHeaderTemplateRef = window.templateRefs?.extraHeader ?? null;
       },
       error: (err: Error) => {
         throw err;
@@ -135,7 +148,13 @@ export class PopUpComponent implements OnInit {
     return this._config_ as UploadFilesInputConfig;
   }
 
-  public closePopUp(): void {
+  public mathliveInputConfig(): MathliveInputConfig
+  {
+    return this._config_ as MathliveInputConfig;
+  }
+
+  public closePopUp(): void
+  {
     this.popUpService.toggle();
   }
 
@@ -148,8 +167,13 @@ export class PopUpComponent implements OnInit {
   public borderClosingCheck(event: MouseEvent): void {
     const elem: Element | null =
       document.elementFromPoint(event.clientX, event.clientY);
-    if (elem != null && elem.id == "pop-up-container") {
-      if (this.type == PopUpType.Form) {
+    if (elem != null && elem.id == "pop-up-container")
+    {
+      if (this._config_.closeUsingBtnOnly == true)
+        return;
+
+      if (this.type == PopUpType.Form)
+      {
         if (this.form.valid == false)
           this.closePopUp();
       } else

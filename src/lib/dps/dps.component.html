@@ -1,295 +1,300 @@
 <div class="flex flex-col gap-2 h-full w-full">
-  <!-- Top bar -->
-  <div class="flex flex-row w-full justify-between items-center">
-    <!-- Page number selector -->
-    <form
-      class="flex flex-row h-full justify-start items-center gap-1"
-      [formGroup]="form"
-    >
-      <ngx-kit-mat-input
-        formControlName="currentPageNumber"
-        class="w-1/5"
-        [localizedName]="_config_.pageNumberTranslation"
-        [type]="InputType.Number"
-        [showErrors]="false"
-        (inputValue)="onInputValue($event)"
-      />
-      <p class="self-center select-none">
-        <span i18n>из</span> {{totalPagesNumber}}
-      </p>
+    <!-- Top bar -->
+    <div class="flex flex-row w-full justify-between items-center">
+        <!-- Page number selector -->
+        <form
+            class="flex flex-row h-full justify-start items-center gap-1"
+            [formGroup]="form"
+        >
+            <ngx-kit-mat-input
+                formControlName="currentPageNumber"
+                class="w-1/5"
+                [localizedName]="_config_.pageNumberTranslation"
+                [type]="InputType.Number"
+                [showErrors]="false"
+                (inputValue)="onInputValue($event)"
+            />
+            <p class="self-center select-none">
+                <span i18n>из</span> {{totalPagesNumber}}
+            </p>
 
-      <!-- Page navigation arrows -->
-      <div
-        class="flex flex-row justify-center items-center ml-2 gap-3"
-      >
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isPageupEnabled$ | async"
-          (clickFunc)="pageup()"
-        >
-          <img
-            [src]="_config_.pageUpIconPath"
-            alt="page up"
-            draggable="false"
-            class="w-9"
-          >
-        </ngx-kit-button>
-        <ngx-kit-button
-          class="flex items-center"
-          [mode]="ButtonMode.CONTROLS"
-          [isEnabled]="isPagedownEnabled$ | async"
-          (clickFunc)="pagedown()"
-        >
-          <img
-            [src]="_config_.pageDownIconPath"
-            alt="page down"
-            draggable="false"
-            class="w-9"
-          >
-        </ngx-kit-button>
-      </div>
-    </form>
+            <!-- Page navigation arrows -->
+            <div
+                class="flex flex-row justify-center items-center ml-2 gap-3"
+            >
+                <ngx-kit-button
+                    class="flex items-center"
+                    [mode]="ButtonMode.CONTROLS"
+                    [isEnabled]="isPageupEnabled$ | async"
+                    (clickFunc)="pageup()"
+                >
+                    <img
+                        [src]="_config_.pageUpIconPath"
+                        alt="page up"
+                        draggable="false"
+                        class="w-9"
+                    >
+                </ngx-kit-button>
+                <ngx-kit-button
+                    class="flex items-center"
+                    [mode]="ButtonMode.CONTROLS"
+                    [isEnabled]="isPagedownEnabled$ | async"
+                    (clickFunc)="pagedown()"
+                >
+                    <img
+                        [src]="_config_.pageDownIconPath"
+                        alt="page down"
+                        draggable="false"
+                        class="w-9"
+                    >
+                </ngx-kit-button>
+            </div>
+        </form>
 
-    <!-- Right block with buttons -->
-    <div
-      class="flex flex-row gap-8"
-    >
-      <!-- Toggle r-controller button -->
-      <ngx-kit-button
-        class="flex items-center"
-        [mode]="
-          rControllerShown === true
-            ? ButtonMode.CONTROL_ACTIVE
-            : ButtonMode.CONTROLS"
-        (clickFunc)="toggleRController()"
-      >
-        <img
-          [src]="_config_.showDPSLControllerIconPath"
-          alt="toggle controller"
-          draggable="false"
-          class="w-10"
+        <!-- Right block with buttons -->
+        <div
+            class="flex flex-row gap-8"
         >
-      </ngx-kit-button>
-      <!-- Reset image button -->
-      <ngx-kit-button
-        class="flex items-center"
-        [mode]="ButtonMode.CONTROLS"
-        (clickFunc)="resetImage()"
-      >
-        <img
-          [src]="_config_.resetImageIconPath"
-          alt="reset image"
-          draggable="false"
-          class="w-10"
-        >
-      </ngx-kit-button>
-      <!-- Rotate image button (left) -->
-      <ngx-kit-button
-        class="flex items-center"
-        [mode]="ButtonMode.CONTROLS"
-        (clickFunc)="rotateImage(-1)"
-      >
-        <img
-          [src]="_config_.counterClockwiseIconPath"
-          alt="rotate left"
-          draggable="false"
-          class="w-10"
-        >
-      </ngx-kit-button>
-      <!-- Rotate image button (right) -->
-      <ngx-kit-button
-        class="flex items-center"
-        [mode]="ButtonMode.CONTROLS"
-        (clickFunc)="rotateImage(1)"
-      >
-        <img
-          [src]="_config_.clockwiseIconPath"
-          alt="rotate right"
-          draggable="false"
-          class="w-10"
-        >
-      </ngx-kit-button>
-      <!-- Back Button -->
-      <ngx-kit-button
-        class="flex items-center"
-        [mode]="ButtonMode.CONTROLS"
-        (clickFunc)="backInner($event)"
-      >
-        <img
-          [src]="_config_.returnIconPath"
-          alt="go back"
-          draggable="false"
-          class="w-10"
-        >
-      </ngx-kit-button>
+            <!-- Toggle r-controller button -->
+            <ngx-kit-button
+                class="flex items-center"
+                [mode]="
+                    rControllerShown === true
+                        ? ButtonMode.CONTROL_ACTIVE
+                        : ButtonMode.CONTROLS
+                "
+                (clickFunc)="toggleRController()"
+            >
+                <img
+                    [src]="_config_.showDPSLControllerIconPath"
+                    alt="toggle controller"
+                    draggable="false"
+                    class="w-10"
+                >
+            </ngx-kit-button>
+            <!-- Reset image button -->
+            <ngx-kit-button
+                class="flex items-center"
+                [mode]="ButtonMode.CONTROLS"
+                (clickFunc)="resetImage()"
+            >
+                <img
+                    [src]="_config_.resetImageIconPath"
+                    alt="reset image"
+                    draggable="false"
+                    class="w-10"
+                >
+            </ngx-kit-button>
+            <!-- Rotate image button (left) -->
+            <ngx-kit-button
+                class="flex items-center"
+                [mode]="ButtonMode.CONTROLS"
+                (clickFunc)="rotateImage(-1)"
+            >
+                <img
+                    [src]="_config_.counterClockwiseIconPath"
+                    alt="rotate left"
+                    draggable="false"
+                    class="w-10"
+                >
+            </ngx-kit-button>
+            <!-- Rotate image button (right) -->
+            <ngx-kit-button
+                class="flex items-center"
+                [mode]="ButtonMode.CONTROLS"
+                (clickFunc)="rotateImage(1)"
+            >
+                <img
+                    [src]="_config_.clockwiseIconPath"
+                    alt="rotate right"
+                    draggable="false"
+                    class="w-10"
+                >
+            </ngx-kit-button>
+            <!-- Back Button -->
+            <ngx-kit-button
+                class="flex items-center"
+                [mode]="ButtonMode.CONTROLS"
+                (clickFunc)="backInner($event)"
+            >
+                <img
+                    [src]="_config_.returnIconPath"
+                    alt="go back"
+                    draggable="false"
+                    class="w-10"
+                >
+            </ngx-kit-button>
+        </div>
     </div>
-  </div>
 
-  <!-- Main area -->
-  <div
-    class="relative flex h-full w-full overflow-scroll justify-center align-center"
-  >
-    <!-- Errors -->
-    <p
-      *ngIf="errorMessage$ | async as errorMessageTranslation; else docViewer"
-    >
-      {{errorMessageTranslation}}
-    </p>
-
-    <!-- R-Controller -->
+    <!-- Main area -->
     <div
-      *ngIf="rControllerShown"
-      class="absolute inset-0 m-auto max-w-[80%] max-h-[80%]
-             aspect-square inline-block rounded-full
-             overflow-hidden bg-[#797979] opacity-25"
+        class="relative flex h-full w-full overflow-scroll justify-center 
+               align-center"
     >
-      <div
-        class="absolute inset-0 m-auto rotate-[2.9deg]"
-      >
-        <button
-          (click)="moveImageN()"
-          class="dpsr-rad-seg"
+        <!-- Errors -->
+        <p
+            *ngIf="errorMessage$ | async as errorMessageTranslation; 
+                   else docViewer"
         >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="N"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageNE()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="NE"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageE()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="E"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageSE()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="SE"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageS()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="S"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageSW()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="SW"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageW()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="W"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-        <button
-          (click)="moveImageNW()"
-          class="dpsr-rad-seg"
-        >
-          <img
-            [src]="_config_.controllerArrowIconPath"
-            alt="NW"
-            draggable="false"
-            class="dpsr-rad-seg-arrow"
-          >
-        </button>
-      </div>
+            {{errorMessageTranslation}}
+        </p>
 
-      <div class="dpsr-center">
-        <button
-          (click)="zoomImage(1)"
-          class="dpsr-center-seg top-0 left-0 rounded-t-full border-b-0"
+        <!-- R-Controller -->
+        <div
+            *ngIf="rControllerShown"
+            class="absolute inset-0 m-auto max-w-[80%] max-h-[80%]
+                   aspect-square inline-block rounded-full
+                   overflow-hidden bg-[#797979] opacity-25"
         >
-          <img
-            [src]="_config_.controllerPlusIconPath"
-            alt="+"
-            draggable="false"
-            class="w-10 h-10"
-          >
-        </button>
-        <button
-          (click)="zoomImage(-1)"
-          class="dpsr-center-seg bottom-0 left-0 rounded-b-full border-t-0"
-        >
-          <img
-            [src]="_config_.controllerMinusIconPath"
-            alt="-"
-            draggable="false"
-            class="w-10 h-10"
-          >
-        </button>
-      </div>
+            <div
+                class="absolute inset-0 m-auto rotate-[2.9deg]"
+            >
+                <button
+                    (click)="moveImageN()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="N"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageNE()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="NE"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageE()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="E"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageSE()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="SE"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageS()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="S"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageSW()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="SW"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageW()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="W"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+                <button
+                    (click)="moveImageNW()"
+                    class="dpsr-rad-seg"
+                >
+                    <img
+                        [src]="_config_.controllerArrowIconPath"
+                        alt="NW"
+                        draggable="false"
+                        class="dpsr-rad-seg-arrow"
+                    >
+                </button>
+            </div>
+
+            <div class="dpsr-center">
+                <button
+                    (click)="zoomImage(1)"
+                    class="dpsr-center-seg top-0 left-0 rounded-t-full 
+                           border-b-0"
+                >
+                    <img
+                        [src]="_config_.controllerPlusIconPath"
+                        alt="+"
+                        draggable="false"
+                        class="w-10 h-10"
+                    >
+                </button>
+                <button
+                    (click)="zoomImage(-1)"
+                    class="dpsr-center-seg bottom-0 left-0 rounded-b-full 
+                           border-t-0"
+                >
+                    <img
+                        [src]="_config_.controllerMinusIconPath"
+                        alt="-"
+                        draggable="false"
+                        class="w-10 h-10"
+                    >
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Document viewer -->
-  <ng-template #docViewer>
-    <!-- Viewer -->
-    <image-cropper
-      *ngIf="(currentPage$ | async) as currentPage"
-      class="h-screen w-full select-none"
-      [imageURL]="currentPage.url"
-      [maintainAspectRatio]="false"
-      [cropperMinWidth]="128"
-      [onlyScaleDown]="true"
-      [canvasRotation]="imageRotation"
-      [(transform)]="imageTransform"
-      [alignImage]="'center'"
-      [style.display]="imageShown ? null : 'none'"
-      [hideResizeSquares]="true"
-      [imageAltText]="_config_.imgNotFoundTranslation"
-      backgroundColor="'var(--c60)'"
-      (imageLoaded)="imageLoaded()"
-      (cropperReady)="cropperReady($event)"
-      (loadImageFailed)="loadImageFailed()"
-    ></image-cropper>
+    <!-- Document viewer -->
+    <ng-template #docViewer>
+        <!-- Viewer -->
+        <image-cropper
+            *ngIf="(currentPage$ | async) as currentPage"
+            class="h-screen w-full select-none"
+            [imageURL]="currentPage.url"
+            [maintainAspectRatio]="false"
+            [cropperMinWidth]="128"
+            [onlyScaleDown]="true"
+            [canvasRotation]="imageRotation"
+            [(transform)]="imageTransform"
+            [alignImage]="'center'"
+            [style.display]="imageShown ? null : 'none'"
+            [hideResizeSquares]="true"
+            [imageAltText]="_config_.imgNotFoundTranslation"
+            backgroundColor="'var(--c60)'"
+            (imageLoaded)="imageLoaded()"
+            (cropperReady)="cropperReady($event)"
+            (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
 
-    <!-- Loading bar -->
-    <ngx-kit-loading
-      *ngIf="imageLoading"
-      class="absolute inset-0 flex justify-center items-center"
-    />
-  </ng-template>
+        <!-- Loading bar -->
+        <ngx-kit-loading
+            *ngIf="imageLoading"
+            class="absolute inset-0 flex justify-center items-center"
+        />
+    </ng-template>
 </div>

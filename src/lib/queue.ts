@@ -10,11 +10,11 @@ import { Queue } from "queue-typescript";
  * @return Cleared queue
  */
 export function clearQueue<Type>(queue: Queue<Type>): Queue<Type> {
-  while (queue.length > 0) queue.dequeue();
+    while (queue.length > 0) queue.dequeue();
 
-  return queue;
+    return queue;
 }
 
 export function isEmpty(obj: object): boolean {
-  return Object.keys(obj).length === 0;
+    return Object.keys(obj).length === 0;
 }
