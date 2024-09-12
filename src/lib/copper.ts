@@ -275,6 +275,9 @@ export class Signal extends ReplaySubject<number> {
     }
 }
 
+/// In typescript we generally prefer to work with undefined, instead of null,
+/// but to cover both cases we use this function, to not care about which
+/// specific "unset" object we deal with.
 export function defined<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
