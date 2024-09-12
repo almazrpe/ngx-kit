@@ -53,13 +53,38 @@ export class OkCls<T> implements ResItem<T> {
 
 // TODO: support stacktrace
 export class ErrCls extends Error implements ResItem {
-    public code: string;
-    public msg: string | undefined;
+    public code: string
+    public msg: string | undefined
+    public extra?: {[key: string]: any}
 
-    public constructor(msg?: string, code: string = ecode.Err) {
-        super();
-        this.code = code;
-        this.msg = msg;
+    public constructor(
+        msg?: string,
+        code: string = ecode.Err,
+        extra?: {[key: string]: any}
+    ) {
+        super()
+        this.code = code
+        this.msg = msg
+        this.extra = extra
+    }
+
+    public setExtraField(
+        k: string,
+        val: any
+    ) {
+        if (!defined(this.extra)) {
+            this.extra = {}
+        }
+        this.extra[k] = val
+    }
+
+    public getExtraField<T>(
+        k: string, defaultVal: Undefined<T> = undefined
+    ): Undefined<T>  {
+        if (!defined(this.extra) || !defined(this.extra[k])) {
+            return defaultVal
+        }
+        return this.extra[k]
     }
 
     public display() {
@@ -253,3 +278,4 @@ export class Signal extends ReplaySubject<number> {
 export function defined<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
+export type Undefined<T> = T | undefined

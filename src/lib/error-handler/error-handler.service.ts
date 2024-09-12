@@ -3,7 +3,7 @@ import { log } from "../log";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { I18nService } from "../i18n/i18n.service";
-import { Err, ErrCls, ErrFromNative } from "../../public-api";
+import { Err, ErrCls, ErrFromNative, Undefined, defined } from "../../public-api";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
@@ -17,20 +17,22 @@ export class ErrorHandlerService {
         private ngZone: NgZone,
     ) { }
 
-    public handle(err: Error): void {
-        if (!(err instanceof ErrCls)) {
-            if (err instanceof HttpErrorResponse) {
-                let err_body = {code: undefined, msg: err.error};
+    public handle(genericErr: Error): void {
+        let err: Undefined<ErrCls> = undefined
+
+        if (!(genericErr instanceof ErrCls)) {
+            if (genericErr instanceof HttpErrorResponse) {
+                let err_body = {code: undefined, msg: genericErr.error};
                 try {
-                    err_body = JSON.parse(err.error);
+                    err_body = JSON.parse(genericErr.error);
                 } catch (exc) {}
 
                 let msg = err_body.msg;
                 if (msg === undefined) {
-                    msg = err.error;
+                    msg = genericErr.error;
                 }
 
-                let code = `http(${err.status})`;
+                let code = `http(${genericErr.status})`;
                 if (err_body.code !== undefined) {
                     code += `::${err_body.code}`;
                 }
@@ -38,15 +40,30 @@ export class ErrorHandlerService {
                 err = Err(
                     msg,
                     code
-                );
+                )
             } else {
-                err = ErrFromNative(err);
+                err = ErrFromNative(genericErr)
             }
+        } else {
+            err = genericErr
         }
-        this.ngZone.runTask(() => this.alertService.spawn({
-            level: AlertLevel.Error,
-            msg: (err as ErrCls).display()
-        }));
-        log.track(err);
+
+        if (!defined(err)) {
+            log.err("logic err at error handler: `err` must be defined")
+            return
+        }
+
+        let skipAlert = err.getExtraField("skipAlert") === true
+        let skipLogging = err.getExtraField("skipLogging") === true
+
+        if (!skipAlert) {
+            this.ngZone.runTask(() => this.alertService.spawn({
+                level: AlertLevel.Error,
+                msg: (err as ErrCls).display()
+            }))
+        }
+        if (!skipLogging) {
+            log.track(err)
+        }
     }
 }
