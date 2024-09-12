@@ -495,7 +495,7 @@ export class Bus {
         }
         let code = code_r.ok;
 
-        let to = "";
+        let to = "unknown";
         if (bmsg.lsid !== undefined) {
             let awaitingResponse = this.awaitingForResponse.get(bmsg.lsid);
             let linkedCode = awaitingResponse?.initialCode;
@@ -542,7 +542,9 @@ export class Bus {
 
     private recvErr(): void {
         let msg =
-            "bus connection error, reconnect in " + RECON_PERIOD + " seconds"
+            "bus connection error, reconnect in "
+            + RECON_PERIOD
+            + " seconds..."
         this.alertSv.spawn({
             level: AlertLevel.Error,
             msg: msg
@@ -555,7 +557,7 @@ export class Bus {
         let msg =
             "bus connection is completed, reconnect in "
             + RECON_PERIOD
-            + " seconds"
+            + " seconds..."
         this.alertSv.spawn({
             level: AlertLevel.Warning,
             msg: msg

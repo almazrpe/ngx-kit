@@ -133,7 +133,7 @@ export namespace quco {
         uq: UpdQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
-            CODE_PREFIX + "new",
+            CODE_PREFIX + "upd",
             {
                 collection: collection,
                 gq: gq,
@@ -162,7 +162,7 @@ export namespace quco {
         gq: GetQuery
     ): Observable<Res<number>> {
         return Bus.ie.pub$(
-            CODE_PREFIX + "new",
+            CODE_PREFIX + "del",
             {
                 collection: collection,
                 gq: gq
