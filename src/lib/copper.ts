@@ -1,6 +1,6 @@
 //! Provides the core functionality for a better typescript experience.
 
-import { Observable, UnaryFunction, catchError, map, of, pipe } from "rxjs";
+import { Observable, ReplaySubject, UnaryFunction, catchError, map, of, pipe } from "rxjs";
 import { log } from "../public-api";
 
 export interface ResItem<T = any> {
@@ -242,4 +242,14 @@ export function pipeOkOrNull<T>(): RxPipe<Res<T>, T | null> {
             return val.ok;
         })
     );
+}
+
+export class Signal extends ReplaySubject<number> {
+    public signal() {
+        this.next(1)
+    }
+}
+
+export function defined<T>(val: T | undefined | null): val is T {
+    return val !== undefined && val !== null;
 }

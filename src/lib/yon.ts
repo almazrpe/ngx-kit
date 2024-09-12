@@ -7,6 +7,7 @@ import
     pipe,
     ReplaySubject,
     Subscription,
+    switchMap,
     take
 } from "rxjs";
 import { AlertLevel } from "./alert/models";
@@ -14,12 +15,14 @@ import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
 import {
     assert,
+    defined,
     Err,
     ErrCls,
     Ok,
     panic,
     Res,
-    RxPipe
+    RxPipe,
+    Signal
 } from "./copper";
 import { uuid4 } from "./uuid";
 import { Queue } from "queue-typescript";
@@ -140,18 +143,20 @@ export class Bus {
     /// Does some action, but doesn't change how error flows further.
     public onErrPassedToSubFn: (err: ErrCls) => void = _ => {};
 
-    private conWrapper$: Observable<WebSocketSubject<Bmsg>>;
     private con: WebSocketSubject<Bmsg> | null = null;
-    private conWrapperSub: Subscription | null = null;
+    private conSub: Subscription | undefined = undefined
 
     private codesData: Map<string, CodeData<any>> = new Map();
+    private startConSignal = new Signal()
 
     private codes: string[] = [];
     private isInitd: boolean = false;
 
     private alertSv: AlertService;
     private conSv: ConService;
-    public onWelcome: Queue<() => void> = new Queue();
+    /// Collection of functions to be called on *each* welcome arrival, even
+    /// after reconnect.
+    public onWelcome: (() => void)[] = []
 
     /// Map of initial message sid to awaiting function data.
     private awaitingForResponse: Map<string, AwaitingForResponse> = new Map();
@@ -167,31 +172,51 @@ export class Bus {
         this.alertSv = alertSv;
         this.conSv = conSv;
 
-        this.conWrapper$ = this.conSv.serverWsUrl$.pipe(
+        this.startConSignal.pipe(
+            switchMap(_ => {
+                return this.conSv.serverWsUrl$
+            }),
             map(url => {
                 log.info(`connecting websocket at ${url + "/rx"}`);
                 return webSocket<Bmsg>(
                     url + "/rx"
-                );
+                )
             }),
-        );
-
-        this.conWrapper$.subscribe({
-            next: con => {
-                this.con = con;
-                if (this.conWrapperSub !== null) {
-                    this.conWrapperSub.unsubscribe();
-                    this.conWrapperSub = null;
-                }
-                this.conWrapperSub = con.subscribe({
-                    next: (rawmsg: Bmsg) => this.recv.call(this, rawmsg),
-                    error: (err: any) => this.recvErr.call(this, err),
-                    complete: () => this.recvComplete.call(this)
-                });
-            }
-        });
+            map(con => {
+                this.con = con
+                this.subCon(con)
+            })
+        ).subscribe()
+        this.startConSignal.signal()
 
         this.isInitd = true;
+    }
+
+    private recon() {
+        setTimeout(
+            () => {
+                this.startConSignal.signal()
+            },
+            RECON_PERIOD * 1000
+        )
+    }
+
+    private subCon(con: WebSocketSubject<Bmsg>) {
+        if (defined(this.conSub)) {
+            this.conSub.unsubscribe()
+            this.conSub = undefined
+        }
+        this.conSub = con.subscribe({
+            next: rawmsg => {
+                this.recv.call(this, rawmsg)
+            },
+            error: () => {
+                this.recvErr()
+            },
+            complete: () => {
+                this.recvComplete()
+            }
+        })
     }
 
     private isWelcomeArrived(): boolean {
@@ -206,8 +231,8 @@ export class Bus {
         return this.subFull(
             code,
             (_code, msg: T, _isErr) => {
-fn(msg);
-},
+                fn(msg);
+            },
             retUnsub
         );
     }
@@ -218,10 +243,10 @@ fn(msg);
         retUnsub: (unsub: () => void) => void = _ => {}
     ): Res<undefined> {
         if (!this.isWelcomeArrived()) {
-            this.onWelcome.enqueue(() => {
-this.subFull(code, fn, retUnsub);
-});
-            return Ok(undefined);
+            this.onWelcome.push(() => {
+                this.subFull(code, fn, retUnsub)
+            })
+            return Ok(undefined)
         }
 
         let codeData = this.codesData.get(code);
@@ -308,10 +333,10 @@ this.subFull(code, fn, retUnsub);
         opts: PubOpts = DEFAULT_PUB_OPTS
     ): Res<undefined> {
         if (!this.isWelcomeArrived()) {
-            this.onWelcome.enqueue(() => {
-this.pub(code, msg, fn, opts);
-});
-            return Ok(undefined);
+            this.onWelcome.push(() => {
+                this.pub(code, msg, fn, opts);
+            })
+            return Ok(undefined)
         }
 
         if (opts._lsid !== undefined && fn !== undefined) {
@@ -431,8 +456,8 @@ this.pub(code, msg, fn, opts);
         }
 
         let deferredCount = this.onWelcome.length;
-        while (this.onWelcome.length > 0) {
-            this.onWelcome.dequeue()();
+        for (let fn of this.onWelcome) {
+            fn()
         }
         log.info(`executed ${deferredCount} welcome-deferred functions`);
     }
@@ -515,23 +540,32 @@ this.pub(code, msg, fn, opts);
         );
     }
 
-    private recvErr(err: any): void {
+    private recvErr(): void {
         let msg =
-            "client bus connection is closed with error: " + err;
+            "bus connection error, reconnect in " + RECON_PERIOD + " seconds"
         this.alertSv.spawn({
             level: AlertLevel.Error,
             msg: msg
-        });
-        log.err(msg);
+        })
+        log.err(msg)
+        this.recon()
     }
 
     private recvComplete(): void {
+        let msg =
+            "bus connection is completed, reconnect in "
+            + RECON_PERIOD
+            + " seconds"
         this.alertSv.spawn({
             level: AlertLevel.Warning,
-            msg: "client bus connection is closed"
-        });
+            msg: msg
+        })
+        log.warn(msg)
+        this.recon()
     }
 }
+
+export const RECON_PERIOD = 5.0
 
 export function pipeToVoidFromOkMsg(): RxPipe<OkMsg, void> {
     return pipe(
