@@ -27,6 +27,9 @@ export class ErrorHandlerService {
                     err_body = JSON.parse(genericErr.error);
                 } catch (exc) {}
 
+                if (!defined(err_body)) {
+                    err_body = {code: undefined, msg: genericErr.error}
+                }
                 let msg = err_body.msg;
                 if (msg === undefined) {
                     msg = genericErr.error;
