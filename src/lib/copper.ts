@@ -79,8 +79,8 @@ export class ErrCls extends Error implements ResItem {
     }
 
     public getExtraField<T>(
-        k: string, defaultVal: Undefined<T> = undefined
-    ): Undefined<T>  {
+        k: string, defaultVal: Option<T> = undefined
+    ): Option<T>  {
         if (!defined(this.extra) || !defined(this.extra[k])) {
             return defaultVal
         }
@@ -281,4 +281,4 @@ export class Signal extends ReplaySubject<number> {
 export function defined<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
-export type Undefined<T> = T | undefined
+export type Option<T> = T | undefined

@@ -3,7 +3,7 @@ import { log } from "../log";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { I18nService } from "../i18n/i18n.service";
-import { Err, ErrCls, ErrFromNative, Undefined, defined } from "../../public-api";
+import { Err, ErrCls, ErrFromNative, Option, defined } from "../../public-api";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
@@ -18,7 +18,7 @@ export class ErrorHandlerService {
     ) { }
 
     public handle(genericErr: Error): void {
-        let err: Undefined<ErrCls> = undefined
+        let err: Option<ErrCls> = undefined
 
         if (!(genericErr instanceof ErrCls)) {
             if (genericErr instanceof HttpErrorResponse) {
