@@ -1,0 +1,30 @@
+<div
+    *ngIf="statusData as settings"
+    class="bg-repeating-diag-orange-lines w-8 h-8 flex
+           items-center justify-end border-2 border-c10-fourth
+           border-solid rounded-full"
+    [title]="settings.fullTitle"
+    [ngClass]="
+        size == ObjectStatusSize.Small
+            ? ['scale-[0.8]']
+            : [
+                'transition-[width]', 'duration-400',
+                'hover:bg-gradient-to-r', 'hover:from-transparent',
+                'relative', 'overflow-hidden', settings.hoverWidthClass
+            ]
+    "
+
+>
+    <div
+        *ngIf="size == ObjectStatusSize.Normal"
+        class="absolute right-8 font-semibold italic text-sm select-none"
+    >
+        {{ settings.shortTitle }}
+    </div>
+    <img
+        draggable="false"
+        class="select-none inline-block"
+        [ngClass]="settings.imgExtraClasses"
+        [src]="settings.imgSrc"
+    >
+</div>

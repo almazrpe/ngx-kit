@@ -120,6 +120,7 @@ export * from "./arr";
 export * from "./quco";
 export * from "./connection";
 export * from "./pop-up";
+export * from "./object-status";
 export * from "./refresh";
 export * from "./input";
 export * from "./label";

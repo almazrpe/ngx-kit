@@ -50,6 +50,8 @@ import { OnCreateDirective } from "./on-create.directive";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { MathliveInputComponent }
     from "./input/mathlive-input/mathlive-input.component";
+import { ObjectStatusComponent } 
+    from "./object-status/object-status.component";
 
 @NgModule({
     declarations: [
@@ -78,7 +80,8 @@ import { MathliveInputComponent }
         RefreshComponent,
         PdfViewerComponent,
         OnCreateDirective,
-        MathliveInputComponent
+        MathliveInputComponent,
+        ObjectStatusComponent
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -128,7 +131,8 @@ import { MathliveInputComponent }
         LabelComponent,
         RefreshComponent,
         PdfViewerComponent,
-        OnCreateDirective
+        OnCreateDirective,
+        ObjectStatusComponent
     ]
 })
 export class NgxKitModule { }
