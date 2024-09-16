@@ -281,4 +281,13 @@ export class Signal extends ReplaySubject<number> {
 export function defined<T>(val: T | undefined | null): val is T {
     return val !== undefined && val !== null;
 }
-export type Option<T> = T | undefined
+
+// Convert null to undefined to be able to use question marks.
+export function qq<T>(val: Option<T>): T | undefined {
+    if (val === null) {
+        return undefined
+    }
+    return val
+}
+
+export type Option<T> = T | null | undefined
