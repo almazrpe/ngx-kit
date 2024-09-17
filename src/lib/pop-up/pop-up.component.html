@@ -9,8 +9,9 @@
         class="bg-c30 shadow inline-table p-6 rounded-md
                mt-14 h-fit"
         [ngClass]="{
-            'min-w-[75%]': type == PopUpType.Form,
-            'max-w-[75%] min-w-[75%]': type == PopUpType.Template
+            'w-[80%]': 
+                type == PopUpType.Form 
+                || type == PopUpType.Template,
         }"
         [ngSwitch]="true"
     >
