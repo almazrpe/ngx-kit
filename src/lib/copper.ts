@@ -326,10 +326,13 @@ export function pipeUnwrap<T>(): RxPipe<Ret<T>, T> {
     );
 }
 
-export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T> {
+export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T | nil> {
     return pipe(
         map(val => {
-            return unwrap(val)
+            if (ee(val)) {
+                return undefined
+            }
+            return val
         })
     );
 }
