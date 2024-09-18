@@ -3,7 +3,7 @@ import { log } from "../log";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { I18nService } from "../i18n/i18n.service";
-import { Err, ErrCls, ErrFromNative, Option, defined } from "../../public-api";
+import { Err, ErrCls, ErrFromNative, Option, def } from "../../public-api";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
@@ -27,7 +27,7 @@ export class ErrorHandlerService {
                     err_body = JSON.parse(genericErr.error);
                 } catch (exc) {}
 
-                if (!defined(err_body)) {
+                if (!def(err_body)) {
                     err_body = {code: undefined, msg: genericErr.error}
                 }
                 let msg = err_body.msg;
@@ -51,7 +51,7 @@ export class ErrorHandlerService {
             err = genericErr
         }
 
-        if (!defined(err)) {
+        if (!def(err)) {
             log.err("logic err at error handler: `err` must be defined")
             return
         }

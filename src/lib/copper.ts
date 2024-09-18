@@ -72,7 +72,7 @@ export class ErrCls extends Error implements ResItem {
         k: string,
         val: any
     ) {
-        if (!defined(this.extra)) {
+        if (!def(this.extra)) {
             this.extra = {}
         }
         this.extra[k] = val
@@ -81,7 +81,7 @@ export class ErrCls extends Error implements ResItem {
     public getExtraField<T>(
         k: string, defaultVal: Option<T> = undefined
     ): Option<T>  {
-        if (!defined(this.extra) || !defined(this.extra[k])) {
+        if (!def(this.extra) || !def(this.extra[k])) {
             return defaultVal
         }
         return this.extra[k]
@@ -218,7 +218,7 @@ export function pipeWarn(): RxPipe<any, any> {
     );
 }
 
-export function pipeResTakeFirstRes<T>(): RxPipe<T[], Res<T>> {
+export function pipeResTakeFirst<T>(): RxPipe<T[], Res<T>> {
     return pipe(
         map(val => {
             if (val.length == 0) {
@@ -231,7 +231,7 @@ export function pipeResTakeFirstRes<T>(): RxPipe<T[], Res<T>> {
 
 export function pipeResTakeFirstUnwrap<T>(): RxPipe<T[], T> {
     return pipe(
-        pipeResTakeFirstRes(),
+        pipeResTakeFirst(),
         pipeResUnwrap()
     );
 }
@@ -275,10 +275,12 @@ export class Signal extends ReplaySubject<number> {
     }
 }
 
-/// In typescript we generally prefer to work with undefined, instead of null,
-/// but to cover both cases we use this function, to not care about which
-/// specific "unset" object we deal with.
-export function defined<T>(val: T | undefined | null): val is T {
+// In typescript we generally prefer to work with undefined, instead of null,
+// but to cover both cases we use this function, to not care about which
+// specific "unset" object we deal with.
+export type nil = null | undefined
+
+export function def<T>(val: T | nil): val is T {
     return val !== undefined && val !== null;
 }
 
@@ -290,8 +292,7 @@ export function qq<T>(val: Option<T>): T | undefined {
     return val
 }
 
-export type Option<T> = T | null | undefined
-
+export type Option<T> = T | nil
 export type Ret<T> = T | Error
 
 export function ee(r: any): r is Error {
@@ -315,4 +316,20 @@ export function wrap<T>(fn: () => T): Ret<T> {
         }
         return err
     }
+}
+
+export function pipeUnwrap<T>(): RxPipe<Ret<T>, T> {
+    return pipe(
+        map(val => {
+            return unwrap(val)
+        })
+    );
+}
+
+export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T> {
+    return pipe(
+        map(val => {
+            return unwrap(val)
+        })
+    );
 }

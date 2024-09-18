@@ -15,7 +15,7 @@ import { AlertService } from "./alert/alert.service";
 import { ConService } from "./connection/connection.service";
 import {
     assert,
-    defined,
+    def,
     Err,
     ErrCls,
     Ok,
@@ -202,7 +202,7 @@ export class Bus {
     }
 
     private subCon(con: WebSocketSubject<Bmsg>) {
-        if (defined(this.conSub)) {
+        if (def(this.conSub)) {
             this.conSub.unsubscribe()
             this.conSub = undefined
         }
