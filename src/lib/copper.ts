@@ -336,3 +336,18 @@ export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T | nil> {
         })
     );
 }
+
+export function fromRes<T>(res: Res<T>): Ret<T> {
+    if (ee(res)) {
+        return res
+    }
+    return res.ok
+}
+
+export function pipeFromRes<T>(): RxPipe<Res<T>, Ret<T>> {
+    return pipe(
+        map(val => {
+            return fromRes(val)
+        })
+    )
+}
