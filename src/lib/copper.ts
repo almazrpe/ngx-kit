@@ -184,7 +184,7 @@ export type RxPipe<TInp, TOut> = UnaryFunction<
     Observable<TInp>, Observable<TOut>
 >
 
-export function pipeSecure<T>(): RxPipe<Res<T>, Res<T>> {
+export function pipeResSecure<T>(): RxPipe<Res<T>, Res<T>> {
     return pipe(
         catchError(err => {
             return of(ErrFromNative(err));
@@ -192,7 +192,7 @@ export function pipeSecure<T>(): RxPipe<Res<T>, Res<T>> {
     );
 }
 
-export function pipeUnwrap<T>(): RxPipe<Res<T>, T> {
+export function pipeResUnwrap<T>(): RxPipe<Res<T>, T> {
     return pipe(
         map(val => {
             return val.unwrap();
@@ -218,7 +218,7 @@ export function pipeWarn(): RxPipe<any, any> {
     );
 }
 
-export function pipeTakeFirst<T>(): RxPipe<T[], Res<T>> {
+export function pipeResTakeFirstRes<T>(): RxPipe<T[], Res<T>> {
     return pipe(
         map(val => {
             if (val.length == 0) {
@@ -229,14 +229,14 @@ export function pipeTakeFirst<T>(): RxPipe<T[], Res<T>> {
     );
 }
 
-export function pipeTakeFirstUnwrap<T>(): RxPipe<T[], T> {
+export function pipeResTakeFirstUnwrap<T>(): RxPipe<T[], T> {
     return pipe(
-        pipeTakeFirst(),
-        pipeUnwrap()
+        pipeResTakeFirstRes(),
+        pipeResUnwrap()
     );
 }
 
-export function pipeOkOrEmptyArr<T>(): RxPipe<Res<T[]>, T[]> {
+export function pipeResOkOrEmptyArr<T>(): RxPipe<Res<T[]>, T[]> {
     return pipe(
         map(val => {
             if (val.is_err()) {
@@ -247,7 +247,7 @@ export function pipeOkOrEmptyArr<T>(): RxPipe<Res<T[]>, T[]> {
     );
 }
 
-export function pipeOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
+export function pipeResOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
     return pipe(
         map(val => {
             if (val.is_err()) {
@@ -258,7 +258,7 @@ export function pipeOkOrUndefined<T>(): RxPipe<Res<T>, T | undefined> {
     );
 }
 
-export function pipeOkOrNull<T>(): RxPipe<Res<T>, T | null> {
+export function pipeResOkOrNull<T>(): RxPipe<Res<T>, T | null> {
     return pipe(
         map(val => {
             if (val.is_err()) {
@@ -291,3 +291,28 @@ export function qq<T>(val: Option<T>): T | undefined {
 }
 
 export type Option<T> = T | null | undefined
+
+export type Ret<T> = T | Error
+
+export function ee(r: any): r is Error {
+    return r instanceof Error
+}
+
+export function unwrap<T>(r: Ret<T>): T {
+    if (ee(r)) {
+        throw r
+    }
+    return r
+}
+
+export function wrap<T>(fn: () => T): Ret<T> {
+    try {
+        let r = fn()
+        return r
+    } catch (err) {
+        if (!ee(err)) {
+            throw new Error(`Cannot accept non-err type ${err}.`)
+        }
+        return err
+    }
+}
