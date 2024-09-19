@@ -295,6 +295,9 @@ export function qq<T>(val: T | undefined | null): T | undefined {
     return val
 }
 
+/**
+ * @deprecated Use `arg?: T` instead.
+ */
 export type Option<T> = T | undefined
 export type Ret<T> = T | Error
 
