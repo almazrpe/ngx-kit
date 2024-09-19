@@ -280,19 +280,22 @@ export class Signal extends ReplaySubject<number> {
 // specific "unset" object we deal with.
 export type nil = null | undefined
 
+/**
+ * @deprecated Use `val !== undefined`.
+ */
 export function def<T>(val: T | nil): val is T {
     return val !== undefined && val !== null;
 }
 
 // Convert null to undefined to be able to use question marks.
-export function qq<T>(val: Option<T>): T | undefined {
+export function qq<T>(val: T | undefined | null): T | undefined {
     if (val === null) {
         return undefined
     }
     return val
 }
 
-export type Option<T> = T | nil
+export type Option<T> = T | undefined
 export type Ret<T> = T | Error
 
 export function ee(r: any): r is Error {
