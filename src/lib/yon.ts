@@ -391,9 +391,11 @@ export class Bus {
 
         // send to inner
         if (!opts.skipInner) {
-            for (const [code_, codeData] of Object.entries(this.codesData)) {
-                if (code_ == code) {
-                    this.callSubFn(codeData.fn, code, msg, isErr);
+            for (const [code_, codeData] of this.codesData.entries()) {
+                for (const fn of codeData.subs.values()) {
+                    if (code_ == code) {
+                        this.callSubFn(fn, code, msg, isErr);
+                    }
                 }
             }
         }
