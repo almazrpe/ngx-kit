@@ -269,6 +269,17 @@ export function pipeResOkOrNull<T>(): RxPipe<Res<T>, T | null> {
     );
 }
 
+export function pipeResIsOk<T>(): RxPipe<Res<T>, boolean> {
+    return pipe(
+        map(val => {
+            if (val.is_err()) {
+                return false;
+            }
+            return true;
+        })
+    );
+}
+
 export class Signal extends ReplaySubject<number> {
     public signal() {
         this.next(1)
