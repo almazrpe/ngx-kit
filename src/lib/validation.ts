@@ -33,6 +33,19 @@ export abstract class CustomValidators {
     }
 
     /**
+     * Handles latex variables whose size is lower than minSize
+     */
+    public static inUnsuitableSet(
+        uSet: Set<any>
+    ): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            return uSet.has(control.value)
+                ? { inunsuitableset: true } 
+                : null
+        };
+    }
+
+    /**
      * Handles cases when autocomplete is required in form fields.
      */
     public static requiredAutocomplete(

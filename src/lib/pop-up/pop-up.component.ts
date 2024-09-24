@@ -7,7 +7,7 @@ import {
   TemplateRef
 } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
 import { MathliveInputConfig } from "../input/mathlive-input/models";
@@ -199,5 +199,10 @@ export class PopUpComponent implements OnInit {
       value: this.form.value
     });
     this.closePopUp();
+  }
+
+  public getNullObservable(): Observable<null>
+  {
+    return of(null);
   }
 }

@@ -15,6 +15,7 @@ export enum InputValidationErrorCode {
     // Custom validation errors from validation.ts
     RequiredAutocomplete = "requiredautocomplete",
     NoWhitespace = "nowhitespace",
+    InUnsuitableSet = "inunsuitableset",
     LatexVarStartNoUnderscore = "latexvarstartnounderscore",
     LatexVarSizeMin = "latexvarsizemin"
 }
@@ -46,6 +47,8 @@ export function getDefaultErrorMessage(errorName: string, error: any): string {
             return "You must choose a suggested option";
         case InputValidationErrorCode.NoWhitespace:
             return "Whitespaces are restricted for this field";
+        case InputValidationErrorCode.InUnsuitableSet:
+            return "Chosen value is in the set of unsuitable values";
         case InputValidationErrorCode.LatexVarStartNoUnderscore:
             return "Variables mustn't begin with underscore characters";
         case InputValidationErrorCode.LatexVarSizeMin:

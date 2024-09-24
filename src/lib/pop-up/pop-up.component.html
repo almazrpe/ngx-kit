@@ -21,7 +21,7 @@
         >
             <div class="w-full flex items-center gap-10 justify-between px-1">
                 <ng-container
-                    *ngIf="extraHeaderTemplateRef != null;
+                    *ngIf="extraHeaderTemplateRef !== undefined;
                            then extraHeaderTemplateRef;
                            else defaultPopUpHeader"
                 ></ng-container>
@@ -51,7 +51,7 @@
 
             <ngx-kit-hr class="w-full"></ngx-kit-hr>
 
-            <ng-container *ngIf="mainTemplateRef != null">
+            <ng-container *ngIf="mainTemplateRef !== undefined">
                 <ng-container 
                     *ngTemplateOutlet="mainTemplateRef"
                 ></ng-container>
@@ -251,6 +251,10 @@
                                         [formControl]="
                                             getFormControl(field.name)
                                         "
+                                        [addLatexEvent]="
+                                            field.mathliveAddLatexEvent 
+                                                ?? getNullObservable()
+                                        "
                                         [virtualKeyboardLayouts]="
                                             field.mathliveVKLayouts 
                                                 ?? undefined
@@ -259,11 +263,6 @@
                                             field.customErrorMessages
                                         "
                                         [config]="mathliveInputConfig()"
-                                        (complete)="
-                                            form.valid 
-                                                ? sendForm() 
-                                                : null
-                                        "
                                     />
                                     <ng-container 
                                         *ngTemplateOutlet="resetButton"
@@ -331,6 +330,14 @@
                                         >
                                     </ngx-kit-button>
                                 </ng-template>
+                            </ng-container>
+
+                            <ng-container 
+                                *ngIf="field.afterTemplate !== undefined"
+                            >
+                                <ng-container 
+                                    *ngTemplateOutlet="field.afterTemplate"
+                                ></ng-container>
                             </ng-container>
                         </div>
                     </ng-container>

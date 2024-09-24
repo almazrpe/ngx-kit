@@ -88,7 +88,9 @@ export interface PopUpFormField {
     fileUploadCheckFunc?: (
         files: UploadFileObject[]
     ) => Observable<UploadFileObject[] | null>;
-    mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>
+    mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
+    mathliveAddLatexEvent?: Observable<string | null>;
+    afterTemplate?: TemplateRef<any>;
 }
 
 export interface PopUpChoosingBtn {

@@ -98,6 +98,7 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
     /* eslint-enable */
     public touched: boolean = false;
     public errorState: boolean = false;
+    private addLatexEvtChanged: boolean = false;
     private errorMsg$: BehaviorSubject<string | null> =
         new BehaviorSubject<string | null>(null);
 
@@ -188,6 +189,11 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
         });
 
         this.mathfield.addEventListener("change", () => {
+            if (this.addLatexEvtChanged) {
+                this.addLatexEvtChanged = false;
+                return;
+            }
+
             this.mathfield.blur();
             this.complete.emit();
         });
@@ -204,15 +210,22 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
         });
 
         if (this.addLatexEvent !== undefined)
-          this.addLatexEventSubscription = this.addLatexEvent.subscribe({
-            next: (latexTxt: string | null) => {
-              if (latexTxt != null)
-                this.mathfield.insert(
-                  latexTxt,
-                  { focus: true, feedback: true, mode: "math", format: "auto" }
-                );
-            }
-          });
+            this.addLatexEventSubscription = this.addLatexEvent.subscribe({
+                next: (latexTxt: string | null) => {
+                    if (latexTxt != null) {
+                        this.addLatexEvtChanged = true;
+                        this.mathfield.insert(
+                            latexTxt,
+                            { 
+                                focus: true, 
+                                feedback: true, 
+                                mode: "math", 
+                                format: "auto" 
+                            }
+                        )
+                    }
+                }
+            });
 
         this.errorMsg$.subscribe({
             next: (err: string | null) => {
