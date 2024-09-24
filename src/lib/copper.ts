@@ -1,6 +1,14 @@
 //! Provides the core functionality for a better typescript experience.
 
-import { Observable, ReplaySubject, UnaryFunction, catchError, map, of, pipe } from "rxjs";
+import { 
+    Observable, 
+    ReplaySubject, 
+    UnaryFunction, 
+    catchError, 
+    map, 
+    of, 
+    pipe 
+} from "rxjs";
 import { log } from "../public-api";
 
 export interface ResItem<T = any> {

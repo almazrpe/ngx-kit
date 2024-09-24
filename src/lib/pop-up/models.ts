@@ -90,7 +90,7 @@ export interface PopUpFormField {
     ) => Observable<UploadFileObject[] | null>;
     mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
     mathliveAddLatexEvent?: Observable<string | null>;
-    afterTemplate?: TemplateRef<any>;
+    afterTemplate?: TemplateRef<any>
 }
 
 export interface PopUpChoosingBtn {

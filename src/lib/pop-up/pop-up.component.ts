@@ -201,8 +201,7 @@ export class PopUpComponent implements OnInit {
     this.closePopUp();
   }
 
-  public getNullObservable(): Observable<null>
-  {
+  public getNullObservable(): Observable<null> {
     return of(null);
   }
 }

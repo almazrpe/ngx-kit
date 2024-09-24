@@ -25,7 +25,6 @@ import {
     Signal
 } from "./copper";
 import { uuid4 } from "./uuid";
-import { Queue } from "queue-typescript";
 
 export type Msg = any;
 
