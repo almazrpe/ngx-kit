@@ -2,7 +2,7 @@
     id="pop-up-container"
     class="flex justify-center h-screen w-full bg-neutral-950/50
            absolute inset-0 overflow-y-auto"
-    *ngIf="popUpService.isShown$ | async"
+    *ngIf="(popUpService.shownCompId$ | async) === compId"
     (mousedown)="borderClosingCheck($event)"
 >
     <div

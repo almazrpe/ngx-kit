@@ -26,6 +26,7 @@ import {
   PopUpPaginationData,
   PopUpChoosingBtn
 } from "./models";
+import { StringUtils } from "../../public-api";
 
 @Component({
   selector: "ngx-kit-pop-up",
@@ -38,6 +39,7 @@ export class PopUpComponent implements OnInit {
   @Output() public onComplete: EventEmitter<PopUpResult> =
     new EventEmitter<PopUpResult>();
 
+  public compId: string = StringUtils.makeid(10);
   private windowNum: number;
   public type: PopUpType = PopUpType.Empty;
   public title: string;
@@ -152,7 +154,7 @@ export class PopUpComponent implements OnInit {
   }
 
   public closePopUp(): void {
-    this.popUpService.toggle();
+    this.popUpService.toggle(undefined);
   }
 
   public clearField(name: string): void {

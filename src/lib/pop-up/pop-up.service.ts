@@ -15,15 +15,15 @@ export class PopUpService {
     public popUpWindow$: Observable<PopUpWindow> =
         this.popUpWindow.asObservable();
 
-    public isShown$: BehaviorSubject<boolean> =
-        new BehaviorSubject<boolean>(false);
+    public shownCompId$: BehaviorSubject<string | undefined> =
+        new BehaviorSubject<string | undefined>(undefined);
 
-    public toggle(): void {
-        this.isShown$.next(!this.isShown$.value);
+    public toggle(compId: string | undefined): void {
+        this.shownCompId$.next(compId);
     }
 
-    public spawn(window: PopUpWindow): void {
+    public spawn(window: PopUpWindow, compId: string): void {
         this.popUpWindow.next(window);
-        this.toggle();
+        this.toggle(compId);
     }
 }
