@@ -16,6 +16,7 @@ export enum InputValidationErrorCode {
     RequiredAutocomplete = "requiredautocomplete",
     NoWhitespace = "nowhitespace",
     InUnsuitableSet = "inunsuitableset",
+    MustBeInt = "mustbeint",
     LatexVarStartNoUnderscore = "latexvarstartnounderscore",
     LatexVarSizeMin = "latexvarsizemin"
 }
@@ -49,6 +50,8 @@ export function getDefaultErrorMessage(errorName: string, error: any): string {
             return "Whitespaces are restricted for this field";
         case InputValidationErrorCode.InUnsuitableSet:
             return "Chosen value is in the set of unsuitable values";
+        case InputValidationErrorCode.MustBeInt:
+            return "The value must be integer";
         case InputValidationErrorCode.LatexVarStartNoUnderscore:
             return "Variables mustn't begin with underscore characters";
         case InputValidationErrorCode.LatexVarSizeMin:

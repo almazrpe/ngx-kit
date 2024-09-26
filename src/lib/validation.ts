@@ -33,7 +33,7 @@ export abstract class CustomValidators {
     }
 
     /**
-     * Handles latex variables whose size is lower than minSize
+     * Handles cases when incoming value is in some unsuitable value set
      */
     public static inUnsuitableSet(
         uSet: Set<any>
@@ -43,6 +43,17 @@ export abstract class CustomValidators {
                 ? { inunsuitableset: true } 
                 : null
         };
+    }
+
+    /**
+     * Handles cases when incoming value must be integer
+     */
+    public static mustBeInt(
+        control: AbstractControl
+    ): ValidationErrors | null {
+        return /^[0-9]{1,}$/.test(String(control.value)) 
+            ? null
+            : { mustbeint: true }
     }
 
     /**
