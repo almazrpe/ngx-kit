@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MatSliderComponent } from './mat-slider.component';
+import { MatSliderComponent } from "./mat-slider.component";
 
-describe('MatSliderComponent', () => {
+describe("MatSliderComponent", () => {
   let component: MatSliderComponent;
   let fixture: ComponentFixture<MatSliderComponent>;
 
@@ -15,7 +15,7 @@ describe('MatSliderComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

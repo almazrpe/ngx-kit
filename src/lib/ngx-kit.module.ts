@@ -53,7 +53,7 @@ import { MathliveInputComponent }
     from "./input/mathlive-input/mathlive-input.component";
 import { ObjectStatusComponent } 
     from "./object-status/object-status.component";
-import { MatSliderComponent } from './input/mat-slider/mat-slider.component';
+import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
 
 @NgModule({
     declarations: [

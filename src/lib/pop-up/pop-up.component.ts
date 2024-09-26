@@ -10,7 +10,6 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
-import { MathliveInputConfig } from "../input/mathlive-input/models";
 import { ButtonMode } from "../button/button.component";
 import { CustomValidators } from "../validation";
 import { I18nService } from "../i18n/i18n.service";

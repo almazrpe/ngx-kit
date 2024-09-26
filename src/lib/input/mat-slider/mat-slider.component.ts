@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { MatSliderData } from './model';
-import { ButtonMode } from '../../button/button.component';
+import { Component, Input } from "@angular/core";
+import { MatSliderData } from "./model";
+import { ButtonMode } from "../../button/button.component";
 
 @Component({
-    selector: 'ngx-kit-mat-slider',
-    templateUrl: './mat-slider.component.html',
+    selector: "ngx-kit-mat-slider",
+    templateUrl: "./mat-slider.component.html",
     styleUrls: ["./mat-slider-design.scss"]
 })
 export class MatSliderComponent {

@@ -8,7 +8,6 @@ import {
 } from "../input/upload-files-input/models";
 import {
     MathliveInputConfig,
-    makeMathliveInputConfig,
     MathliveVKLayout,
     MathliveVKName
 } from "../input/mathlive-input/models";
