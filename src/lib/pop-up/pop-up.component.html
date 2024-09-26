@@ -262,7 +262,7 @@
                                         [customErrorMessages]="
                                             field.customErrorMessages
                                         "
-                                        [config]="mathliveInputConfig()"
+                                        [config]="field.mathliveConfig ?? {}"
                                     />
                                     <ng-container 
                                         *ngTemplateOutlet="resetButton"

@@ -1,0 +1,10 @@
+::ng-deep .mat-input-border-imitation {
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: var(--mdc-outlined-text-field-outline-color);
+    border-style: solid;
+}
+
+::ng-deep .mat-input-border-imitation:hover {
+    border-color: var(--mdc-outlined-text-field-hover-outline-color);
+}

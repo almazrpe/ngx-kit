@@ -33,7 +33,7 @@ export enum PopUpType {
 }
 
 export interface PopUpConfig
-extends UploadFilesInputConfig, MathliveInputConfig
+extends UploadFilesInputConfig
 {
     closeUsingBtnOnly: boolean;
     resetFieldIconPath: string
@@ -54,7 +54,6 @@ export function makePopUpConfig(
 ): PopUpConfig {
     const defaults: PopUpConfig = {
         ...makeUploadFilesInputConfig(),
-        ...makeMathliveInputConfig(),
         closeUsingBtnOnly: false,
         resetFieldIconPath: ""
     };
@@ -90,6 +89,7 @@ export interface PopUpFormField {
     ) => Observable<UploadFileObject[] | null>;
     mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
     mathliveAddLatexEvent?: Observable<string | null>;
+    mathliveConfig?: Partial<MathliveInputConfig>;
     afterTemplate?: TemplateRef<any>
 }
 

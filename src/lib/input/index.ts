@@ -11,3 +11,5 @@ export * from "./selected-input/value-validator-event";
 export * from "./upload-files-input/file-drag-drop.directive";
 export * from "./upload-files-input/models";
 export * from "./upload-files-input/upload-files-input.component";
+export * from "./mat-slider/model";
+export * from "./mat-slider/mat-slider.component";

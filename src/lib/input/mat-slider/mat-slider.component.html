@@ -1,0 +1,40 @@
+<div 
+    *ngIf="sliderData as sdata"
+    class="flex flex-row gap-3"
+>
+    <div 
+        class="mat-input-border-imitation flex w-full bg-[#ffffff]"
+    >
+        <mat-slider 
+            class="!mx-6 grow"
+            [min]="sdata.min" 
+            [max]="sdata.max" 
+            [step]="sdata.step" 
+            showTickMarks 
+            discrete 
+            [displayWith]="
+                sdata.sliderTitleFormatter !== undefined
+                    ? customFormatMatSliderLabel(sdata.sliderTitleFormatter)
+                    : customFormatMatSliderLabel(defaultSliderTitleFormatter)
+            "
+        >
+            <input matSliderThumb [formControl]="sdata.control">
+        </mat-slider>  
+    </div>  
+
+    <ngx-kit-button
+        *ngIf="showResetBtn"
+        [mode]="ButtonMode.HEADER"
+        type="button"
+        class="flex mr-2"
+        (clickFunc)="sdata.control.reset()"
+    >
+        <img
+            [src]="sdata.resetBtnIconPath ?? ''"
+            alt="x"
+            draggable="false"
+            class="w-6 h-6 text-black relative before:top-[-25%]
+                   before:left-[30%] before:absolute before:text-2xl"
+        >
+    </ngx-kit-button>
+</div>

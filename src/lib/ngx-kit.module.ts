@@ -26,6 +26,7 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS }
     from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
+import { MatSliderModule } from "@angular/material/slider";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule, MAT_DATE_LOCALE }
@@ -52,6 +53,7 @@ import { MathliveInputComponent }
     from "./input/mathlive-input/mathlive-input.component";
 import { ObjectStatusComponent } 
     from "./object-status/object-status.component";
+import { MatSliderComponent } from './input/mat-slider/mat-slider.component';
 
 @NgModule({
     declarations: [
@@ -81,7 +83,8 @@ import { ObjectStatusComponent }
         PdfViewerComponent,
         OnCreateDirective,
         MathliveInputComponent,
-        ObjectStatusComponent
+        ObjectStatusComponent,
+        MatSliderComponent
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -97,6 +100,7 @@ import { ObjectStatusComponent }
         BrowserAnimationsModule,
         MatSelectModule,
         MatInputModule,
+        MatSliderModule,
         MatFormFieldModule,
         MatAutocompleteModule,
         MatDatepickerModule,
@@ -132,7 +136,8 @@ import { ObjectStatusComponent }
         RefreshComponent,
         PdfViewerComponent,
         OnCreateDirective,
-        ObjectStatusComponent
+        ObjectStatusComponent,
+        MatSliderComponent
     ]
 })
 export class NgxKitModule { }

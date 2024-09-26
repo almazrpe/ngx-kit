@@ -149,10 +149,6 @@ export class PopUpComponent implements OnInit {
     return this._config_ as UploadFilesInputConfig;
   }
 
-  public mathliveInputConfig(): MathliveInputConfig {
-    return this._config_ as MathliveInputConfig;
-  }
-
   public closePopUp(): void {
     this.popUpService.toggle(undefined);
   }
