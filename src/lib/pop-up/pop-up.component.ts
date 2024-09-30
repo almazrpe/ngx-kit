@@ -7,11 +7,10 @@ import {
   TemplateRef
 } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of, Subscription } from "rxjs";
 import { InputType } from "../input/input-type";
 import { UploadFilesInputConfig } from "../input/upload-files-input/models";
 import { ButtonMode } from "../button/button.component";
-import { CustomValidators } from "../validation";
 import { I18nService } from "../i18n/i18n.service";
 import { PopUpService } from "./pop-up.service";
 import {
@@ -52,7 +51,8 @@ export class PopUpComponent implements OnInit {
     ((data: any) => PopUpDescriptorField[]) | null =
       null;
   public descriptorFields: PopUpDescriptorField[] = [];
-
+  public internalCache: Map<string, any>;
+  private controlFunctionSub: Subscription;
   public form: FormGroup = new FormGroup({
     answer: new FormControl(null, [Validators.required])
   });
@@ -79,6 +79,8 @@ export class PopUpComponent implements OnInit {
         if (this.type == PopUpType.Form) {
           this.form = new FormGroup({});
           window.fields.forEach((field: PopUpFormField) => {
+            if (field.hideField == undefined)
+              field.hideField = new BehaviorSubject<boolean>(false);
             if (field.fillingOptions == undefined)
               field.fillingOptions = new BehaviorSubject<any[]>([]);
 
@@ -86,35 +88,41 @@ export class PopUpComponent implements OnInit {
               field.name,
               new FormControl(
                 field.value, 
-                (field.validators ?? []).concat(
-                  field.autocompleteRequired === true 
-                    ? CustomValidators.requiredAutocomplete(
-                      field.fillingOptions
-                    ) 
-                    : []
-                )
+                field.validators ?? []
               ),
               {
                 emitEvent: false
               }
             );
-
-            if (field.fillingFunction != undefined) {
-              if (field.hideField == undefined)
-                field.hideField = new BehaviorSubject<boolean>(true);
-
-              this.form.valueChanges.subscribe(
-                (controlsData: any) => field.fillingFunction != null
-                  ? field.fillingFunction(
-                    controlsData,
-                    this.getFormControl(field.name),
-                      field.hideField!,
-                      field.fillingOptions!
-                  )
-                  : []
-              );
-            }
           });
+
+          if (window.controlFunction !== undefined) {
+            this.internalCache = new Map<string, any>();
+            this.controlFunctionSub = this.form.valueChanges.subscribe(
+              (controlsData: any) =>
+                window.controlFunction!(
+                  controlsData,
+                  this.form,
+                  new Map<string, BehaviorSubject<boolean>>(
+                    window.fields?.map(
+                      (field: PopUpFormField) => [
+                        field.name, 
+                        field.hideField ?? new BehaviorSubject<boolean>(true)
+                      ]
+                    ) ?? []
+                  ),
+                  new Map<string, BehaviorSubject<any[]>>(
+                    window.fields?.map(
+                      (field: PopUpFormField) => [
+                        field.name, 
+                        field.fillingOptions ?? new BehaviorSubject<any[]>([])
+                      ]
+                    ) ?? []
+                  ),
+                  this.internalCache
+                )
+            );
+          }
 
           if (window.formFieldsDescriptor != null) {
             this.formFieldsDescriptor = window.formFieldsDescriptor;
@@ -149,6 +157,8 @@ export class PopUpComponent implements OnInit {
   }
 
   public closePopUp(): void {
+    if (this.controlFunctionSub !== undefined)
+      this.controlFunctionSub.unsubscribe();
     this.popUpService.toggle(undefined);
   }
 

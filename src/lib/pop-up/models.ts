@@ -19,7 +19,7 @@ import {
     PaginationSortFunc,
     PaginationPart
 } from "../pagination/models";
-import { ValidatorFn, FormControl } from "@angular/forms";
+import { ValidatorFn, FormGroup } from "@angular/forms";
 import { BehaviorSubject, Observable } from "rxjs";
 
 export enum PopUpType {
@@ -76,12 +76,6 @@ export interface PopUpFormField {
     customErrorMessages?: Map<InputValidationErrorCode, string>;
     fillingOptions?: BehaviorSubject<any[]>;
     hideField?: BehaviorSubject<boolean>;
-    fillingFunction?: (
-        controlsData: any,
-        control: FormControl,
-        hideField: BehaviorSubject<boolean>,
-        options: BehaviorSubject<any[]>
-    ) => void;
     fileUploadExtensions?: Set<string>;
     fileUploadCheckFunc?: (
         files: UploadFileObject[]
@@ -119,7 +113,14 @@ export interface PopUpWindow {
     templateRefs?: {
         main?: TemplateRef<any>;
         extraHeader?: TemplateRef<any>
-    }
+    };
+    controlFunction?: (
+        controlsData: any,
+        group: FormGroup,
+        hideFields: Map<string, BehaviorSubject<boolean>>,
+        fillingOptions: Map<string, BehaviorSubject<any[]>>,
+        cache: Map<string, any>
+    ) => void
 }
 
 export interface PopUpResult {
