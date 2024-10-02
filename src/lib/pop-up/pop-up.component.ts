@@ -193,19 +193,19 @@ export class PopUpComponent implements OnInit {
   }
 
   public sendAnswer(ans: any): void {
+    this.closePopUp();
     this.onComplete.emit({
       windowNum: this.windowNum,
       value: ans
     });
-    this.closePopUp();
   }
 
   public sendForm(): void {
+    this.closePopUp();
     this.onComplete.emit({
       windowNum: this.windowNum,
       value: this.form.value
     });
-    this.closePopUp();
   }
 
   public getNullObservable(): Observable<null> {
