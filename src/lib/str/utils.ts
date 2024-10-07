@@ -13,6 +13,15 @@ export abstract class StringUtils {
             return s;
     }
 
+    public static removeEndStringDot(s: string): string {
+        if (s.length === 0)
+            return s;
+        else if (s.slice(-1) === ".")
+            return s.slice(0, -1);
+        else
+            return s;
+    }
+
     public static getTitledValue(title?: string, value?: string): string {
         if (title === undefined && value === undefined) {
             return "";
