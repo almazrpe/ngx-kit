@@ -9,9 +9,7 @@
         class="bg-c30 shadow inline-table p-6 rounded-md
                mt-14 h-fit"
         [ngClass]="{
-            'w-[80%]': 
-                type == PopUpType.Form 
-                || type == PopUpType.Template,
+            'w-[80%]': type == PopUpType.Form,
         }"
         [ngSwitch]="true"
     >
@@ -21,14 +19,14 @@
         >
             <div class="w-full flex items-center gap-10 justify-between px-1">
                 <ng-container
-                    *ngIf="extraHeaderTemplateRef !== undefined;
+                    *ngIf="extraHeaderTemplateRef !== null;
                            then extraHeaderTemplateRef;
                            else defaultPopUpHeader"
                 ></ng-container>
 
                 <ng-template #defaultPopUpHeader>
                     <div
-                        class="ml-2 self-center cursor-default 
+                        class="grow ml-2 self-center cursor-default 
                                select-none text-xl"
                     >
                         {{ title }}
