@@ -1,15 +1,17 @@
 <div
     id="pop-up-container"
     class="flex justify-center h-screen w-full bg-neutral-950/50
-           absolute inset-0 overflow-y-auto"
+           absolute inset-0 overflow-y-auto z-[998]"
     *ngIf="(popUpService.shownCompId$ | async) === compId"
     (mousedown)="borderClosingCheck($event)"
 >
     <div
         class="bg-c30 shadow inline-table p-6 rounded-md
-               mt-14 h-fit"
+               mt-14 h-fit container z-[999]"
         [ngClass]="{
-            'w-[80%]': type == PopUpType.Form,
+            'container': 
+                type === PopUpType.Form 
+                || type === PopUpType.Template,
         }"
         [ngSwitch]="true"
     >
