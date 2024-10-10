@@ -106,6 +106,7 @@ export interface PopUpWindow {
     windowNum: number;
     type: PopUpType;
     title: string;
+    resOnClosing?: boolean;
     formFieldsDescriptor?: (data: any) => PopUpDescriptorField[];
     fields?: PopUpFormField[];
     choosingButtons?: PopUpChoosingBtn[];

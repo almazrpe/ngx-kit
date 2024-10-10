@@ -38,7 +38,7 @@
                 <ngx-kit-button
                     class="shrink-0"
                     [mode]="ButtonMode.DANGER"
-                    (clickFunc)="closePopUp()"
+                    (clickFunc)="checkROCAndClosePopUp()"
                 >
                     <img
                         [src]="_config_.abortIconPath"
@@ -133,7 +133,7 @@
 
               <ngx-kit-button
                   [mode]="ButtonMode.DANGER"
-                  (clickFunc)="closePopUp()"
+                  (clickFunc)="checkROCAndClosePopUp()"
               >
                   <img
                       [src]="_config_.abortIconPath"
@@ -399,7 +399,7 @@
 
                 <ngx-kit-button
                     [mode]="ButtonMode.DANGER"
-                    (clickFunc)="closePopUp()"
+                    (clickFunc)="checkROCAndClosePopUp()"
                 >
                     <img
                         [src]="_config_.abortIconPath"

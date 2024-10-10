@@ -41,6 +41,7 @@ export class PopUpComponent implements OnInit {
   private windowNum: number;
   public type: PopUpType = PopUpType.Empty;
   public title: string;
+  public resOnClosing: boolean;
   public fields: PopUpFormField[];
   public controls: FormControl[];
   public choosingButtons: PopUpChoosingBtn[];
@@ -74,6 +75,7 @@ export class PopUpComponent implements OnInit {
         this.windowNum = window.windowNum;
         this.type = window.type;
         this.title = window.title;
+        this.resOnClosing = window.resOnClosing ?? false;
 
         window.fields = window.fields ?? [];
         if (this.type == PopUpType.Form) {
@@ -176,10 +178,12 @@ export class PopUpComponent implements OnInit {
         return;
 
       if (this.type == PopUpType.Form) {
-        if (this.form.valid == false)
-          this.closePopUp();
-      } else
-        this.closePopUp();
+        if (this.form.valid == false) {
+          this.checkROCAndClosePopUp();
+        }
+      } else {
+        this.checkROCAndClosePopUp();
+      }
     }
   }
 
@@ -190,6 +194,16 @@ export class PopUpComponent implements OnInit {
   public getAllFormControls(): FormControl[] {
     return this.fields.map((field: PopUpFormField) =>
       this.getFormControl(field.name));
+  }
+
+  public checkROCAndClosePopUp(): void {
+    this.closePopUp();
+    if (this.resOnClosing) {
+      this.onComplete.emit({
+        windowNum: this.windowNum,
+        value: undefined
+      });
+    }
   }
 
   public sendAnswer(ans: any): void {
