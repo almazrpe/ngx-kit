@@ -76,6 +76,7 @@ export class PopUpComponent implements OnInit {
         this.type = window.type;
         this.title = window.title;
         this.resOnClosing = window.resOnClosing ?? false;
+        this.internalCache = window.internalCache ?? new Map<string, any>();
 
         window.fields = window.fields ?? [];
         if (this.type == PopUpType.Form) {
@@ -99,7 +100,6 @@ export class PopUpComponent implements OnInit {
           });
 
           if (window.controlFunction !== undefined) {
-            this.internalCache = new Map<string, any>();
             this.controlFunctionSub = this.form.valueChanges.subscribe(
               (controlsData: any) =>
                 window.controlFunction!(

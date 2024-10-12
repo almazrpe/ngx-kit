@@ -391,7 +391,12 @@ implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<T> {
     }
 
     public registerOnTouched(fn: any): void {
-        this.onTouched = fn;
+        type ArgumentTypes = Parameters<typeof fn>
+        const completedFn: any = (...args: ArgumentTypes) => {
+            fn(args);
+            this.stateChanges.next();
+        }
+        this.onTouched = completedFn;
     }
 
     public setDisabledState(isDisabled: boolean): void {
