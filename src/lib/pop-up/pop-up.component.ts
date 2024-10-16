@@ -87,16 +87,22 @@ export class PopUpComponent implements OnInit {
             if (field.fillingOptions == undefined)
               field.fillingOptions = new BehaviorSubject<any[]>([]);
 
+            const fieldFormControl: FormControl = new FormControl(
+              field.value, 
+              field.validators ?? []
+            )
             this.form.addControl(
               field.name,
-              new FormControl(
-                field.value, 
-                field.validators ?? []
-              ),
+              fieldFormControl,
               {
                 emitEvent: false
               }
             );
+            if (field.trackingSubject !== undefined) {
+              fieldFormControl.valueChanges.subscribe((value: any) => {
+                field.trackingSubject?.next(value)
+              })
+            }
           });
 
           if (window.controlFunction !== undefined) {

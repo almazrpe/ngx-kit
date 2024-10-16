@@ -83,7 +83,8 @@ export interface PopUpFormField {
     mathliveVKLayouts?: Array<MathliveVKLayout | MathliveVKName>;
     mathliveAddLatexEvent?: Observable<string | null>;
     mathliveConfig?: Partial<MathliveInputConfig>;
-    afterTemplate?: TemplateRef<any>
+    afterTemplate?: TemplateRef<any>;
+    trackingSubject?: BehaviorSubject<any>
 }
 
 export interface PopUpChoosingBtn {
