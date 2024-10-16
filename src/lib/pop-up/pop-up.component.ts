@@ -53,10 +53,11 @@ export class PopUpComponent implements OnInit {
       null;
   public descriptorFields: PopUpDescriptorField[] = [];
   public internalCache: Map<string, any>;
-  private controlFunctionSub: Subscription;
   public form: FormGroup = new FormGroup({
     answer: new FormControl(null, [Validators.required])
   });
+
+  private subs: Subscription[] = [];
 
   public InputType: any = InputType;
   public PopUpType: any = PopUpType;
@@ -99,14 +100,17 @@ export class PopUpComponent implements OnInit {
               }
             );
             if (field.trackingSubject !== undefined) {
-              fieldFormControl.valueChanges.subscribe((value: any) => {
-                field.trackingSubject?.next(value)
-              })
+              field.trackingSubject?.next(field.value);
+              let sub = 
+                fieldFormControl.valueChanges.subscribe((value: any) => {
+                  field.trackingSubject?.next(value)
+                })
+              this.subs.push(sub);
             }
           });
 
           if (window.controlFunction !== undefined) {
-            this.controlFunctionSub = this.form.valueChanges.subscribe(
+            let sub = this.form.valueChanges.subscribe(
               (controlsData: any) =>
                 window.controlFunction!(
                   controlsData,
@@ -130,6 +134,7 @@ export class PopUpComponent implements OnInit {
                   this.internalCache
                 )
             );
+            this.subs.push(sub);
           }
 
           if (window.formFieldsDescriptor != null) {
@@ -165,8 +170,9 @@ export class PopUpComponent implements OnInit {
   }
 
   public closePopUp(): void {
-    if (this.controlFunctionSub !== undefined)
-      this.controlFunctionSub.unsubscribe();
+    for (const sub of this.subs) {
+      sub.unsubscribe();
+    }
     this.popUpService.toggle(undefined);
   }
 
