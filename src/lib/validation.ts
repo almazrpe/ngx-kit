@@ -51,7 +51,7 @@ export abstract class CustomValidators {
     public static mustBeInt(
         control: AbstractControl
     ): ValidationErrors | null {
-        return /^[0-9]{1,}$/.test(String(control.value)) 
+        return /^-?[0-9]+$/.test(String(control.value)) 
             ? null
             : { mustbeint: true }
     }
