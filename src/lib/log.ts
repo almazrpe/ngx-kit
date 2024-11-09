@@ -1,6 +1,6 @@
 import { ErrCls, ErrFromNative } from "./copper";
 
-export abstract class log {
+export abstract class Logger {
     public static debug(...args: any[]): void {
         console.debug(args.map(a => {
             if (a instanceof Error) {

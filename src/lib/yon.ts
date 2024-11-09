@@ -1,5 +1,5 @@
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
-import { log } from "./log";
+import { Logger } from "./log";
 import
 {
     map,
@@ -176,7 +176,7 @@ export class Bus {
                 return this.conSv.serverWsUrl$
             }),
             map(url => {
-                log.info(`connecting websocket at ${url + "/rx"}`);
+                Logger.info(`connecting websocket at ${url + "/rx"}`);
                 return webSocket<Bmsg>(
                     url + "/rx"
                 )
@@ -275,7 +275,7 @@ export class Bus {
         try {
             fn(code, msg, isErr);
         } catch (err) {
-            log.track(err);
+            Logger.track(err);
         }
     }
 
@@ -379,12 +379,12 @@ export class Bus {
             }
             let bmsg = ser(sid, msg, codeid.ok);
 
-            log.info(`NET::SEND | ${code} | ${JSON.stringify(bmsg)}`);
+            Logger.info(`NET::SEND | ${code} | ${JSON.stringify(bmsg)}`);
 
             if (this.con !== null) {
                 this.con.next(bmsg);
             } else {
-                log.err("tried to emit msg, but con is null");
+                Logger.err("tried to emit msg, but con is null");
             }
         }
 
@@ -438,7 +438,7 @@ export class Bus {
     }
 
     private welcome(raw: any): void {
-        log.info("receive welcome");
+        Logger.info("receive welcome");
         let codes = raw.msg.codes;
         if (codes === undefined) {
             panic("incorrect welcome message composition");
@@ -460,7 +460,7 @@ export class Bus {
         for (let fn of this.onWelcome) {
             fn()
         }
-        log.info(`executed ${deferredCount} welcome-deferred functions`);
+        Logger.info(`executed ${deferredCount} welcome-deferred functions`);
     }
 
     private recv(raw: any): void {
@@ -474,7 +474,7 @@ export class Bus {
         }
 
         if (!this.isWelcomeArrived() && raw.codeid != StaticCodeids.Welcome) {
-            log.err(
+            Logger.err(
                 "no welcome is arrived, but other messages".concat(
                     "from the net are received"
                 )
@@ -484,14 +484,14 @@ export class Bus {
 
         let bmsg_r = de(raw);
         if (bmsg_r.is_err()) {
-            log.track(bmsg_r, "bus receive");
+            Logger.track(bmsg_r, "bus receive");
             return;
         }
         let bmsg = bmsg_r.ok;
         let codeid = bmsg.codeid;
         let code_r = this.getCodeByCodeid(codeid);
         if (code_r.is_err()) {
-            log.track(bmsg_r, `codeid ${codeid} unpack`);
+            Logger.track(bmsg_r, `codeid ${codeid} unpack`);
             return;
         }
         let code = code_r.ok;
@@ -511,9 +511,9 @@ export class Bus {
         }
         let log_msg = `NET::RECV | ${code} -> ${to} | ${JSON.stringify(raw)}`;
         if (bmsg.is_err === true) {
-            log.err(log_msg);
+            Logger.err(log_msg);
         } else {
-            log.info(log_msg);
+            Logger.info(log_msg);
         }
 
         let final_msg = bmsg.msg;
@@ -550,7 +550,7 @@ export class Bus {
             level: AlertLevel.Error,
             msg: msg
         })
-        log.err(msg)
+        Logger.err(msg)
         this.recon()
     }
 
@@ -563,7 +563,7 @@ export class Bus {
             level: AlertLevel.Warning,
             msg: msg
         })
-        log.warn(msg)
+        Logger.warn(msg)
         this.recon()
     }
 }

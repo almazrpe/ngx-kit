@@ -1,5 +1,5 @@
 import { panic } from "./copper";
-import { log } from "./log";
+import { Logger } from "./log";
 
 export abstract class ArrUtils {
     public static getFirst<T>(arr: T[], is_warned: boolean = true): T {
@@ -7,7 +7,7 @@ export abstract class ArrUtils {
             panic("arr contents are not found");
         }
         if (arr.length > 1 && is_warned) {
-            log.warn(
+            Logger.warn(
                 "arr "
                 + arr.map(v => JSON.stringify(v)).join(" ;; ")
                 + ` of length more than 1 given (${

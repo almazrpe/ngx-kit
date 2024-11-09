@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { log } from "../log";
+import { Logger } from "../log";
 import { AlertService } from "../alert/alert.service";
 import { AlertLevel } from "../alert/models";
 import { I18nService } from "../i18n/i18n.service";
@@ -52,7 +52,7 @@ export class ErrorHandlerService {
         }
 
         if (!def(err)) {
-            log.err("logic err at error handler: `err` must be defined")
+            Logger.err("logic err at error handler: `err` must be defined")
             return
         }
 
@@ -66,7 +66,7 @@ export class ErrorHandlerService {
             }))
         }
         if (!skipLogging) {
-            log.track(err)
+            Logger.track(err)
         }
     }
 }

@@ -6,7 +6,7 @@ import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { ButtonMode } from "../button/button.component";
 import { DPSConfig, makeDPSConfig } from "./models";
 import { Dimensions, ImageTransform } from "ngx-image-cropper";
-import { log } from "../log";
+import { Logger } from "../log";
 
 enum Axis {
     Horizontal = 0,
@@ -147,7 +147,7 @@ export class DPSComponent implements OnInit {
     }
 
     public loadImageFailed(): void {
-        log.err("load image failed in DPS component");
+        Logger.err("load image failed in DPS component");
     }
 
     public toggleRController(): void {

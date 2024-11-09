@@ -1,15 +1,15 @@
 //! Provides the core functionality for a better typescript experience.
 
-import { 
-    Observable, 
-    ReplaySubject, 
-    UnaryFunction, 
-    catchError, 
-    map, 
-    of, 
-    pipe 
+import {
+    Observable,
+    ReplaySubject,
+    UnaryFunction,
+    catchError,
+    map,
+    of,
+    pipe
 } from "rxjs";
-import { log } from "../public-api";
+import { Logger } from "../public-api";
 
 export interface ResItem<T = any> {
     is_ok(): this is OkCls<T>;
@@ -211,7 +211,7 @@ export function pipeResUnwrap<T>(): RxPipe<Res<T>, T> {
 export function pipeDebug(): RxPipe<any, any> {
     return pipe(
         map(val => {
-            log.debug(val);
+            Logger.debug(val);
             return val;
         })
     );
@@ -220,7 +220,7 @@ export function pipeDebug(): RxPipe<any, any> {
 export function pipeWarn(): RxPipe<any, any> {
     return pipe(
         map(val => {
-            log.warn(val);
+            Logger.warn(val);
             return val;
         })
     );
