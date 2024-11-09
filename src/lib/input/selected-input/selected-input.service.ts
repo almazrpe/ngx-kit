@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
 import { SelectedInput, SelectedInputEvent, ValueHost }
     from "./selected-input";
-import { panic } from "ngx-kit/copper";
+import { panic } from "ngx-kit/utils";
 
 /**
  * Manages the state of the selected input.

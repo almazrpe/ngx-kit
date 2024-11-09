@@ -99,7 +99,7 @@ export class ErrCls extends Error implements ResItem {
         if (this.msg === undefined) {
             return this.code;
         }
-        return `${this.code}:: ${this.msg}`;
+        return `${this.code.toUpperCase()}: ${this.msg}`;
     }
 
     public is(...codes: string[]): boolean {

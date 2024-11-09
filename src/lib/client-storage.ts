@@ -2,7 +2,7 @@
  * Extended functionality for client-side browser storages.
  */
 
-import { panic } from "./copper";
+import { panic } from "./utils";
 
 // TODO(ryzhovalex):
 //    in order to implement the session storage utils, consider creating a

@@ -2,8 +2,8 @@ export { DocumentPageExtension } from "./dps/document-page-extension";
 export { SelectionElement } from "./input/mat-input/utils";
 export { MatInputComponent } from "./input/mat-input/mat-input.component";
 
-export * from "./copper";
-export * from "./yon";
+export * from "./utils";
+export * from "./orwynn";
 
 export {
     UploadFileObject,

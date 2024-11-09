@@ -1,4 +1,4 @@
-import { ErrCls, ErrFromNative } from "./copper";
+import { ErrCls, ErrFromNative } from "./utils";
 
 export abstract class Logger {
     public static debug(...args: any[]): void {

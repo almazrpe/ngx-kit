@@ -1,4 +1,4 @@
-import { panic } from "./copper";
+import { panic } from "./utils";
 import { Logger } from "./log";
 
 export abstract class ArrUtils {

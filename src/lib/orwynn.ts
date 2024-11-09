@@ -23,7 +23,7 @@ import {
     Res,
     RxPipe,
     Signal
-} from "./copper";
+} from "./utils";
 import { uuid4 } from "./uuid";
 
 export type Msg = any;
@@ -275,7 +275,9 @@ export class Bus {
         try {
             fn(code, msg, isErr);
         } catch (err) {
-            Logger.track(err);
+            Logger.track(
+                err, `By calling fn ${fn} for code ${code} of msg ${msg}`
+            )
         }
     }
 
