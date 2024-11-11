@@ -119,6 +119,7 @@ export * from "./log";
 export * from "./arr";
 export * from "./quco";
 export * from "./connection";
+export * from "./pinch-zoom";
 export * from "./pop-up";
 export * from "./object-status";
 export * from "./refresh";

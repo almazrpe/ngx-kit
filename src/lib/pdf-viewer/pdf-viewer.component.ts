@@ -41,6 +41,8 @@ export class PdfViewerComponent implements OnInit {
     public isZoomdownEnabled$: ReplaySubject<boolean> =
         new ReplaySubject<boolean>();
 
+    public Console: any = console;
+
     public ngOnInit(): void {
         this._config_ = makePdfViewerConfig(this.config);
         if (this._config_.pdfWorkerPath != null)

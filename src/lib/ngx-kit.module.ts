@@ -44,7 +44,6 @@ import { UploadFilesInputComponent }
 import { PopUpComponent } from "./pop-up/pop-up.component";
 import { RefreshComponent } from "./refresh/refresh.component";
 import { InputComponent } from "./input";
-import { PinchZoomModule } from "@meddv/ngx-pinch-zoom";
 import { PdfViewerModule } from "ng2-pdf-viewer";
 import { PdfViewerComponent } from "./pdf-viewer/pdf-viewer.component";
 import { OnCreateDirective } from "./on-create.directive";
@@ -54,6 +53,7 @@ import { MathliveInputComponent }
 import { ObjectStatusComponent } 
     from "./object-status/object-status.component";
 import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
+import { PinchZoomComponent } from './pinch-zoom/pinch-zoom.component';
 
 @NgModule({
     declarations: [
@@ -84,7 +84,8 @@ import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
         OnCreateDirective,
         MathliveInputComponent,
         ObjectStatusComponent,
-        MatSliderComponent
+        MatSliderComponent,
+        PinchZoomComponent
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -111,7 +112,6 @@ import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
         NgxMatTimepickerModule,
         PdfViewerModule,
         ImageCropperModule,
-        PinchZoomModule
     ],
     exports: [
         IncludesPipe,
@@ -131,6 +131,7 @@ import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
         MatInputComponent,
         MathliveInputComponent,
         UploadFilesInputComponent,
+        PinchZoomComponent,
         PopUpComponent,
         LabelComponent,
         RefreshComponent,
