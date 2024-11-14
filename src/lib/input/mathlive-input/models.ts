@@ -140,11 +140,10 @@ export const mathliveDefaultVKLayout: MathliveVKLayout = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
         ],
         [
-            "+", "-", "*", ".", "(", ")"
+            "+", "-", "*", "\\frac{#@}{#?}", ".", "(", ")"
         ],
         /*
             Reserve:
-            "\\frac{#@}{#?}" - fraction
             "\\sqrt{#0}" - square root
             "#@^{#?}" - power
             "\\pi" - 3.14...

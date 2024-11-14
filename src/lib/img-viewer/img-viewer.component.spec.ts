@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PinchZoomComponent } from "./pinch-zoom.component";
+import { ImgViewerComponent } from "./img-viewer.component";
 
-describe("PinchZoomComponent", () => {
-  let component: PinchZoomComponent;
-  let fixture: ComponentFixture<PinchZoomComponent>;
+describe("ImgViewerComponent", () => {
+  let component: ImgViewerComponent;
+  let fixture: ComponentFixture<ImgViewerComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PinchZoomComponent]
+      declarations: [ImgViewerComponent]
     });
-    fixture = TestBed.createComponent(PinchZoomComponent);
+    fixture = TestBed.createComponent(ImgViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

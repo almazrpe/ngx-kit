@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './pinch-zoom.component';
+export * from "./interfaces";
+export * from "./pinch-zoom.component";

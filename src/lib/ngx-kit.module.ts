@@ -53,7 +53,8 @@ import { MathliveInputComponent }
 import { ObjectStatusComponent } 
     from "./object-status/object-status.component";
 import { MatSliderComponent } from "./input/mat-slider/mat-slider.component";
-import { PinchZoomComponent } from './pinch-zoom/pinch-zoom.component';
+import { PinchZoomComponent } from "./pinch-zoom/pinch-zoom.component";
+import { ImgViewerComponent } from "./img-viewer/img-viewer.component";
 
 @NgModule({
     declarations: [
@@ -85,7 +86,8 @@ import { PinchZoomComponent } from './pinch-zoom/pinch-zoom.component';
         MathliveInputComponent,
         ObjectStatusComponent,
         MatSliderComponent,
-        PinchZoomComponent
+        PinchZoomComponent,
+        ImgViewerComponent
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: "ru-RU" },
@@ -136,6 +138,7 @@ import { PinchZoomComponent } from './pinch-zoom/pinch-zoom.component';
         LabelComponent,
         RefreshComponent,
         PdfViewerComponent,
+        ImgViewerComponent,
         OnCreateDirective,
         ObjectStatusComponent,
         MatSliderComponent

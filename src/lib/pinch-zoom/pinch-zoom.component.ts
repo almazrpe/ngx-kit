@@ -9,33 +9,34 @@ import {
     OnInit, 
     Output, 
     SimpleChanges 
-} from '@angular/core';
-import { Properties } from './interfaces';
+} from "@angular/core";
+import { Properties } from "./interfaces";
 import { 
     defaultProperties, 
     backwardCompatibilityProperties 
-} from './properties';
-import { IvyPinch } from './ivypinch';
+} from "./properties";
+import { IvyPinch } from "./ivypinch";
+import { PinchZoomTransform } from "./model";
 
 interface ComponentProperties extends Properties {
     disabled?: boolean;
-    overflow?: 'hidden' | 'visible';
-    disableZoomControl?: 'disable' | 'never' | 'auto';
+    overflow?: "hidden" | "visible";
+    disableZoomControl?: "disable" | "never" | "auto";
     backgroundColor?: string;
-    [key: string]: any;
+    [key: string]: any
 }
 
 export const _defaultComponentProperties: ComponentProperties = {
-    overflow: 'hidden',
-    disableZoomControl: 'auto',
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    overflow: "hidden",
+    disableZoomControl: "auto",
+    backgroundColor: "rgba(0,0,0,0.85)",
 };
 
 @Component({
-    selector: 'pinch-zoom, [pinch-zoom]',
-    exportAs: 'pinchZoom',
-    templateUrl: './pinch-zoom.component.html',
-    styleUrls: ['./pinch-zoom.component.sass'],
+    selector: "pinch-zoom, [pinch-zoom]",
+    exportAs: "pinchZoom",
+    templateUrl: "./pinch-zoom.component.html",
+    styleUrls: ["./pinch-zoom.component.sass"],
 })
 export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
     private pinchZoom: IvyPinch;
@@ -45,20 +46,22 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
     private _doubleTap!: boolean;
     private _doubleTapScale!: number;
     private _autoZoomOut!: boolean;
-    private _limitZoom!: number | 'original image size';
+    private _limitZoom!: number | "original image size";
 
-    @Input('properties') set properties(value: ComponentProperties) {
+    @Input("properties") 
+    public set properties(value: ComponentProperties) {
         if (value) {
             this._properties = value;
         }
     }
 
-    get properties(): ComponentProperties {
+    public get properties(): ComponentProperties {
         return this._properties;
     }
 
     // transitionDuration
-    @Input('transition-duration') set transitionDurationBackwardCompatibility(
+    @Input("transition-duration") 
+    public set transitionDurationBackwardCompatibility(
         value: number
     ) {
         if (value) {
@@ -66,35 +69,39 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    @Input('transitionDuration') set transitionDuration(value: number) {
+    @Input("transitionDuration") 
+    public set transitionDuration(value: number) {
         if (value) {
             this._transitionDuration = value;
         }
     }
 
-    get transitionDuration(): number {
+    public get transitionDuration(): number {
         return this._transitionDuration;
     }
 
     // doubleTap
-    @Input('double-tap') set doubleTapBackwardCompatibility(value: boolean) {
+    @Input("double-tap") 
+    public set doubleTapBackwardCompatibility(value: boolean) {
         if (value) {
             this._doubleTap = value;
         }
     }
 
-    @Input('doubleTap') set doubleTap(value: boolean) {
+    @Input("doubleTap") 
+    public set doubleTap(value: boolean) {
         if (value) {
             this._doubleTap = value;
         }
     }
 
-    get doubleTap(): boolean {
+    public get doubleTap(): boolean {
         return this._doubleTap;
     }
 
     // doubleTapScale
-    @Input('double-tap-scale') set doubleTapScaleBackwardCompatibility(
+    @Input("double-tap-scale") 
+    public set doubleTapScaleBackwardCompatibility(
         value: number
     ) {
         if (value) {
@@ -102,18 +109,20 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    @Input('doubleTapScale') set doubleTapScale(value: number) {
+    @Input("doubleTapScale") 
+    public set doubleTapScale(value: number) {
         if (value) {
             this._doubleTapScale = value;
         }
     }
 
-    get doubleTapScale(): number {
+    public get doubleTapScale(): number {
         return this._doubleTapScale;
     }
 
     // autoZoomOut
-    @Input('auto-zoom-out') set autoZoomOutBackwardCompatibility(
+    @Input("auto-zoom-out") 
+    public set autoZoomOutBackwardCompatibility(
         value: boolean
     ) {
         if (value) {
@@ -121,49 +130,54 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    @Input('autoZoomOut') set autoZoomOut(value: boolean) {
+    @Input("autoZoomOut") 
+    public set autoZoomOut(value: boolean) {
         if (value) {
             this._autoZoomOut = value;
         }
     }
 
-    get autoZoomOut(): boolean {
+    public get autoZoomOut(): boolean {
         return this._autoZoomOut;
     }
 
     // limitZoom
-    @Input('limit-zoom') set limitZoomBackwardCompatibility(
-        value: number | 'original image size'
+    @Input("limit-zoom") 
+    public set limitZoomBackwardCompatibility(
+        value: number | "original image size"
     ) {
         if (value) {
             this._limitZoom = value;
         }
     }
 
-    @Input('limitZoom') set limitZoom(value: number | 'original image size') {
+    @Input("limitZoom") 
+    public set limitZoom(value: number | "original image size") {
         if (value) {
             this._limitZoom = value;
         }
     }
 
-    get limitZoom(): number | 'original image size' {
+    public get limitZoom(): number | "original image size" {
         return this._limitZoom;
     }
 
-    @Input() disabled!: boolean;
-    @Input() disablePan!: boolean;
-    @Input() overflow!: 'hidden' | 'visible';
-    @Input() zoomControlScale!: number;
-    @Input() disableZoomControl!: 'disable' | 'never' | 'auto';
-    @Input() backgroundColor!: string;
-    @Input() limitPan!: boolean;
-    @Input() minPanScale!: number;
-    @Input() minScale!: number;
-    @Input() listeners!: 'auto' | 'mouse and touch';
-    @Input() wheel!: boolean;
-    @Input() autoHeight!: boolean;
-    @Input() wheelZoomFactor!: number;
-    @Input() draggableImage!: boolean;
+    @Input() public disabled!: boolean;
+    @Input() public disablePan!: boolean;
+    @Input() public overflow!: "hidden" | "visible";
+    @Input() public zoomControlScale!: number;
+    @Input() public disableZoomControl!: "disable" | "never" | "auto";
+    @Input() public backgroundColor!: string;
+    @Input() public limitPan!: boolean;
+    @Input() public minPanScale!: number;
+    @Input() public minScale!: number;
+    @Input() public listeners!: "auto" | "mouse and touch";
+    @Input() public wheel!: boolean;
+    @Input() public autoHeight!: boolean;
+    @Input() public wheelZoomFactor!: number;
+    @Input() public draggableImage!: boolean;
+    @Input() public initialTransform: PinchZoomTransform | undefined = 
+        undefined;
 
     /**
      * Emits an event (with the component value inside)
@@ -172,23 +186,23 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
     @Output() public transformChange: EventEmitter<any> = 
         new EventEmitter<any>();
 
-    @HostBinding('style.overflow')
-    get hostOverflow(): 'hidden' | 'visible' {
-        return this.properties['overflow'] ?? 'hidden';
+    @HostBinding("style.overflow")
+    public get hostOverflow(): "hidden" | "visible" {
+        return this.properties["overflow"] ?? "hidden";
     }
 
-    @HostBinding('style.background-color')
-    get hostBackgroundColor(): string {
-        return this.properties['backgroundColor'] ?? 'rgba(0,0,0,0.85)';
+    @HostBinding("style.background-color")
+    public get hostBackgroundColor(): string {
+        return this.properties["backgroundColor"] ?? "rgba(0,0,0,0.85)";
     }
 
-    get isTouchScreen(): boolean {
-        const prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+    public get isTouchScreen(): boolean {
+        const prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
         const mq = (query: string): boolean => {
             return window.matchMedia(query).matches;
         };
 
-        if ('ontouchstart' in window) {
+        if ("ontouchstart" in window) {
             return true;
         }
 
@@ -196,61 +210,65 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         // terminate the join
         // https://git.io/vznFH
         const query = [
-            '(', 
-            prefixes.join('touch-enabled),('), 
-            'heartz', 
-            ')'
-        ].join('');
+            "(", 
+            prefixes.join("touch-enabled),("), 
+            "heartz", 
+            ")"
+        ].join("");
         return mq(query);
     }
 
-    get isDragging(): boolean {
+    public get isDragging(): boolean {
         return this.pinchZoom?.isDragging();
     }
 
-    get isDisabled(): boolean {
+    public get isDisabled(): boolean {
         return this._properties.disabled ?? true;
     }
 
-    get scale(): number {
+    public get scale(): number {
         return this.pinchZoom.scale;
     }
 
-    get isZoomedIn(): boolean {
+    public get isZoomedIn(): boolean {
         return this.scale > 1;
     }
 
-    get scaleLevel(): number {
+    public get scaleLevel(): number {
         return Math.round(this.scale / this._zoomControlScale);
     }
 
-    get maxScale(): number {
+    public get maxScale(): number {
         return this.pinchZoom.maxScale;
     }
 
-    get isZoomLimitReached(): boolean {
+    public get isZoomLimitReached(): boolean {
         return this.scale >= this.maxScale;
     }
 
-    get _zoomControlScale(): number {
-        return this.getPropertiesValue('zoomControlScale') ?? 1;
+    public get _zoomControlScale(): number {
+        return this.getPropertiesValue("zoomControlScale") ?? 1;
     }
 
-    constructor(private elementRef: ElementRef<HTMLElement>) {
+    public constructor(private elementRef: ElementRef<HTMLElement>) {
         this.defaultComponentProperties = this.getDefaultComponentProperties();
         this.applyPropertiesDefault(this.defaultComponentProperties, {});
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.initPinchZoom();
 
         /* Calls the method until the image size is available */
         this.detectLimitZoom();
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    public ngOnChanges(changes: SimpleChanges): void {
         let changedProperties = this.getProperties(changes);
         changedProperties = this.renameProperties(changedProperties);
+        changedProperties = {
+            ...this.properties,
+            ...changedProperties
+        }
 
         this.applyPropertiesDefault(
             this.defaultComponentProperties, 
@@ -258,7 +276,7 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         );
     }
 
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         this.destroy();
     }
 
@@ -269,11 +287,12 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
 
         this._properties.limitZoom = this.limitZoom;
         this._properties.element = 
-            this.elementRef.nativeElement.querySelector('.pinch-zoom-content')
+            this.elementRef.nativeElement.querySelector(".pinch-zoom-content")
                 ?? undefined;
+        this._properties.initialTransform = this.initialTransform
         this.pinchZoom = new IvyPinch(this.properties);
         this.pinchZoom.transformChange.subscribe({
-            next: (transform: [number, number, number]) => {
+            next: (transform: PinchZoomTransform) => {
                 this.transformChange.emit(transform);
             }
         })
@@ -287,10 +306,10 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         let properties: ComponentProperties = {};
 
         for (const prop in changes) {
-            if (prop !== 'properties') {
+            if (prop !== "properties") {
                 properties[prop] = changes[prop].currentValue;
             }
-            if (prop === 'properties') {
+            if (prop === "properties") {
                 properties = changes[prop].currentValue;
             }
         }
@@ -320,22 +339,22 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         this.properties = Object.assign({}, defaultProperties, properties);
     }
 
-    toggleZoom(): void {
+    public toggleZoom(): void {
         this.pinchZoom?.toggleZoom();
     }
 
-    isControl(): boolean {
+    public isControl(): boolean {
         if (this.isDisabled) {
             return false;
         }
 
-        if (this._properties.disableZoomControl === 'disable') {
+        if (this._properties.disableZoomControl === "disable") {
             return false;
         }
 
         if (
             this.isTouchScreen 
-            && this._properties.disableZoomControl === 'auto'
+            && this._properties.disableZoomControl === "auto"
         ) {
             return false;
         }
@@ -343,11 +362,11 @@ export class PinchZoomComponent implements OnInit, OnDestroy, OnChanges {
         return true;
     }
 
-    detectLimitZoom(): void {
+    public detectLimitZoom(): void {
         this.pinchZoom?.detectLimitZoom();
     }
 
-    destroy(): void {
+    public destroy(): void {
         this.pinchZoom?.destroy();
     }
 

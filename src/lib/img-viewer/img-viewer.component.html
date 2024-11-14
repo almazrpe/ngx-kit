@@ -1,8 +1,9 @@
-<div 
+<div
     *ngIf="transform$ | async as transform"
-    class="h-full w-full flex justify-center items-center relative"
+    class="w-full h-full flex justify-center items-center relative"
 >
     <pinch-zoom
+        *ngIf="usePinchZoom; else simpleImg"
         [transition-duration]="_config_.transitionDuration"
         [limit-zoom]="_config_.limitZoom"
         [minScale]="_config_.minScale"
@@ -21,25 +22,24 @@
         [wheelZoomFactor]="_config_.wheelZoomFactor"
         [autoHeight]="_config_.autoHeight"
         [draggableImage]="_config_.draggableImage"
-        [initialTransform]="{
-            scale: transform.scale,
-            moveX: transform.moveX,
-            moveY: transform.moveY
-        }"
+        [initialTransform]="transform"
         class="h-full w-full"
         (transformChange)="sendTransform($event);"
     >
-        <pdf-viewer
+        <img
             [src]="url"
-            [show-all]="true"
-            [render-text]="false"
-            [original-size]="false"
-            [fit-to-page]="false"
-            [zoom]="(zoom$ | async) ?? 1"
-            [zoom-scale]="'page-width'"
-            class="w-full h-screen"
-        ></pdf-viewer>
+            draggable="false"
+            class="max-h-full select-none"
+        >
     </pinch-zoom>
+
+    <ng-template #simpleImg>
+        <img
+            [src]="url"
+            draggable="false"
+            class="max-h-full select-none"
+        >
+    </ng-template>
 
     <button
         *ngIf="_config_.drawBackBtn"
