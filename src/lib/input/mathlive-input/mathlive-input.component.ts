@@ -161,12 +161,49 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
         // Disable shortcuts like 'pi' which transforms into \\pi
         this.mathfield.inlineShortcuts = {};
         // Define and intercept multi character variables
-        if (this._config_.variableRegex != null)
-            this.mathfield.onInlineShortcut = (_mf, s) => {
-                if (this._config_.variableRegex!.test(s)) 
-                    return `\\mathit{${s}}`;
-                return "";
-            };
+        // if (this._config_.variableRegex != null)
+        //     this.mathfield.onInlineShortcut = (_mf, s) => {
+        //         if (this._config_.variableRegex!.test(s)) 
+        //             return `\\mathit{${s}}`;
+        //         return "";
+        //     };
+
+        this.mathfield.addEventListener("addDivision", () => {
+            const activePos: number = this.mathfield.selection.ranges[
+                this.mathfield.selection.ranges.length - 1
+            ][1]
+            if (activePos === 0) {
+                this.mathfield.setValue(
+                    `\\frac{#?}{${this.mathfield.getValue("latex")}}`
+                )
+                return;
+            } else {
+                const asciiStr: string = 
+                    this.mathfield
+                        .getValue("ascii-math")
+                        .replaceAll("(", "")
+                        .replaceAll(")", "")
+                const activeElem: string = 
+                    this.extractInputElem(asciiStr, activePos - 1)
+
+                if (activeElem === "") {
+                    this.mathfield.setValue(
+                        `\\frac{#?}{${this.mathfield.getValue("latex")}}`
+                    )
+                    return;
+                } else if (!isNaN(parseFloat(activeElem))) {
+                    this.mathfield.insert("\\frac{#@}{#?}")
+                    return;
+                } else {
+                    this.mathfield.setValue(
+                        this.mathfield
+                            .getValue("latex")
+                            .concat("\\frac{#?}{#?}")
+                    )
+                    return;
+                }
+            }            
+        })
 
         // Add extra styles for shadow root
         let style = document.createElement("style");
@@ -245,6 +282,99 @@ implements AfterViewInit, OnInit, OnDestroy, ControlValueAccessor {
                     `;
             }
         });
+    }
+
+    private extractInputElem(
+        asciiStr: string, 
+        pos: number, 
+        acc: string = "", 
+        isNum?: boolean, 
+        haveDelimiter?: boolean
+    ): string {
+        if (pos < 0) {
+            return acc;
+        }
+
+        if (!isNaN(parseInt(asciiStr[pos]))) {
+            if (isNum === undefined) {
+                isNum = true;
+                acc = asciiStr[pos]
+                return this.extractInputElem(
+                    asciiStr,
+                    pos - 1,
+                    acc,
+                    isNum,
+                    haveDelimiter
+                )
+            } else if (isNum === true) {
+                acc = asciiStr[pos].concat(acc)
+                return this.extractInputElem(
+                    asciiStr,
+                    pos - 1,
+                    acc,
+                    isNum,
+                    haveDelimiter
+                )
+            } else {
+                return acc;
+            }
+        } else if (
+            this._config_.additionalVariableChars.indexOf(asciiStr[pos]) !== -1
+            || this._config_.variableChars.indexOf(asciiStr[pos]) !== -1
+        ) {
+            if (isNum === undefined) {
+                isNum = false;
+                acc = asciiStr[pos]
+                return this.extractInputElem(
+                    asciiStr,
+                    pos - 1,
+                    acc,
+                    isNum
+                )
+            } else if (isNum === false) {
+                acc = asciiStr[pos].concat(acc)
+                return this.extractInputElem(
+                    asciiStr,
+                    pos - 1,
+                    acc,
+                    isNum
+                )
+            } else {
+                return acc;
+            }
+        } else {
+            if (isNum === true) {
+                if (haveDelimiter === true) {
+                    return acc;
+                } else {
+                    if (asciiStr[pos] === "." || asciiStr[pos] === ",") {
+                        acc = asciiStr[pos].concat(acc)
+                        haveDelimiter = true
+                        return this.extractInputElem(
+                            asciiStr,
+                            pos - 1,
+                            acc,
+                            isNum,
+                            haveDelimiter
+                        )
+                    } else {
+                        return acc;
+                    }
+                }
+            } else {
+                if (isNum === undefined) {
+                    return this.extractInputElem(
+                        asciiStr,
+                        pos - 1,
+                        acc,
+                        isNum,
+                        haveDelimiter
+                    )
+                } else {
+                    return acc
+                }
+            }
+        }
     }
 
     private checkValidation(): void {

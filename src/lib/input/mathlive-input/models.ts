@@ -72,6 +72,10 @@ export interface MathliveInputConfig {
      */
     variableChars: string;
     /**
+     * Chars that should be also identified as variables in special events
+     */
+    additionalVariableChars: string;
+    /**
      * Rule that should be used for identification of multi character variables
      */
     variableRegex: RegExp | null;
@@ -112,6 +116,7 @@ export function makeMathliveInputConfig(
             MathliveOutputFormat.Latex, MathliveOutputFormat.MathML
         ],
         variableChars: "",
+        additionalVariableChars: "",
         variableRegex: null,
         restrictedChars: "",
         additionalKeybindings: []
