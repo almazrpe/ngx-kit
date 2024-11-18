@@ -38,6 +38,7 @@
             [zoom]="(zoom$ | async) ?? 1"
             [zoom-scale]="'page-width'"
             class="w-full h-screen"
+            #viewerElem
         ></pdf-viewer>
     </pinch-zoom>
 

@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { 
+    AfterViewInit, 
+    Component, 
+    ElementRef, 
+    EventEmitter, 
+    Input, 
+    OnInit, 
+    Output, 
+    ViewChild 
+} from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { PinchZoomTransform } from "ngx-kit/pinch-zoom/model";
 import { 
@@ -12,12 +21,14 @@ import {
     templateUrl: "./pdf-viewer.component.html",
     styleUrls: ["./design.scss"]
 })
-export class PdfViewerComponent implements OnInit {
+export class PdfViewerComponent implements OnInit, AfterViewInit {
     @Input() public url: string;
     @Input() public config: Partial<PdfViewerConfig> = {};
     @Input() public initialTransform?: ExtendedPinchZoomTransform;
     @Output() public back: EventEmitter<any> = new EventEmitter<any>();
     @Output() public newTransform: EventEmitter<any> = new EventEmitter<any>();
+    @ViewChild("viewerElem", { read: ElementRef }) 
+    public viewerElem: ElementRef;
     public zoom$: BehaviorSubject<number> =
         new BehaviorSubject<number>(1);
     public _config_: PdfViewerConfig;
@@ -40,6 +51,34 @@ export class PdfViewerComponent implements OnInit {
                 scrollY: 0
             } as ExtendedPinchZoomTransform
         );
+    }
+
+    public ngAfterViewInit(): void {
+        this.setupPdfScroll(this.transform$.value?.scrollY ?? 0);
+    }
+
+    public setupPdfScroll(scrollY: number): void {
+        const scroller: Element | null = 
+            this.viewerElem.nativeElement.firstElementChild;
+        if (
+            scroller !== null 
+            && scroller.scrollHeight - scroller.clientHeight !== 0
+        ) {
+            scroller.scroll(0, scrollY);
+            scroller.addEventListener("scroll", (event: Event) => {
+                const transform: ExtendedPinchZoomTransform | undefined = 
+                    this.transform$.value
+                if (transform !== undefined) {
+                    transform.scrollY = (event.target as Element).scrollTop
+                    this.transform$.next(transform);
+                    this.newTransform.emit(this.transform$.value);
+                }
+            })
+        } else {
+            setTimeout(() => {
+                this.setupPdfScroll(scrollY)
+            }, 250)
+        }
     }
 
     public sendTransform(newTransform: PinchZoomTransform): void {
