@@ -64,12 +64,19 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
             scroller !== null 
             && scroller.scrollHeight - scroller.clientHeight !== 0
         ) {
-            scroller.scroll(0, scrollY);
+            scroller.scroll(
+                0, 
+                scrollY === 0 
+                    ? scrollY 
+                    : scroller.scrollHeight / scrollY
+            );
             scroller.addEventListener("scroll", (event: Event) => {
                 const transform: ExtendedPinchZoomTransform | undefined = 
                     this.transform$.value
                 if (transform !== undefined) {
-                    transform.scrollY = (event.target as Element).scrollTop
+                    transform.scrollY = 
+                        scroller.scrollHeight 
+                            / (event.target as Element).scrollTop
                     this.transform$.next(transform);
                     this.newTransform.emit(this.transform$.value);
                 }

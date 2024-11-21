@@ -111,8 +111,14 @@ export class IvyPinch {
 
         if (this.properties.initialTransform !== undefined) {
             this.scale = this.properties.initialTransform.scale;
-            this.moveX = this.properties.initialTransform.moveX;
-            this.moveY = this.properties.initialTransform.moveY;
+            this.moveX = this.properties.initialTransform.moveX === 0
+                ? this.properties.initialTransform.moveX
+                : this.element.clientWidth 
+                    / this.properties.initialTransform.moveX;
+            this.moveY = this.properties.initialTransform.moveY === 0
+                ? this.properties.initialTransform.moveY
+                : this.element.clientHeight 
+                    / this.properties.initialTransform.moveY;
             this.updateInitialValues(false);
             this.transformElement(this.properties.transitionDuration ?? 1);
         }
@@ -575,8 +581,12 @@ export class IvyPinch {
         if (triggerEvent) {
             this.transformChange.next({
                 scale: this.initialScale,
-                moveX: this.initialMoveX,
-                moveY: this.initialMoveY
+                moveX: this.initialMoveX === 0 
+                    ? this.initialMoveX 
+                    : this.element.clientWidth / this.initialMoveX,
+                moveY: this.initialMoveY === 0 
+                    ? this.initialMoveY 
+                    : this.element.clientHeight / this.initialMoveY
             })
         }
     }
