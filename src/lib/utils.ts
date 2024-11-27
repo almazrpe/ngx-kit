@@ -378,7 +378,7 @@ export function pipeFromRes<T>(): RxPipe<Res<T>, Ret<T>> {
 }
 
 export function format(origin: string, ...args: any[]): string {
-    return origin.replace(/{(\d+)}/g, function(match, number) {
+    return origin.replace(/{(\d+)}/g, function(_match, number) {
         if (args.length > number) {
             return args[number]
         }
