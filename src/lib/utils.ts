@@ -306,14 +306,6 @@ export function def<T>(val: T | nil): val is T {
     return val !== undefined && val !== null;
 }
 
-// Convert null to undefined to be able to use question marks.
-export function qq<T>(val: T | undefined | null): T | undefined {
-    if (val === null) {
-        return undefined
-    }
-    return val
-}
-
 /**
  * @deprecated Use `arg?: T` instead.
  */
@@ -324,19 +316,19 @@ export type Option<T> = T | undefined
  */
 export type Result<T> = T | Error
 
-export function ee(r: any): r is Error {
+export function isError(r: any): r is Error {
     return r instanceof Error
 }
 
 export function unwrap<T>(r: Result<T>): T {
-    if (ee(r)) {
+    if (isError(r)) {
         throw r
     }
     return r
 }
 
 export function unwrapRes<T>(r: Res<T>): T {
-    if (ee(r)) {
+    if (isError(r)) {
         throw r
     }
     return r.ok
@@ -347,7 +339,7 @@ export function wrap<T>(fn: () => T): Result<T> {
         let r = fn()
         return r
     } catch (err) {
-        if (!ee(err)) {
+        if (!isError(err)) {
             throw new Error(`Cannot accept non-err type ${err}.`)
         }
         return err
@@ -365,7 +357,7 @@ export function pipeUnwrap<T>(): RxPipe<Result<T>, T> {
 export function pipeFirstOrNil<T>(): RxPipe<Result<T>, T | nil> {
     return pipe(
         map(val => {
-            if (ee(val)) {
+            if (isError(val)) {
                 return undefined
             }
             return val
@@ -374,7 +366,7 @@ export function pipeFirstOrNil<T>(): RxPipe<Result<T>, T | nil> {
 }
 
 export function fromRes<T>(res: Res<T>): Result<T> {
-    if (ee(res)) {
+    if (isError(res)) {
         return res
     }
     return res.ok
