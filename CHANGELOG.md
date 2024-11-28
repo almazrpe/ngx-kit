@@ -1,3 +1,7 @@
+# Unreleased
+* many untracked changes since last time
+* rerender pagination component on input change
+
 # 1.0.2
 
 - fcode: add secure function to avoid nasty ts build decorator bugs
