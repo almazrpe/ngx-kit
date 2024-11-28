@@ -1,6 +1,7 @@
 # Unreleased
 . create `<a>` component with styles `underline text-blue-600 hover:text-blue-800 visited:text-purple-600`
 
++ rename `ee` to `isError`
 + many untracked changes since last time
 + rerender pagination component on input change
 + begin transition from `Res` to `Result`
