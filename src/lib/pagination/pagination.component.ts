@@ -5,7 +5,8 @@ import {
     ElementRef,
     ViewChild,
     AfterViewInit,
-    Input
+    Input,
+    SimpleChanges
 } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -123,6 +124,21 @@ export class PaginationComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {}
 
     public ngOnInit(): void {
+        this.render()
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (
+            changes.paginationItems !== undefined
+            && changes.paginationItems.previousValue !== undefined
+            && changes.paginationItems.currentValue.length
+                !== changes.paginationItems.previousValue.length
+        ) {
+            this.render()
+        }
+    }
+
+    private render(): void {
         this.config$.next(makePaginationConfig(this.config));
 
         if (this.config$.value.firstColumnOff == false)
