@@ -318,20 +318,31 @@ export function qq<T>(val: T | undefined | null): T | undefined {
  * @deprecated Use `arg?: T` instead.
  */
 export type Option<T> = T | undefined
-export type Ret<T> = T | Error
+/**
+ * We transition from `Res` to `Result`, which is simplified version without
+ * wrapped in `Ok` value. So, `Res` is considered a legacy.
+ */
+export type Result<T> = T | Error
 
 export function ee(r: any): r is Error {
     return r instanceof Error
 }
 
-export function unwrap<T>(r: Ret<T>): T {
+export function unwrap<T>(r: Result<T>): T {
     if (ee(r)) {
         throw r
     }
     return r
 }
 
-export function wrap<T>(fn: () => T): Ret<T> {
+export function unwrapRes<T>(r: Res<T>): T {
+    if (ee(r)) {
+        throw r
+    }
+    return r.ok
+}
+
+export function wrap<T>(fn: () => T): Result<T> {
     try {
         let r = fn()
         return r
@@ -343,7 +354,7 @@ export function wrap<T>(fn: () => T): Ret<T> {
     }
 }
 
-export function pipeUnwrap<T>(): RxPipe<Ret<T>, T> {
+export function pipeUnwrap<T>(): RxPipe<Result<T>, T> {
     return pipe(
         map(val => {
             return unwrap(val)
@@ -351,7 +362,7 @@ export function pipeUnwrap<T>(): RxPipe<Ret<T>, T> {
     );
 }
 
-export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T | nil> {
+export function pipeFirstOrNil<T>(): RxPipe<Result<T>, T | nil> {
     return pipe(
         map(val => {
             if (ee(val)) {
@@ -362,14 +373,14 @@ export function pipeFirstOrNil<T>(): RxPipe<Ret<T>, T | nil> {
     );
 }
 
-export function fromRes<T>(res: Res<T>): Ret<T> {
+export function fromRes<T>(res: Res<T>): Result<T> {
     if (ee(res)) {
         return res
     }
     return res.ok
 }
 
-export function pipeFromRes<T>(): RxPipe<Res<T>, Ret<T>> {
+export function pipeFromRes<T>(): RxPipe<Res<T>, Result<T>> {
     return pipe(
         map(val => {
             return fromRes(val)
