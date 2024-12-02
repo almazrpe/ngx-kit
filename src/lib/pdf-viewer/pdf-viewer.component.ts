@@ -1,19 +1,19 @@
-import { 
-    AfterViewInit, 
-    Component, 
-    ElementRef, 
-    EventEmitter, 
-    Input, 
-    OnInit, 
-    Output, 
-    ViewChild 
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
 } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { PinchZoomTransform } from "ngx-kit/pinch-zoom/model";
-import { 
-    PdfViewerConfig, 
-    makePdfViewerConfig, 
-    ExtendedPinchZoomTransform 
+import {
+    PdfViewerConfig,
+    makePdfViewerConfig,
+    ExtendedPinchZoomTransform
 } from "./model";
 
 @Component({
@@ -27,12 +27,12 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
     @Input() public initialTransform?: ExtendedPinchZoomTransform;
     @Output() public back: EventEmitter<any> = new EventEmitter<any>();
     @Output() public newTransform: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild("viewerElem", { read: ElementRef }) 
+    @ViewChild("viewerElem", { read: ElementRef })
     public viewerElem: ElementRef;
     public zoom$: BehaviorSubject<number> =
         new BehaviorSubject<number>(1);
     public _config_: PdfViewerConfig;
-    public transform$: 
+    public transform$:
         BehaviorSubject<ExtendedPinchZoomTransform | undefined> =
             new BehaviorSubject<ExtendedPinchZoomTransform | undefined>(
                 undefined
@@ -58,24 +58,24 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
     }
 
     public setupPdfScroll(scrollY: number): void {
-        const scroller: Element | null = 
+        const scroller: Element | null =
             this.viewerElem.nativeElement.firstElementChild;
         if (
-            scroller !== null 
+            scroller !== null
             && scroller.scrollHeight - scroller.clientHeight !== 0
         ) {
             scroller.scroll(
-                0, 
-                scrollY === 0 
-                    ? scrollY 
+                0,
+                scrollY === 0
+                    ? scrollY
                     : scroller.scrollHeight / scrollY
             );
             scroller.addEventListener("scroll", (event: Event) => {
-                const transform: ExtendedPinchZoomTransform | undefined = 
+                const transform: ExtendedPinchZoomTransform | undefined =
                     this.transform$.value
                 if (transform !== undefined) {
-                    transform.scrollY = 
-                        scroller.scrollHeight 
+                    transform.scrollY =
+                        scroller.scrollHeight
                             / (event.target as Element).scrollTop
                     this.transform$.next(transform);
                     this.newTransform.emit(this.transform$.value);
@@ -91,7 +91,7 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
     public sendTransform(newTransform: PinchZoomTransform): void {
         if (
             this.transform$.value === undefined
-            || newTransform.scale !== this.transform$.value.scale 
+            || newTransform.scale !== this.transform$.value.scale
             || newTransform.moveX !== this.transform$.value.moveX
             || newTransform.moveY !== this.transform$.value.moveY
         ) {
