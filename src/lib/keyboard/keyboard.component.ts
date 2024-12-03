@@ -24,7 +24,7 @@ export class KeyboardComponent implements OnInit {
     ) {}
 
     public ngOnInit(): void {
-        // initialize css selectors on init, not after DOM load or angular 
+        // initialize css selectors on init, not after DOM load or angular
         // somehow will give ChangedBeforeChecked-ish error
         this.cssSelectors$ = this.keyboardService.isEnabled$.pipe(
             map((isEnabled: boolean) => {

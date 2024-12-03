@@ -15,22 +15,20 @@
     class="flex-col items-center justify-center w-screen absolute bottom-5"
 >
     <div
-        class="flex flex-col gap-2"
+        class="flex flex-col"
         *ngIf="selectedInputEvent$ | async as selectedInputEvent"
     >
         <ng-container
             *ngIf="selectedInputEvent.isSelected"
         >
             <div
-                class="flex gap-2 italic"
+                class="flex italic"
             >
                 <span i18n>поле ввода:</span>
                 <span>"{{selectedInputEvent.selectedInput.name}}"</span>
             </div>
 
-            <div
-                class="flex gap-2"
-            >
+            <div class="flex">
                 <span i18n>значение:</span>
                 <span>"{{selectedInputEvent.value}}"</span>
             </div>
