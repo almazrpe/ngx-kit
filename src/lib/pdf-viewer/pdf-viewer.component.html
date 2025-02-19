@@ -2,7 +2,19 @@
     *ngIf="transform$ | async as transform"
     class="h-full w-full flex justify-center items-center relative"
 >
+    <iframe
+        [src]="safe_url"
+        width="100%"
+        height="100%"
+        frameborder="0"
+        webkitallowfullscreen
+        mozallowfullscreen
+        allowfullscreen
+    ></iframe>
+
+    <!-- Disabled: We struggle with pixelization of vector-based pdfs, so we comment this for the time being. -->
     <pinch-zoom
+        style="display: none"
         [transition-duration]="_config_.transitionDuration"
         [limit-zoom]="_config_.limitZoom"
         [minScale]="_config_.minScale"

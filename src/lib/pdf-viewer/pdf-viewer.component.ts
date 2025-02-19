@@ -15,6 +15,7 @@ import {
     makePdfViewerConfig,
     ExtendedPinchZoomTransform
 } from "./model";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
     selector: "ngx-kit-pdf-viewer",
@@ -23,6 +24,7 @@ import {
 })
 export class PdfViewerComponent implements OnInit, AfterViewInit {
     @Input() public url: string;
+    @Input() public toolbar_enabled: boolean = false;
     @Input() public config: Partial<PdfViewerConfig> = {};
     @Input() public initialTransform?: ExtendedPinchZoomTransform;
     @Output() public back: EventEmitter<any> = new EventEmitter<any>();
@@ -38,7 +40,14 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
                 undefined
             );
 
+    public safe_url: SafeResourceUrl
+
+    public constructor(
+        public sanitizer: DomSanitizer,
+    ) {}
+
     public ngOnInit(): void {
+        this.safe_url = this.sanitize(this.url)
         this._config_ = makePdfViewerConfig(this.config);
         if (this._config_.pdfWorkerPath != null) {
             (window as any).pdfWorkerSrc = this._config_.pdfWorkerPath;
@@ -109,5 +118,13 @@ export class PdfViewerComponent implements OnInit, AfterViewInit {
 
     public backInner(): void {
         this.back.emit();
+    }
+
+    public sanitize(url: string): SafeResourceUrl {
+        if (!this.toolbar_enabled) {
+            // Note that e.g. on firefox, this does not have an effect.
+            url += "#toolbar=0&navpanes=0"
+        }
+        return this.sanitizer.bypassSecurityTrustResourceUrl(url)
     }
 }
