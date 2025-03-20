@@ -381,7 +381,7 @@ export class Bus {
             }
             let bmsg = ser(sid, msg, codeid.ok);
 
-            Logger.info(`NET::SEND | ${code} | ${JSON.stringify(bmsg)}`);
+            // Logger.info(`NET::SEND | ${code} | ${JSON.stringify(bmsg)}`);
 
             if (this.con !== null) {
                 this.con.next(bmsg);
@@ -440,7 +440,7 @@ export class Bus {
     }
 
     private welcome(raw: any): void {
-        Logger.info("receive welcome");
+        // Logger.info("receive welcome");
         let codes = raw.msg.codes;
         if (codes === undefined) {
             panic("incorrect welcome message composition");
@@ -462,7 +462,7 @@ export class Bus {
         for (let fn of this.onWelcome) {
             fn()
         }
-        Logger.info(`executed ${deferredCount} welcome-deferred functions`);
+        // Logger.info(`executed ${deferredCount} welcome-deferred functions`);
     }
 
     private recv(raw: any): void {
@@ -515,7 +515,7 @@ export class Bus {
         if (bmsg.is_err === true) {
             Logger.err(log_msg);
         } else {
-            Logger.info(log_msg);
+            // Logger.info(log_msg);
         }
 
         let final_msg = bmsg.msg;
