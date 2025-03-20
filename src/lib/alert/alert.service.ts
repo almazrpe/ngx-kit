@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, Subject } from "rxjs";
 import { CallEvent } from "./alert-stack.component";
-import { Alert } from "./models";
+import { Alert, AlertLevel } from "./models";
 
 @Injectable({
     providedIn: "root"
@@ -22,6 +22,27 @@ export class AlertService {
      */
     public spawn(alert: Alert): void {
         this.alerts.next(alert);
+    }
+
+    public spawn_info(msg: string) {
+        this.alerts.next({
+            level: AlertLevel.Info,
+            msg: msg,
+        })
+    }
+
+    public spawn_warning(msg: string) {
+        this.alerts.next({
+            level: AlertLevel.Warning,
+            msg: msg,
+        })
+    }
+
+    public spawn_error(msg: string) {
+        this.alerts.next({
+            level: AlertLevel.Error,
+            msg: msg,
+        })
     }
 
     /**

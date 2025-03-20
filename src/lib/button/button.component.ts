@@ -53,7 +53,7 @@ export class ButtonComponent implements OnInit, OnChanges {
         // DEFAULT
         [
             "bg-c10", "text-c10-text", "rounded", "shadow",
-            "hover:bg-c10-active", "p-2", "w-full",
+            "hover:bg-c10-active", "p-1", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
