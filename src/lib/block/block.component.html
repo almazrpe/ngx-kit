@@ -3,7 +3,7 @@
         *ngIf="errorMsg$ | async as errMsg; else loadingBlock"
         class="flex flex-col gap-2 items-center"
     >
-        <div class="text-lg">{{errMsg}}</div>
+        <div class="text-sm">{{errMsg}}</div>
         <ngx-kit-button
             [extraCssClasses]="refreshBtnExtraClasses"
             (clickFunc)="refresh.emit()"
@@ -20,7 +20,7 @@
 
 <ng-template #loadingBlock>
     <ng-container
-        [ngTemplateOutlet]="template" 
+        [ngTemplateOutlet]="template"
         *ngIf="isLoaded$ | async; else loading"
     >
     </ng-container>

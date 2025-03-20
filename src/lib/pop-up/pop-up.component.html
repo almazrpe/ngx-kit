@@ -9,8 +9,8 @@
         class="bg-c30 shadow inline-table p-6 rounded-md
                mt-14 h-fit container z-[999]"
         [ngClass]="{
-            'container': 
-                type === PopUpType.Form 
+            'container':
+                type === PopUpType.Form
                 || type === PopUpType.Template,
         }"
         [ngSwitch]="true"
@@ -28,8 +28,8 @@
 
                 <ng-template #defaultPopUpHeader>
                     <div
-                        class="grow ml-2 self-center cursor-default 
-                               select-none text-xl"
+                        class="grow ml-2 self-center cursor-default
+                               select-none text-base"
                     >
                         {{ title }}
                     </div>
@@ -44,7 +44,7 @@
                         [src]="_config_.abortIconPath"
                         alt="x"
                         draggable="false"
-                        class="w-4 before:text-xl shrink-0"
+                        class="w-4 before:text-base shrink-0"
                     >
                 </ngx-kit-button>
             </div>
@@ -52,7 +52,7 @@
             <ngx-kit-hr class="w-full"></ngx-kit-hr>
 
             <ng-container *ngIf="mainTemplateRef !== undefined">
-                <ng-container 
+                <ng-container
                     *ngTemplateOutlet="mainTemplateRef"
                 ></ng-container>
             </ng-container>
@@ -62,20 +62,20 @@
             *ngSwitchCase="type == PopUpType.YesNo"
             class="w-full flex flex-col justify-center items-center"
         >
-            <div class="w-full text-xl cursor-default select-none px-1" i18n>
+            <div class="w-full text-base cursor-default select-none px-1" i18n>
                 Подтверждение
             </div>
 
             <div
                 class="border-y-2 border-c10 my-4
-                       w-full text-lg text-left font-bold
+                       w-full text-sm text-left font-bold
                        px-3 py-7 bg-repeating-diag-white-lines"
             >
                 {{ title }}
             </div>
 
             <div
-                class="w-full flex flex-row gap-14 items-center 
+                class="w-full flex flex-row gap-14 items-center
                        justify-between px-1"
             >
                 <ngx-kit-button
@@ -102,7 +102,7 @@
             *ngSwitchCase="type == PopUpType.ChoosingBtn"
             class="w-full flex flex-col gap-2 justify-center items-center"
         >
-            <div class="w-full text-xl cursor-default select-none px-1">
+            <div class="w-full text-base cursor-default select-none px-1">
                 <span i18n>Выберите действие</span>
                 <span *ngIf="title.length > 0" i18n> для </span>
                 <span *ngIf="title.length > 0">«{{ title }}»</span>
@@ -124,8 +124,8 @@
 
         <div *ngSwitchCase="type == PopUpType.Form">
             <div class="w-full flex items-center gap-2 justify-between px-1">
-                <div 
-                    class="text-xl self-center cursor-default select-none" 
+                <div
+                    class="text-base self-center cursor-default select-none"
                     i18n
                 >
                     {{ title }}
@@ -139,7 +139,7 @@
                       [src]="_config_.abortIconPath"
                       alt="x"
                       draggable="false"
-                      class="w-4 before:text-xl"
+                      class="w-4 before:text-base"
                   >
               </ngx-kit-button>
             </div>
@@ -152,27 +152,27 @@
                 class="w-full flex flex-col gap-2"
             >
                 <ng-container *ngFor="let field of fields">
-                    <div 
+                    <div
                         *ngIf="field.alreadyCompleted == true
                                && (
-                                  field.hideField != null 
-                                      ? !(field.hideField.value) 
+                                  field.hideField != null
+                                      ? !(field.hideField.value)
                                       : true
                                )"
                     >
                         <div class="w-full flex flex-col pr-[2.625rem]">
                             <div
-                                class="w-fit rounded-tl rounded-tr-3xl 
+                                class="w-fit rounded-tl rounded-tr-3xl
                                        overflow-hidden"
                             >
                               <div
-                                  class="w-full h-0 border-r-[0.25rem] 
+                                  class="w-full h-0 border-r-[0.25rem]
                                          border-b-[2rem]
-                                         border-t-0 border-x-transparent 
+                                         border-t-0 border-x-transparent
                                          border-y-c10-fourth"
                               >
-                                  <span 
-                                      class="inline-block pl-4 pr-6 pt-1 
+                                  <span
+                                      class="inline-block pl-4 pr-6 pt-1
                                              font-semibold"
                                   >
                                       {{ field.localizedName ?? 'noname' }}
@@ -193,28 +193,28 @@
                 </ng-container>
 
                 <ng-container *ngFor="let field of fields">
-                    <ng-container 
+                    <ng-container
                         *ngIf="field.alreadyCompleted == false
                                && (
-                                  field.hideField != null 
-                                  ? !(field.hideField.value) 
+                                  field.hideField != null
+                                  ? !(field.hideField.value)
                                   : true
                                )"
                     >
                         <div class="w-full flex flex-col">
                             <div
                                 *ngIf="field.localizedName != null"
-                                class="w-fit rounded-tl rounded-tr-3xl 
+                                class="w-fit rounded-tl rounded-tr-3xl
                                        overflow-hidden"
                             >
                                 <div
-                                    class="w-full h-0 border-r-[0.25rem] 
-                                           border-b-[2rem] border-t-0 
-                                           border-x-transparent 
+                                    class="w-full h-0 border-r-[0.25rem]
+                                           border-b-[2rem] border-t-0
+                                           border-x-transparent
                                            border-y-c10-fourth"
                                 >
-                                    <span 
-                                        class="inline-block pl-4 pr-6 
+                                    <span
+                                        class="inline-block pl-4 pr-6
                                                pt-1 font-semibold"
                                     >
                                         {{field.localizedName}}
@@ -222,15 +222,15 @@
                                 </div>
                             </div>
 
-                            <ng-container 
+                            <ng-container
                                 [ngSwitch]="field.type ?? InputType.Text"
                             >
-                                <ng-container 
+                                <ng-container
                                     *ngSwitchCase="InputType.Document"
                                 >
                                     <ngx-kit-upload-files-input
                                         *ngIf="
-                                            getFormControl(field.name) 
+                                            getFormControl(field.name)
                                                 as control
                                         "
                                         [control]="control"
@@ -252,11 +252,11 @@
                                             getFormControl(field.name)
                                         "
                                         [addLatexEvent]="
-                                            field.mathliveAddLatexEvent 
+                                            field.mathliveAddLatexEvent
                                                 ?? getNullObservable()
                                         "
                                         [virtualKeyboardLayouts]="
-                                            field.mathliveVKLayouts 
+                                            field.mathliveVKLayouts
                                                 ?? undefined
                                         "
                                         [customErrorMessages]="
@@ -264,7 +264,7 @@
                                         "
                                         [config]="field.mathliveConfig ?? {}"
                                     />
-                                    <ng-container 
+                                    <ng-container
                                         *ngTemplateOutlet="resetButton"
                                     ></ng-container>
                                 </div>
@@ -280,7 +280,7 @@
                                         "
                                         [type]="field.type ?? InputType.Text"
                                         [localizedName]="
-                                            field.localizedName 
+                                            field.localizedName
                                                 ?? 'noname'
                                         "
                                         [placeholder]="field.placeholder ?? ''"
@@ -290,23 +290,23 @@
                                                 : []
                                         "
                                         [autocompleteRequired]="
-                                            field.autocompleteRequired 
+                                            field.autocompleteRequired
                                                 ?? false
                                         "
                                         [showErrors]="
-                                            field.showErrors 
+                                            field.showErrors
                                                 ?? true
                                         "
                                         [customErrorMessages]="
                                             field.customErrorMessages
                                         "
                                         (complete)="
-                                            form.valid 
-                                                ? sendForm() 
+                                            form.valid
+                                                ? sendForm()
                                                 : null
                                         "
                                     />
-                                    <ng-container 
+                                    <ng-container
                                         *ngTemplateOutlet="resetButton"
                                     ></ng-container>
                                 </div>
@@ -323,19 +323,19 @@
                                             alt="x"
                                             draggable="false"
                                             class="w-6 h-6 text-black relative
-                                                   before:top-[-25%] 
+                                                   before:top-[-25%]
                                                    before:left-[30%]
-                                                   before:absolute 
-                                                   before:text-2xl"
+                                                   before:absolute
+                                                   before:text-lg"
                                         >
                                     </ngx-kit-button>
                                 </ng-template>
                             </ng-container>
 
-                            <ng-container 
+                            <ng-container
                                 *ngIf="field.afterTemplate !== undefined"
                             >
-                                <ng-container 
+                                <ng-container
                                     *ngTemplateOutlet="field.afterTemplate"
                                 ></ng-container>
                             </ng-container>
@@ -370,8 +370,8 @@
                                 >
                             </td>
                             <td class="py-2 px-3 bg-c10-fourth rounded">
-                                <div 
-                                    class="font-bold text-right uppercase 
+                                <div
+                                    class="font-bold text-right uppercase
                                            text-sm"
                                 >
                                     {{field.fieldName}}
@@ -392,7 +392,7 @@
         >
             <div class="w-full flex items-center gap-10 justify-between px-1">
                 <div
-                    class="ml-2 self-center cursor-default select-none text-xl"
+                    class="ml-2 self-center cursor-default select-none text-base"
                 >
                     {{ title }}
                 </div>
@@ -405,7 +405,7 @@
                         [src]="_config_.abortIconPath"
                         alt="x"
                         draggable="false"
-                        class="w-4 before:text-xl"
+                        class="w-4 before:text-base"
                     >
                 </ngx-kit-button>
             </div>

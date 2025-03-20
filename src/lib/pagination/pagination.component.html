@@ -2,8 +2,8 @@
     class="w-screen"
     [extraClass]="
         data._config_!.disabledParts.has(PagPart.SearchField)
-        || data._config_!.disabledParts.has(PagPart.Footer) 
-            ? '!p-0' 
+        || data._config_!.disabledParts.has(PagPart.Footer)
+            ? '!p-0'
             : ''
     "
     *ngIf="{
@@ -36,11 +36,11 @@
 
                     <div
                         *ngIf="!isFiltersWindowShown"
-                        class="flex gap-2 flex-row flex-wrap justify-start 
+                        class="flex gap-2 flex-row flex-wrap justify-start
                                select-none"
                     >
-                        <div 
-                            class="flex flex-row" 
+                        <div
+                            class="flex flex-row"
                             *ngFor="let filter of data.afilters"
                         >
                             <div
@@ -54,7 +54,7 @@
                                 (click)="dropFilter(filter.id)"
                             >
                                 <img
-                                    class="relative w-2 h-2 before:-top-full 
+                                    class="relative w-2 h-2 before:-top-full
                                            before:absolute"
                                     draggable="false"
                                     [src]="data._config_!.dropFilterBIconPath"
@@ -102,7 +102,7 @@
                         class="w-full flex flex-row gap-2"
                         *ngFor="let filter of data.afilters"
                     >
-                        <div 
+                        <div
                             class="grow flex flex-row bg-gradient-to-r from-c10
                                    rounded"
                         >
@@ -140,8 +140,8 @@
                             (clickFunc)="dropFilter(filter.id)"
                         >
                             <img
-                                class="relative w-3 h-3 before:top-[-70%] 
-                                       before:left-[15%] before:absolute before:text-lg"
+                                class="relative w-3 h-3 before:top-[-70%]
+                                       before:left-[15%] before:absolute before:text-sm"
                                 draggable="false"
                                 [src]="data._config_!.dropFilterWIconPath"
                                 [alt]="'x'"
@@ -188,14 +188,14 @@
                 <table
                     class="overflow-auto w-full"
                     [ngClass]="{
-                        'flex': 
+                        'flex':
                             data._config_!.viewType == PagViewType.List
                             || data._config_!.viewType == PagViewType.Tiles,
-                        'flex-col': 
+                        'flex-col':
                             data._config_!.viewType == PagViewType.List,
-                        'flex-row flex-wrap justify-center': 
+                        'flex-row flex-wrap justify-center':
                             data._config_!.viewType == PagViewType.Tiles,
-                        'border-collapse': 
+                        'border-collapse':
                             data._config_!.viewType == PagViewType.Table
                     }"
                     *ngIf="
@@ -206,17 +206,17 @@
                         else no_items
                     "
                 >
-                    <ng-container 
+                    <ng-container
                         *ngIf="data._config_!.viewType == PagViewType.Table"
                     >
-                        <colgroup 
+                        <colgroup
                             *ngIf="data._config_!.columnFixedWidths.size > 0"
                         >
                             <ng-container *ngFor="let column of tableColumns">
                                 <col
                                     *ngIf="column.disabled == false"
                                     (onCreate)="setColumnFixedWidth(
-                                        colRef, 
+                                        colRef,
                                         column
                                     )"
                                     NgxKitOnCreate
@@ -232,15 +232,15 @@
                                            hover:bg-c10-half select-none"
                                     *ngIf="column.disabled == false"
                                     [ngClass]="{
-                                        'bg-c10-fourth': 
+                                        'bg-c10-fourth':
                                             chosenColumnCheck(
                                                 column,
                                                 [
-                                                    SortColMode.ASC, 
+                                                    SortColMode.ASC,
                                                     SortColMode.DESC
                                                 ]
                                             ) == true,
-                                        'cursor-pointer hover:bg-c10-half': 
+                                        'cursor-pointer hover:bg-c10-half':
                                             column.sorting == true
                                     }"
                                     (click)="column.sorting == true
@@ -257,8 +257,8 @@
                                                 [SortColMode.ASC]
                                             ) == true"
                                         >
-                                            <div 
-                                                class="w-full flex 
+                                            <div
+                                                class="w-full flex
                                                        justify-center"
                                             >
                                                 <img
@@ -280,8 +280,8 @@
                                                 [SortColMode.DESC]
                                             ) == true"
                                         >
-                                            <div 
-                                                class="w-full flex 
+                                            <div
+                                                class="w-full flex
                                                        justify-center"
                                             >
                                                 <img
@@ -299,7 +299,7 @@
 
                                         <div
                                             *ngIf="
-                                                column.header 
+                                                column.header
                                                 == PagColTag.NameHeader
                                             "
                                             class="w-full flex"
@@ -307,7 +307,7 @@
                                                 chosenColumnCheck(
                                                     column,
                                                     [
-                                                        SortColMode.DESC, 
+                                                        SortColMode.DESC,
                                                         SortColMode.ASC
                                                     ]
                                                 ) == true
@@ -324,7 +324,7 @@
 
                                         <ng-container
                                             *ngIf="
-                                                column.header 
+                                                column.header
                                                 == PagColTag.CustomHeader
                                             "
                                         >
@@ -342,7 +342,7 @@
                                                     chosenColumnCheck(
                                                         column,
                                                         [
-                                                            SortColMode.DESC, 
+                                                            SortColMode.DESC,
                                                             SortColMode.ASC
                                                         ]
                                                     ) == true
@@ -354,10 +354,10 @@
                                                 "
                                             >
                                                 <div
-                                                    class="flex flex-row 
+                                                    class="flex flex-row
                                                            shrink-0 mx-1.5"
                                                     [ngClass]="
-                                                        colHeader.gapClass 
+                                                        colHeader.gapClass
                                                         != undefined
                                                             ? [
                                                                 colHeader
@@ -368,7 +368,7 @@
                                                 >
                                                     <div
                                                         *ngIf="
-                                                            colHeader.leftText 
+                                                            colHeader.leftText
                                                             != undefined
                                                         "
                                                         [ngClass]="
@@ -381,7 +381,7 @@
                                                     </div>
                                                     <img
                                                         *ngIf="
-                                                            colHeader.imgSrc 
+                                                            colHeader.imgSrc
                                                             != undefined
                                                         "
                                                         [src]="
@@ -402,7 +402,7 @@
                                                         "
                                                         [ngClass]="
                                                           colHeader
-                                                          .textExtraCssClasses 
+                                                          .textExtraCssClasses
                                                           ?? []
                                                         "
                                                     >
@@ -428,17 +428,17 @@
                                 class="select-none"
                                 [ngClass]="{
                                     'block w-full mt-1':
-                                        data._config_!.viewType 
+                                        data._config_!.viewType
                                         != PagViewType.Table,
                                     'bg-white/25':
-                                        data._config_!.viewType 
+                                        data._config_!.viewType
                                         == PagViewType.Table
                                         && whiteRowCheck(i, data._config_!),
                                     'hover:bg-c10-half cursor-pointer':
-                                        data._config_!.viewType 
+                                        data._config_!.viewType
                                         == PagViewType.Table
                                         && (
-                                            item.route != null 
+                                            item.route != null
                                             || item.altClickFunc != null
                                         )
                                 }"
@@ -447,14 +447,14 @@
                                 <!-- NO TABLE VIEW -->
                                 <ng-container
                                     *ngIf="
-                                        data._config_!.viewType 
+                                        data._config_!.viewType
                                         != PagViewType.Table
                                     "
                                 >
                                     <ngx-kit-button
                                         [ngClass]="{
                                             'w-40 h-40 block m-1':
-                                                data._config_!.viewType 
+                                                data._config_!.viewType
                                                 == PagViewType.Tiles
                                         }"
                                         [extraCssClasses]="['h-full']"
@@ -467,11 +467,11 @@
                                 <!-- TABLE VIEW -->
                                 <ng-container
                                     *ngIf="
-                                        data._config_!.viewType 
+                                        data._config_!.viewType
                                         == PagViewType.Table
                                     "
                                 >
-                                    <ng-container 
+                                    <ng-container
                                         *ngFor="let column of tableColumns"
                                     >
                                         <td
@@ -479,7 +479,7 @@
                                             class="px-3 py-1.5"
                                             [ngClass]="
                                                 itemHasAttr(
-                                                    item, 
+                                                    item,
                                                     column.name
                                                 )
                                                     ? item.attr[
@@ -490,7 +490,7 @@
                                         >
                                             <div
                                                 *ngIf="itemHasAttr(
-                                                    item, 
+                                                    item,
                                                     column.name
                                                 )"
                                                 class="flex items-center"
@@ -507,14 +507,14 @@
                                               <!-- DATETIME | DATE | TIME -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.DATETIME
                                                       || (
-                                                          column.type 
+                                                          column.type
                                                           === PagAttrType.DATE
                                                       )
                                                       || (
-                                                          column.type 
+                                                          column.type
                                                           === PagAttrType.TIME
                                                       )
                                                   "
@@ -539,7 +539,7 @@
                                                           ) + (
                                                               item.attr[
                                                                   column.name
-                                                              ].body.endStr 
+                                                              ].body.endStr
                                                               ?? ''
                                                           )
                                                   }}
@@ -548,7 +548,7 @@
                                               <!-- ICON -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.ICON
                                                   "
                                                   class="flex"
@@ -571,7 +571,7 @@
                                                           [inputCssClasses]="
                                                               item.attr[
                                                                   column.name
-                                                              ].body.cssClasses 
+                                                              ].body.cssClasses
                                                               ?? null
                                                           "
                                                       >
@@ -603,7 +603,7 @@
                                                                   .body
                                                                   .cssClasses
                                                                   ?? [
-                                                                      'w-4', 
+                                                                      'w-4',
                                                                       'h-4'
                                                                   ]
                                                               "
@@ -619,15 +619,15 @@
                                               <!-- ICONS -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.ICONS
                                                   "
-                                                  class="flex flex-row 
+                                                  class="flex flex-row
                                                          flex-wrap gap-1.5"
                                               >
                                                   <div
                                                       *ngFor="
-                                                          let icon 
+                                                          let icon
                                                           of item.attr[
                                                               column.name
                                                           ].body
@@ -643,7 +643,7 @@
                                                           "
                                                           [imgSrc]="icon.src"
                                                           [inputCssClasses]="
-                                                              icon.cssClasses 
+                                                              icon.cssClasses
                                                               ?? null
                                                           "
                                                       >
@@ -655,7 +655,7 @@
                                                           "
                                                           class="inline-block"
                                                           [ngClass]="
-                                                              icon.cssClasses 
+                                                              icon.cssClasses
                                                               ?? ['w-4', 'h-4']
                                                           "
                                                       >
@@ -664,7 +664,7 @@
                                                                   icon
                                                                   .cssClasses
                                                                   ?? [
-                                                                      'w-4', 
+                                                                      'w-4',
                                                                       'h-4'
                                                                   ]
                                                               "
@@ -678,7 +678,7 @@
                                               <!-- LABEL -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.LABEL
                                                   "
                                               >
@@ -699,7 +699,7 @@
                                               <!-- LABELS -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.LABELS
                                                   "
                                                   class="w-full flex flex-row
@@ -710,7 +710,7 @@
                                               >
                                                   <div
                                                       *ngFor="
-                                                          let label 
+                                                          let label
                                                           of item.attr[
                                                               column.name
                                                           ].body
@@ -732,7 +732,7 @@
                                               <!-- BUTTON -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.BUTTON
                                                   "
                                               >
@@ -745,7 +745,7 @@
                                                       ].body.clickFunc()"
                                                       [mode]="item.attr[
                                                           column.name
-                                                      ].body.mode 
+                                                      ].body.mode
                                                       ?? BtnMode.DEFAULT"
                                                       [isEnabled]="item.attr[
                                                           column.name
@@ -756,7 +756,7 @@
                                                           *ngIf="
                                                               item.attr[
                                                                   column.name
-                                                              ].body.imageSrc 
+                                                              ].body.imageSrc
                                                               != undefined
                                                           "
                                                       >
@@ -766,9 +766,9 @@
                                                                       column
                                                                       .name
                                                                   ].body
-                                                                  .cssClasses 
+                                                                  .cssClasses
                                                                   ?? [
-                                                                      'w-4', 
+                                                                      'w-4',
                                                                       'h-4'
                                                                   ]"
                                                               [src]="item.attr[
@@ -782,7 +782,7 @@
                                                           *ngIf="
                                                             item.attr[
                                                                 column.name
-                                                            ].body.imageSrc 
+                                                            ].body.imageSrc
                                                             == undefined
                                                           "
                                                       >
@@ -798,7 +798,7 @@
                                               <!-- BOOLEAN -->
                                               <div
                                                   *ngSwitchCase="
-                                                      column.type 
+                                                      column.type
                                                       === PagAttrType.BOOLEAN
                                                   "
                                               >
@@ -909,10 +909,10 @@
                                 || (
                                     i > leftSlice
                                     && (
-                                        i 
+                                        i
                                         <= (
-                                            leftSlice 
-                                            + data._config_!.visiblePagesCnt 
+                                            leftSlice
+                                            + data._config_!.visiblePagesCnt
                                             - 2
                                         )
                                     )
@@ -958,10 +958,10 @@
                             *ngIf="
                                 i == pageCnt - 2
                                 && (
-                                    i 
+                                    i
                                     > (
-                                        leftSlice 
-                                        + data._config_!.visiblePagesCnt 
+                                        leftSlice
+                                        + data._config_!.visiblePagesCnt
                                         - 2
                                     )
                                 )
