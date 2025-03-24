@@ -67,21 +67,21 @@ export class ButtonComponent implements OnInit, OnChanges {
         // DANGER
         [
             "bg-red-500", "text-c10-text", "rounded", "hover:bg-red-300",
-            "shadow", "p-2", "w-full",
+            "shadow", "p-1", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
         // BOOKMARK_ACTIVE
         [
             "bg-slate-400", "text-c10-text", "rounded",
-            "shadow", "p-2", "w-full",
+            "shadow", "p-1", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
         // DIMMED
         [
             "bg-c30", "text-c-text", "rounded", "shadow",
-            "hover:bg-c10-active", "p-2", "w-full",
+            "hover:bg-c10-active", "p-1", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
@@ -95,7 +95,7 @@ export class ButtonComponent implements OnInit, OnChanges {
         // SUCCCESS
         [
             "bg-green-500", "text-c10-text", "rounded", "hover:bg-green-300",
-            "shadow", "p-2", "w-full",
+            "shadow", "p-1", "w-full",
             "disabled:bg-c-disabled", "disabled:shadow-none",
             "flex", "items-center", "justify-center"
         ],
