@@ -2,6 +2,31 @@
     *ngIf="transform$ | async as transform"
     class="h-full w-full flex justify-center items-center relative"
 >
+
+<!-- @Todo fix problem with tablet PDF rendering -->
+<!-- <script>
+    const url = 'path/to/your/document.pdf';
+
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(pdf => {
+        pdf.getPage(1).then(page => {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale: scale });
+
+            const canvas = document.getElementById('pdf-canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
+</script> -->
+
     <iframe
         [src]="safe_url"
         width="100%"
