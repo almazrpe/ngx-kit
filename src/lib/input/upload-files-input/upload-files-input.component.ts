@@ -92,7 +92,7 @@ export class UploadFilesInputComponent implements OnInit {
     }
 
     public filesDropped(
-        files: UploadFileObject[], 
+        files: UploadFileObject[],
         control: FormControl
     ): void {
         files = files.filter((obj: UploadFileObject) => {
