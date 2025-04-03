@@ -17,6 +17,11 @@ import {
 } from "./model";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
+export enum Pdf_Viewer_Mode {
+    CLASSIC = 1,
+    PINCH_ZOOM,
+}
+
 @Component({
     selector: "ngx-kit-pdf-viewer",
     templateUrl: "./pdf-viewer.component.html",
@@ -24,6 +29,7 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 })
 export class PdfViewerComponent implements OnInit, AfterViewInit {
     @Input() public url: string;
+    @Input() public mode: Pdf_Viewer_Mode = Pdf_Viewer_Mode.CLASSIC
     @Input() public toolbar_enabled: boolean = false;
     @Input() public config: Partial<PdfViewerConfig> = {};
     @Input() public initialTransform?: ExtendedPinchZoomTransform;

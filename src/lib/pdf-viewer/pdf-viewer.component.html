@@ -3,31 +3,8 @@
     class="h-full w-full flex justify-center items-center relative"
 >
 
-<!-- @Todo fix problem with tablet PDF rendering -->
-<!-- <script>
-    const url = 'path/to/your/document.pdf';
-
-    const loadingTask = pdfjsLib.getDocument(url);
-    loadingTask.promise.then(pdf => {
-        pdf.getPage(1).then(page => {
-            const scale = 1.5;
-            const viewport = page.getViewport({ scale: scale });
-
-            const canvas = document.getElementById('pdf-canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            const renderContext = {
-                canvasContext: context,
-                viewport: viewport
-            };
-            page.render(renderContext);
-        });
-    });
-</script> -->
-
     <iframe
+        *ngIf="mode == 1"
         [src]="safe_url"
         width="100%"
         height="100%"
@@ -39,7 +16,7 @@
 
     <!-- Disabled: We struggle with pixelization of vector-based pdfs, so we comment this for the time being. -->
     <pinch-zoom
-        style="display: none"
+        *ngIf="mode == 2"
         [transition-duration]="_config_.transitionDuration"
         [limit-zoom]="_config_.limitZoom"
         [minScale]="_config_.minScale"
