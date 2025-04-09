@@ -73,9 +73,9 @@ export class KeyboardService {
 
     public initialize(): Keyboard {
         if (this.isInitialized) {
-            throw new Error("already initialized");
+            return this.keyboard
         } else {
-            this.isInitialized = true;
+            this.isInitialized = true
         }
 
         this.keyboard = new Keyboard({
