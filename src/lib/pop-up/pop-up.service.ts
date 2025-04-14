@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, ReplaySubject } from "rxjs";
 import { PopUpType, PopUpWindow } from "./models";
+import { Signal } from "../../public-api";
 
 @Injectable({
     providedIn: "root"
@@ -18,6 +19,9 @@ export class PopUpService {
     public shownCompId$: BehaviorSubject<string | undefined> =
         new BehaviorSubject<string | undefined>(undefined);
 
+    public spawned = new Signal<boolean>()
+    public despawned = new Signal<boolean>()
+
     public toggle(compId: string | undefined): void {
         this.shownCompId$.next(compId);
     }
@@ -25,5 +29,6 @@ export class PopUpService {
     public spawn(window: PopUpWindow, compId: string): void {
         this.popUpWindow.next(window);
         this.toggle(compId);
+        this.spawned.emit(true)
     }
 }

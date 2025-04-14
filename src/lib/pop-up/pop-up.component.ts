@@ -89,7 +89,7 @@ export class PopUpComponent implements OnInit {
               field.fillingOptions = new BehaviorSubject<any[]>([]);
 
             const fieldFormControl: FormControl = new FormControl(
-              field.value, 
+              field.value,
               field.validators ?? []
             )
             this.form.addControl(
@@ -101,7 +101,7 @@ export class PopUpComponent implements OnInit {
             );
             if (field.trackingSubject !== undefined) {
               field.trackingSubject?.next(field.value);
-              let sub = 
+              let sub =
                 fieldFormControl.valueChanges.subscribe((value: any) => {
                   field.trackingSubject?.next(value)
                 })
@@ -118,7 +118,7 @@ export class PopUpComponent implements OnInit {
                   new Map<string, BehaviorSubject<boolean>>(
                     window.fields?.map(
                       (field: PopUpFormField) => [
-                        field.name, 
+                        field.name,
                         field.hideField ?? new BehaviorSubject<boolean>(true)
                       ]
                     ) ?? []
@@ -126,7 +126,7 @@ export class PopUpComponent implements OnInit {
                   new Map<string, BehaviorSubject<any[]>>(
                     window.fields?.map(
                       (field: PopUpFormField) => [
-                        field.name, 
+                        field.name,
                         field.fillingOptions ?? new BehaviorSubject<any[]>([])
                       ]
                     ) ?? []
@@ -174,6 +174,7 @@ export class PopUpComponent implements OnInit {
       sub.unsubscribe();
     }
     this.popUpService.toggle(undefined);
+    this.popUpService.despawned.emit(true)
   }
 
   public clearField(name: string): void {
