@@ -181,7 +181,7 @@ export class KeyboardService {
 
     private onChange(value: string): void {
         if (this.selectedInput === null) {
-            throw new Error("no input focused to type into");
+            return
         }
 
         this.selectedInputService.sendKeyboardValue(value);
